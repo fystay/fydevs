@@ -1,5 +1,3 @@
-# fydevs
-
 # FY Devs — Core Project Brief
 
 **Version:** 0.1  
