@@ -1,0 +1,100 @@
+.card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  font-size: var(--text-xs);
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 550;
+}
+
+.group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 550;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.option {
+  position: relative;
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.option span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.option:hover span {
+  border-color: var(--color-ink);
+}
+
+.option input:checked + span {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-inverse-ink);
+}
+
+.option input:focus-visible + span {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.result {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+.price {
+  margin-top: var(--space-1);
+  font-family: var(--font-serif);
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.price span {
+  color: var(--color-ink-3);
+  font-size: 0.6em;
+  letter-spacing: 0;
+}

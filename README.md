@@ -513,3 +513,74 @@ When making changes:
 9. Update this document when important business or technical decisions change.
 
 **Overall objective:** Build a premium digital business that combines bespoke website development and practical booking software, with an exceptional customer experience from first visit to purchase.
+
+---
+
+## 17. Implementation (first release)
+
+This section records the technical decisions made for the first build. Items in §15 remain open unless stated here.
+
+### Stack
+
+- **Next.js 16 (App Router) + React 19 + TypeScript.** Pages are statically prerendered; the only server code is the enquiry API route.
+- **Plain CSS** with design tokens in `src/app/globals.css`, plus CSS modules for the configurator and quick estimate. No UI framework.
+- **Fonts:** Inter (interface and body) and Newsreader (editorial headings), self-hosted at build time with `next/font`.
+- **Tests:** Vitest. **Lint:** ESLint with `eslint-config-next`.
+
+### Where things live
+
+| Concern | Location |
+| --- | --- |
+| Pricing rules, packages, care plans (single source of truth) | `src/lib/pricing.ts` |
+| Brief formatting shared by the summary screen and the email | `src/lib/brief.ts` |
+| Enquiry validation (client and server) | `src/lib/enquiry.ts` |
+| Enquiry API: validation, spam checks, server-side estimate, email | `src/app/api/enquiry/route.ts` |
+| Website configurator | `src/components/configurator/` |
+| Portfolio entries (empty until real projects are approved) | `src/lib/projects.ts` |
+| Navigation and confirmed site facts | `src/lib/site.ts` |
+| Brand assets (from the supplied logo and icon) | `public/brand/`, `src/app/icon.png`, `src/app/apple-icon.png`, `src/app/favicon.ico` |
+
+### Decisions and current status
+
+- **Pricing is provisional.** `PRICING_STATUS = "provisional"` in `src/lib/pricing.ts` shows a notice wherever prices appear. Update the figures and set it to `"confirmed"` once they are signed off, including VAT treatment.
+- **No online checkout yet.** The payment provider is undecided (§15), so every configurator brief is submitted for written confirmation. Fixed-scope briefs are identified as such, ready for a future checkout step.
+- **Enquiries are emailed through Resend** (HTTP API, no SDK). Without configuration, the API returns `503 not_configured` and the forms say plainly that nothing was sent. The configurator offers to copy the brief instead.
+- **Spam protection:** a honeypot field, a minimum completion time and a best-effort per-instance rate limit. Add a shared store or platform firewall rules if abuse appears.
+- **No cookies or analytics.** The privacy notice says so. Update it before adding analytics (§14).
+- **Booking software page** describes only confirmed facts (a driver and operator application developed for an airport taxi business) and routes visitors to a demo request.
+
+### Running locally
+
+Requires Node.js 20.9 or later.
+
+```bash
+npm install
+cp .env.example .env.local   # optional: fill in to enable enquiry emails
+npm run dev                  # http://localhost:3000
+```
+
+Checks and production build:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build && npm start
+```
+
+### Environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Production origin for canonical URLs, Open Graph, sitemap and robots. On Vercel, the project's production URL is used if unset. |
+| `RESEND_API_KEY` | Server-only. Resend API key. |
+| `ENQUIRY_TO_EMAIL` | Server-only. Inbox that receives enquiries and briefs. |
+| `ENQUIRY_FROM_EMAIL` | Server-only. Sender on a domain verified in Resend. |
+
+### Before launch
+
+- Confirm package, care-plan and estimator prices and VAT treatment.
+- Configure email delivery and send a test enquiry.
+- Set the production domain.
+- Have the privacy notice reviewed, and add the business's legal identity and contact details. Add terms of service and payment, cancellation and refund terms once those are decided.
+- Add approved portfolio projects and booking software screenshots.
