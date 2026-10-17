@@ -31,6 +31,7 @@ export function siteUrl(): string | undefined {
 export type NavLink = { href: string; label: string };
 
 export const primaryNav: NavLink[] = [
+  { href: "/work", label: "Work" },
   { href: "/websites", label: "Websites" },
   { href: "/booking-software", label: "Booking software" },
   { href: "/bespoke-systems", label: "Bespoke systems" },

@@ -124,6 +124,7 @@ function ConfiguratorInner() {
   const [contactErrors, setContactErrors] = useState<FieldErrors>({});
   const [startedAt] = useState(() => Date.now());
   const [copied, setCopied] = useState<"idle" | "done" | "failed">("idle");
+  const [sheetOpen, setSheetOpen] = useState(false);
   const { state, submit } = useEnquirySubmit();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
@@ -256,7 +257,7 @@ function ConfiguratorInner() {
             {step.title}
           </h2>
 
-          <div className={styles.body}>
+          <div key={step.id} className={styles.body}>
             {step.id === "type" && (
               <ChoiceGroup
                 legend="Project type"
@@ -584,41 +585,71 @@ function ConfiguratorInner() {
       </div>
 
       <aside className={styles.aside} aria-label="Live estimate">
-        <div className={styles.estimate}>
-          <div className={styles.estimateHead}>
-            <p className="eyebrow">Live estimate</p>
-            {PRICING_STATUS === "provisional" && <span className={styles.badge}>Provisional</span>}
-          </div>
-          <p className="fine">{PACKAGES[result.packageId].name} package · one-off build</p>
-          <p className={styles.price} aria-live="polite">
-            {formatGBP(result.range.low)}
-            <span> to {formatGBP(result.range.high)}</span>
-          </p>
-          <dl className={styles.mini}>
-            <div>
-              <dt>Monthly</dt>
-              <dd>{result.monthly ? `${formatGBP(result.monthly)}/mo` : "None"}</dd>
-            </div>
-            <div>
-              <dt>Pricing</dt>
-              <dd>{result.requiresScope ? "Confirmed after scoping" : "Fixed-scope package"}</dd>
-            </div>
-          </dl>
-          <p className="fine">{VAT_NOTE}</p>
-        </div>
+        <EstimatePanel result={result} live />
       </aside>
 
-      <div className={styles.mobileBar}>
-        <span className="fine">Estimate</span>
-        <strong aria-live="polite">
-          {formatGBP(result.range.low)} to {formatGBP(result.range.high)}
-        </strong>
+      <div className={styles.dock} data-estimate-dock>
+        {sheetOpen && (
+          <div id="estimate-sheet" className={styles.sheet}>
+            <EstimatePanel result={result} />
+          </div>
+        )}
+        <button
+          type="button"
+          className={styles.mobileBar}
+          aria-expanded={sheetOpen}
+          aria-controls="estimate-sheet"
+          onClick={() => setSheetOpen((v) => !v)}
+        >
+          <span className={styles.mobileBarLabel}>
+            Estimate
+            <strong aria-live="polite">
+              {formatGBP(result.range.low)} to {formatGBP(result.range.high)}
+            </strong>
+          </span>
+          <span className={styles.mobileBarToggle}>{sheetOpen ? "Hide" : "Details"}</span>
+        </button>
       </div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
+
+function EstimatePanel({ result, live = false }: { result: ReturnType<typeof estimate>; live?: boolean }) {
+  return (
+    <div className={styles.estimate}>
+      <div className={styles.estimateHead}>
+        <p className="eyebrow">Live estimate</p>
+        {PRICING_STATUS === "provisional" && <span className={styles.badge}>Provisional</span>}
+      </div>
+      <p className="fine">{PACKAGES[result.packageId].name} package · one-off build</p>
+      <p className={styles.price} aria-live={live ? "polite" : undefined}>
+        {formatGBP(result.range.low)}
+        <span> to {formatGBP(result.range.high)}</span>
+      </p>
+      <ul role="list" className={styles.lineList} aria-label="Build cost breakdown">
+        {result.lineItems.map((item) => (
+          <li key={item.label}>
+            <span>{item.label}</span>
+            <span>{formatGBP(item.amount)}</span>
+          </li>
+        ))}
+      </ul>
+      <dl className={styles.mini}>
+        <div>
+          <dt>Monthly</dt>
+          <dd>{result.monthly ? `${formatGBP(result.monthly)}/mo` : "None"}</dd>
+        </div>
+        <div>
+          <dt>Pricing</dt>
+          <dd>{result.requiresScope ? "Confirmed after scoping" : "Fixed-scope package"}</dd>
+        </div>
+      </dl>
+      <p className="fine">{VAT_NOTE}</p>
+    </div>
+  );
+}
 
 function ChoiceGroup<K extends string>({
   legend,

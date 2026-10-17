@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { CtaBand, PageHero, SectionHead } from "@/components/Blocks";
+import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
 import { pageMetadata } from "@/lib/metadata";
+import { projectBySlug } from "@/lib/projects";
+
+const evexec = projectBySlug("ev-exec")!;
+const fystay = projectBySlug("fystay")!;
 
 export const metadata = pageMetadata(
   "/bespoke-systems",
@@ -61,6 +66,51 @@ export default function BespokeSystemsPage() {
                 <h3 className="h3">{c.title}</h3>
                 <p className="muted">{c.body}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section inverse" aria-labelledby="examples-title">
+        <div className="container container--wide">
+          <SectionHead eyebrow="From our work" title={<span id="examples-title">Systems we&apos;ve already built.</span>} split>
+            <p>Two real examples of booking-led software, both designed and built by FY Devs.</p>
+          </SectionHead>
+          <div className="grid-2" style={{ gap: "var(--space-7)" }}>
+            {[
+              {
+                p: evexec,
+                title: "Airport transfer booking",
+                body: "A three-step booking flow with returns, extra stops and flight details, customer accounts, plus driver and operator applications behind it.",
+                href: "/booking-software",
+                link: "About the booking software",
+              },
+              {
+                p: fystay,
+                title: "A holiday stays platform",
+                body: "Stay search, town guides, host listings with a host dashboard, and airport transfers that can be added to a confirmed booking.",
+                href: "/work#fystay",
+                link: "About FYStay",
+              },
+            ].map((ex) => (
+              <article key={ex.p.slug} className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties}>
+                <div className="media-panel">
+                  <BrowserFrame
+                    src={ex.p.desktop}
+                    host={ex.p.host}
+                    alt={`The ${ex.p.name} website`}
+                    sizes="(min-width: 48rem) 560px, 90vw"
+                  />
+                </div>
+                <p className="eyebrow">{ex.p.name}</p>
+                <h3 className="h3">{ex.title}</h3>
+                <p className="muted">{ex.body}</p>
+                <p>
+                  <Link href={ex.href} className="arrow-link">
+                    {ex.link} <ArrowRight />
+                  </Link>
+                </p>
+              </article>
             ))}
           </div>
         </div>

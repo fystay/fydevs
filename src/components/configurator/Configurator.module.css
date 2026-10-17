@@ -2,7 +2,7 @@
   display: grid;
   gap: var(--space-7);
   align-items: start;
-  padding-bottom: 4.5rem; /* room for the mobile estimate bar */
+  padding-bottom: var(--space-6);
 }
 
 @media (min-width: 64rem) {
@@ -130,6 +130,19 @@
   margin-top: var(--space-6);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .body {
+    animation: step-in 260ms var(--ease) both;
+  }
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
 .nav {
   display: flex;
   justify-content: space-between;
@@ -205,10 +218,67 @@
 
 .choice input {
   flex-shrink: 0;
-  width: 1.05rem;
-  height: 1.05rem;
-  margin: 0.2rem 0 0;
-  accent-color: var(--color-ink);
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.05rem 0 0;
+  border: 1.5px solid var(--color-line-strong);
+  background: var(--color-surface-raised);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    background-color var(--duration-fast) var(--ease);
+}
+
+.choice input[type="radio"] {
+  border-radius: 50%;
+}
+
+.choice input[type="checkbox"] {
+  border-radius: 6px;
+}
+
+.choice input::after {
+  content: "";
+  transform: scale(0);
+  transition: transform var(--duration) var(--ease);
+}
+
+.choice input[type="radio"]::after {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-inverse-ink);
+}
+
+.choice input[type="checkbox"]::after {
+  width: 0.55rem;
+  height: 0.3rem;
+  margin-top: -0.15rem;
+  border-left: 2px solid var(--color-inverse-ink);
+  border-bottom: 2px solid var(--color-inverse-ink);
+  transform: rotate(-45deg) scale(0);
+}
+
+.choice input:checked {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+}
+
+.choice input[type="radio"]:checked::after {
+  transform: scale(1);
+}
+
+.choice input[type="checkbox"]:checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.choice input:disabled:checked {
+  border-color: var(--color-ink-3);
+  background: var(--color-ink-3);
 }
 
 .choice input:focus-visible {
@@ -332,31 +402,98 @@
   text-align: right;
 }
 
-.mobileBar {
+.dock {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 40;
+  background: var(--color-inverse-bg);
+  color: var(--color-inverse-ink);
+  box-shadow: 0 -12px 32px -16px rgb(32 33 36 / 0.4);
+}
+
+.sheet {
+  max-height: 65vh;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--color-inverse-line);
+}
+
+.sheet .estimate {
+  border-radius: 0;
+  padding-inline: var(--gutter);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    animation: step-in 220ms var(--ease) both;
+  }
+}
+
+.mobileBar {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-3);
+  min-height: 3.75rem;
   padding: var(--space-3) var(--gutter);
   padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
-  background: var(--color-inverse-bg);
-  color: var(--color-inverse-ink);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
 }
 
-.mobileBar :global(.fine) {
+.mobileBarLabel {
+  display: grid;
+  font-size: var(--text-xs);
   color: var(--color-inverse-ink-2);
 }
 
+.mobileBarLabel strong {
+  font-size: var(--text-base);
+  color: var(--color-inverse-ink);
+  font-weight: 550;
+}
+
+.mobileBarToggle {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-inverse-line);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+}
+
+.mobileBar:focus-visible {
+  outline: 2px solid var(--color-inverse-ink);
+  outline-offset: -4px;
+}
+
 @media (min-width: 64rem) {
-  .mobileBar {
+  .dock {
     display: none;
   }
+}
+
+.lineList {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.lineList li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-inverse-ink-2);
+}
+
+.lineList li span:last-child {
+  color: var(--color-inverse-ink);
 }
 
 /* Summary */

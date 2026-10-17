@@ -536,7 +536,9 @@ This section records the technical decisions made for the first build. Items in 
 | Enquiry validation (client and server) | `src/lib/enquiry.ts` |
 | Enquiry API: validation, spam checks, server-side estimate, email | `src/app/api/enquiry/route.ts` |
 | Website configurator | `src/components/configurator/` |
-| Portfolio entries (empty until real projects are approved) | `src/lib/projects.ts` |
+| Portfolio entries (EV Exec, Boonma, FYStay, Alex K Bells: confirmed FY Devs work) | `src/lib/projects.ts` |
+| Browser and phone frames for real screenshots | `src/components/Devices.tsx` |
+| Project screenshots (captured from the live sites) | `public/work/` |
 | Navigation and confirmed site facts | `src/lib/site.ts` |
 | Brand assets (from the supplied logo and icon) | `public/brand/`, `src/app/icon.png`, `src/app/apple-icon.png`, `src/app/favicon.ico` |
 
@@ -547,7 +549,8 @@ This section records the technical decisions made for the first build. Items in 
 - **Enquiries are emailed through Resend** (HTTP API, no SDK). Without configuration, the API returns `503 not_configured` and the forms say plainly that nothing was sent. The configurator offers to copy the brief instead.
 - **Spam protection:** a honeypot field, a minimum completion time and a best-effort per-instance rate limit. Add a shared store or platform firewall rules if abuse appears.
 - **No cookies or analytics.** The privacy notice says so. Update it before adding analytics (§14).
-- **Booking software page** describes only confirmed facts (a driver and operator application developed for an airport taxi business) and routes visitors to a demo request.
+- **Booking software page** names EV Exec as the business the driver and operator software was developed for (confirmed by the owner). No screenshots of the driver or operator applications exist yet; the page shows EV Exec's website and customer booking flow, labelled as such, and routes visitors to a demo request.
+- **Portfolio** descriptions state only what each live site shows. Screenshots were captured from the live sites; recapture them when a site changes significantly.
 
 ### Running locally
 
@@ -583,4 +586,4 @@ npm run build && npm start
 - Configure email delivery and send a test enquiry.
 - Set the production domain.
 - Have the privacy notice reviewed, and add the business's legal identity and contact details. Add terms of service and payment, cancellation and refund terms once those are decided.
-- Add approved portfolio projects and booking software screenshots.
+- Add screenshots of the driver and operator applications, and confirm their feature list.

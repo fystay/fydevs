@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Blocks";
+import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
+import { projects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/metadata";
 import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
 
@@ -83,6 +85,37 @@ export default function WebsitesPage() {
                 <p className="muted">{s.body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--ruled" aria-labelledby="examples-title">
+        <div className="container container--wide">
+          <SectionHead eyebrow="Recent websites" title={<span id="examples-title">Three clients, three identities.</span>} split>
+            <p>
+              The same standards underneath, and a completely different face on top. Each design starts from the
+              business and the people it serves.
+            </p>
+          </SectionHead>
+          <div className="site-strip">
+            {projects
+              .filter((p) => p.kind === "client")
+              .map((p) => (
+                <Link key={p.slug} href={`/work#${p.slug}`}>
+                  <div>
+                    <BrowserFrame
+                      src={p.desktop}
+                      host={p.host}
+                      alt={`The ${p.name} website`}
+                      sizes="(min-width: 48rem) 420px, 90vw"
+                    />
+                  </div>
+                  <p>
+                    <strong>{p.name}</strong>
+                    <span>{p.sector}</span>
+                  </p>
+                </Link>
+              ))}
           </div>
         </div>
       </section>

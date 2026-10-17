@@ -1,13 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PageHero, SectionHead } from "@/components/Blocks";
+import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
 import { pageMetadata } from "@/lib/metadata";
+import { projectBySlug } from "@/lib/projects";
+import evexecBooking from "../../../public/work/evexec-booking.webp";
 
 export const metadata = pageMetadata(
   "/booking-software",
   "Booking software for taxi operators",
-  "A driver and operator application developed for a working airport taxi business. Request a demo to see whether it fits your operation.",
+  "Driver and operator applications developed for EV Exec, an executive airport transfer business. Request a demo to see whether they fit your operation.",
 );
+
+const evexec = projectBySlug("ev-exec")!;
 
 const demoAgenda = [
   ["The current feature set", "A walkthrough of the operator and driver applications as they work today."],
@@ -22,8 +28,8 @@ export default function BookingSoftwarePage() {
     <>
       <PageHero
         eyebrow="Booking software"
-        title="Software for taxi and airport transfer operators."
-        lede="A driver and operator application, developed for a working airport taxi business. If you run a taxi or transfer firm, we'd like to show you how it works."
+        title="Booking software, proven on the road."
+        lede={`Driver and operator applications developed for ${evexec.name}, an executive airport transfer business on the Fylde Coast. If you run a taxi or transfer firm, we'd like to show you how they work.`}
       >
         <div className="btn-row">
           <Link href="/contact?topic=booking-software" className="btn btn--primary">
@@ -38,32 +44,84 @@ export default function BookingSoftwarePage() {
 
       <section className="section inverse">
         <div className="container container--wide">
-          <SectionHead eyebrow="Origin" title="Built inside a real operation, not in the abstract." split>
-            <p>
-              The software was developed for an airport taxi business and shaped by how that business actually runs
-              day to day. That&apos;s the standard we hold it to: it has to work for people doing the job.
-            </p>
-          </SectionHead>
-          <div className="grid-2" style={{ rowGap: "var(--space-7)" }}>
-            <div className="feature">
-              <h3 className="h3">For operators</h3>
+          <div className="split split--media-wide">
+            <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties}>
+              <p className="eyebrow">Origin</p>
+              <h2 className="h2">Built inside a real operation, not in the abstract.</h2>
               <p className="muted">
-                An application for the people who run the business: the office, the controllers and the owners who
-                keep work organised and moving.
+                The software was developed for {evexec.name} and shaped by how a transfer business actually runs day to
+                day. That&apos;s the standard we hold it to: it has to work for the people doing the job.
               </p>
+              <div className="grid-2" style={{ rowGap: "var(--space-6)" }}>
+                <div className="feature">
+                  <h3 className="h3">For operators</h3>
+                  <p className="muted small">
+                    For the people who run the business: the office, the controllers and the owners who keep work
+                    organised and moving.
+                  </p>
+                </div>
+                <div className="feature">
+                  <h3 className="h3">For drivers</h3>
+                  <p className="muted small">
+                    For the people on the road, designed around airport and transfer work rather than a generic job
+                    list.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="feature">
-              <h3 className="h3">For drivers</h3>
+            <figure>
+              <div className="media-panel">
+                <BrowserFrame
+                  src={evexec.desktop}
+                  host={evexec.host}
+                  alt="The EV Exec website: premium airport transfers and private hire"
+                  sizes="(min-width: 64rem) 640px, 90vw"
+                />
+              </div>
+              <figcaption className="media-caption">
+                {evexec.name}, the transfer business the software was developed for. Its website is also our work.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container container--wide">
+          <div className="split">
+            <figure>
+              <div className="media-panel" style={{ background: "#0c1220" }}>
+                <Image
+                  src={evexecBooking}
+                  alt="EV Exec's online booking, step 1 of 3: choose to or from the airport, and one way or return"
+                  sizes="(min-width: 64rem) 520px, 90vw"
+                  placeholder="blur"
+                  style={{ width: "100%", height: "auto", borderRadius: "var(--radius-md)" }}
+                />
+              </div>
+              <figcaption className="media-caption">
+                {evexec.name}&apos;s customer booking flow on evexec.co.uk, designed and built by FY Devs.
+              </figcaption>
+            </figure>
+            <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties}>
+              <p className="eyebrow">The customer side</p>
+              <h2 className="h2">Need a booking website too?</h2>
               <p className="muted">
-                An application for the people on the road, designed around the realities of airport and transfer
-                work rather than a generic job list.
+                We also design the websites customers book through. {evexec.name}&apos;s site takes bookings in three
+                steps (journey, addresses, then trip details including flight numbers, extra stops and returns) and
+                gives customers an account to manage them.
+              </p>
+              <p>
+                <Link href="/work#ev-exec" className="arrow-link">
+                  See the {evexec.name} project <ArrowRight />
+                </Link>
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="fit" className="section">
+      <section id="fit" className="section section--ruled">
         <div className="container container--wide">
           <SectionHead eyebrow="Product or bespoke?" title="Two routes, depending on how you work." />
           <div className="grid-2">
