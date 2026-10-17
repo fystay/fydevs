@@ -53,67 +53,70 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="site-header" data-scrolled={scrolled || open}>
-      <div className="container container--wide site-header__inner">
-        <Link href="/" className="brand" aria-label="FY Devs home">
-          <Logo preload />
-        </Link>
-
-        <nav className="nav-desktop" aria-label="Main">
-          <ul role="list">
-            {primaryNav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="nav-link"
-                  aria-current={isActive(pathname, item.href) ? "page" : undefined}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="header-cta">
-          <Link href="/build" className="btn btn--primary btn--sm">
-            Build your website
+    <>
+      <header className="site-header" data-scrolled={scrolled || open} data-open={open}>
+        <div className="container container--wide site-header__inner">
+          <Link href="/" className="brand" aria-label="FY Devs home">
+            <Logo preload />
           </Link>
+
+          <nav className="nav-desktop" aria-label="Main">
+            <ul role="list">
+              {primaryNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="nav-link"
+                    aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="header-cta">
+            <Link href="/build" className="btn btn--primary btn--sm">
+              Build your website
+            </Link>
+          </div>
+
+          <button
+            ref={toggleRef}
+            type="button"
+            className="menu-toggle"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="visually-hidden">{open ? "Close menu" : "Open menu"}</span>
+            <span className="menu-toggle__bars" aria-hidden="true">
+              <span />
+              <span />
+            </span>
+          </button>
         </div>
+      </header>
 
-        <button
-          ref={toggleRef}
-          type="button"
-          className="menu-toggle"
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="visually-hidden">{open ? "Close menu" : "Open menu"}</span>
-          <span className="menu-toggle__bars" aria-hidden="true">
-            <span />
-            <span />
-          </span>
-        </button>
-      </div>
-
-      <div id="mobile-menu" ref={menuRef} className="mobile-menu" hidden={!open}>
-        <nav aria-label="Main mobile">
-          <ul role="list">
-            {primaryNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined}>
-                  {item.label}
-                  <ArrowRight size={18} />
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <Link href="/build" className="btn btn--primary">
-            Build your website
-          </Link>
-        </nav>
-      </div>
-    </header>
+        {/* Rendered outside <header>: Safari sizes fixed children of a backdrop-filtered parent to that parent. */}
+        <div id="mobile-menu" ref={menuRef} className="mobile-menu" hidden={!open}>
+          <nav aria-label="Main mobile">
+            <ul role="list">
+              {primaryNav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined}>
+                    {item.label}
+                    <ArrowRight size={18} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link href="/build" className="btn btn--primary">
+              Build your website
+            </Link>
+          </nav>
+        </div>
+    </>
   );
 }
