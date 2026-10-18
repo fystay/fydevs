@@ -660,53 +660,325 @@ main {
   transform: translateY(-4.25px) rotate(-45deg);
 }
 
+/* ---------- Menus (Apple-style) ---------- */
+
+/* Shared menu contents: large primary links, then small grouped links. */
+.menu__primary a {
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.menu__title {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.menu__group a {
+  display: inline-block;
+  padding-block: 0.3rem;
+  font-size: var(--text-sm);
+  font-weight: 550;
+  text-decoration: none;
+  color: var(--color-ink-2);
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.menu a:hover,
+.menu a:focus-visible {
+  color: var(--color-ink);
+}
+
+/* Desktop: chevron toggles for keyboard users, shown on focus (as on apple.com). */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-chevron {
+  position: absolute;
+  right: -0.55rem;
+  bottom: -0.85rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-ink-2);
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.nav-chevron:focus-visible,
+.nav-chevron[aria-expanded="true"]:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-chevron[aria-expanded="true"] svg {
+  transform: rotate(180deg) !important;
+}
+
+.nav-link[data-active] {
+  color: var(--color-ink);
+}
+
+/* Desktop flyout: drops from the bar, height animated with grid rows. */
+.flyout {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-rows: 0fr;
+  background: var(--color-bg);
+  border-bottom: 1px solid transparent;
+  transition:
+    grid-template-rows 420ms cubic-bezier(0.32, 0.72, 0, 1),
+    border-color 300ms var(--ease);
+}
+
+.flyout[data-open="true"] {
+  grid-template-rows: 1fr;
+  border-bottom-color: var(--color-line);
+}
+
+.flyout__clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.flyout__inner {
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.menu--flyout {
+  display: flex;
+  gap: var(--space-9);
+}
+
+.menu--flyout .menu__primary {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 18rem;
+}
+
+.menu--flyout .menu__primary a {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.menu--flyout .menu__group {
+  padding-top: 0.35rem;
+}
+
+.menu--flyout .menu__group ul {
+  display: grid;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flyout[data-open="true"] .menu__primary li,
+  .flyout[data-open="true"] .menu__group {
+    animation: menu-item-in 360ms var(--ease) both;
+    animation-delay: calc(80ms + var(--i, 0) * 22ms);
+  }
+}
+
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* The page blurs and dims behind an open flyout. */
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(247 245 239 / 0.55);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 320ms var(--ease),
+    visibility 0s linear 320ms;
+}
+
+.nav-backdrop[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 320ms var(--ease);
+}
+
+/* Mobile menu: full screen, large links cascading in, submenus sliding over. */
 .mobile-menu {
   position: fixed;
   inset: var(--header-h) 0 0 0;
   z-index: 49;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--color-bg);
-  padding: var(--space-5) var(--gutter) var(--space-8);
-  animation: menu-in var(--duration) var(--ease);
 }
 
 .mobile-menu[hidden] {
   display: none;
 }
 
-.mobile-menu ul {
-  border-top: 1px solid var(--color-line);
+.mm-pane {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: var(--space-4) calc(var(--gutter) + var(--space-3)) var(--space-8);
+  transition:
+    transform 480ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 320ms var(--ease);
 }
 
-.mobile-menu li {
-  border-bottom: 1px solid var(--color-line);
+.mm-pane--sub {
+  transform: translateX(100%);
+  opacity: 0;
 }
 
-.mobile-menu a:not(.btn) {
+.mobile-menu[data-sub="true"] .mm-pane--root {
+  transform: translateX(-28%);
+  opacity: 0;
+}
+
+.mobile-menu[data-sub="true"] .mm-pane--sub {
+  transform: none;
+  opacity: 1;
+}
+
+.mm-link {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-4) 0;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  padding: 0.45rem 0;
+  border: 0;
+  background: none;
   font-size: 1.75rem;
-  letter-spacing: -0.015em;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  color: var(--color-ink);
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.mobile-menu a[aria-current="page"] {
-  color: var(--color-accent);
+.mm-link svg {
+  color: var(--color-ink-3);
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease);
 }
 
-.mobile-menu .btn {
+.mm-link:hover svg,
+.mm-link:focus-visible svg {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .mm-link svg {
+    opacity: 1;
+  }
+}
+
+.mm-link[aria-current="page"] {
+  color: var(--color-ink-3);
+}
+
+.mm-cta {
   width: 100%;
-  margin-top: var(--space-6);
+  margin-top: var(--space-7);
 }
 
-@keyframes menu-in {
+.mm-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  margin: 0 0 var(--space-3) calc(var(--space-2) * -1);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  cursor: pointer;
+}
+
+.menu--mobile .menu__primary li {
+  padding: 0.3rem 0;
+}
+
+.menu--mobile .menu__primary a {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.menu--mobile .menu__group {
+  margin-top: var(--space-7);
+}
+
+.menu--mobile .menu__group ul {
+  display: grid;
+}
+
+.menu--mobile .menu__group a {
+  font-size: 1.0625rem;
+  padding-block: 0.45rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mobile-menu:not([hidden]) .mm-pane--root li,
+  .mobile-menu:not([hidden]) .mm-cta {
+    animation: mm-in 520ms cubic-bezier(0.32, 0.72, 0, 1) both;
+    animation-delay: calc(60ms + var(--i, 0) * 32ms);
+  }
+  .mobile-menu[data-sub="true"] .menu--mobile .menu__primary li,
+  .mobile-menu[data-sub="true"] .menu--mobile .menu__group {
+    animation: mm-in 480ms cubic-bezier(0.32, 0.72, 0, 1) both;
+    animation-delay: calc(120ms + var(--i, 0) * 30ms);
+  }
+  .mobile-menu:not([hidden]) {
+    animation: mm-sheet 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+}
+
+@keyframes mm-in {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes mm-sheet {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .flyout,
+  .nav-backdrop {
+    display: none;
   }
 }
 

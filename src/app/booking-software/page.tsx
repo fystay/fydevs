@@ -155,7 +155,7 @@ export default function BookingSoftwarePage() {
         </div>
       </section>
 
-      <section className="section section--ruled">
+      <section id="demo" className="section section--ruled">
         <div className="container container--wide">
           <SectionHead eyebrow="The demo" title="What we'll cover together." split>
             <p>
