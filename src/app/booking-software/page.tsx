@@ -46,7 +46,7 @@ export default function BookingSoftwarePage() {
         <div className="container container--wide">
           <div className="split split--media-wide">
             <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties}>
-              <p className="eyebrow">Origin</p>
+              <p className="eyebrow eyebrow--num">Origin</p>
               <h2 className="h2">Built inside a real operation, not in the abstract.</h2>
               <p className="muted">
                 The software was developed for {evexec.name} and shaped by how a transfer business actually runs day to
@@ -104,7 +104,7 @@ export default function BookingSoftwarePage() {
               </figcaption>
             </figure>
             <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties}>
-              <p className="eyebrow">The customer side</p>
+              <p className="eyebrow eyebrow--num">The customer side</p>
               <h2 className="h2">Need a booking website too?</h2>
               <p className="muted">
                 We also design the websites customers book through. {evexec.name}&apos;s site takes bookings in three

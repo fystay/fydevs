@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import { Geist_Mono, Inter, Newsreader } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { site, siteUrl } from "@/lib/site";
@@ -13,6 +13,8 @@ const newsreader = Newsreader({
   style: ["normal", "italic"],
   axes: ["opsz"],
 });
+
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 const url = siteUrl();
 
@@ -42,7 +44,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={`${inter.variable} ${newsreader.variable}`}>
+    <html lang="en-GB" className={`${inter.variable} ${newsreader.variable} ${mono.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

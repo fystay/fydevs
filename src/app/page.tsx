@@ -42,6 +42,11 @@ export default function HomePage() {
       {/* Hero: a typographic statement over real work */}
       <section className="hero-ed">
         <div className="container container--wide">
+          <ul role="list" className="hero-meta rise">
+            <li>Websites</li>
+            <li>Booking software</li>
+            <li>Bespoke systems</li>
+          </ul>
           <div className="hero-ed__grid">
             <h1 className="display rise">
               Digital experiences, <span className="serif-em">built with intent.</span>
@@ -89,7 +94,7 @@ export default function HomePage() {
           />
         </div>
         <div className="stage-caption">
-          <p>Recent work, every one designed and built from scratch.</p>
+          <p>Fig. 01 — Recent work, each designed and built from scratch</p>
           <ul role="list">
             {projects.map((p) => (
               <li key={p.slug}>
@@ -107,7 +112,7 @@ export default function HomePage() {
             <div className="stack">
               <p className="eyebrow">Selected work</p>
               <h2 id="work-title" className="h2">
-                Four businesses. Four distinct identities.
+                Built for four very different businesses.
               </h2>
             </div>
             <p className="muted">
@@ -146,7 +151,7 @@ export default function HomePage() {
           <div className="section-head">
             <p className="eyebrow">What we do</p>
             <h2 id="services-title" className="h2">
-              Websites for clients. Software that runs businesses.
+              Websites, and the software behind them.
             </h2>
           </div>
           <div className="service-index">
@@ -192,9 +197,9 @@ export default function HomePage() {
       <section className="section inverse product-band" aria-labelledby="software-title">
         <div className="container container--wide product-band__grid">
           <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties}>
-            <p className="eyebrow">Software</p>
+            <p className="eyebrow eyebrow--num">Software</p>
             <h2 id="software-title" className="h2">
-              We build software. Some of it, we run ourselves.
+              Software that runs real operations.
             </h2>
             <p className="lede">
               Our booking software was developed for {evexec.name}, a working airport transfer business. FYStay is
@@ -242,7 +247,7 @@ export default function HomePage() {
             <div className="stack">
               <p className="eyebrow">Approach</p>
               <h2 id="approach-title" className="h2">
-                Scope first. Then craft.
+                How a project runs.
               </h2>
             </div>
             <p className="muted">
@@ -268,7 +273,7 @@ export default function HomePage() {
           <div className="section-head">
             <p className="eyebrow">Pricing</p>
             <h2 id="pricing-title" className="h2">
-              Know the cost before you call.
+              Clear prices, before any call.
             </h2>
           </div>
           <div className="pricing-split">
