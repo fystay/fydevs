@@ -26,6 +26,10 @@ export type Project = {
   location: string;
   /** One line: what the business or product is. */
   summary: string;
+  /** The need the project addressed, phrased from what the business does. No invented history. */
+  challenge: string;
+  /** Our approach, in a sentence or two. */
+  solution: string;
   /** What we built, as visible on the live site. */
   built: string[];
   url: string;
@@ -47,6 +51,10 @@ export const projects: Project[] = [
     location: "Blackpool & Fylde Coast",
     summary:
       "Fixed-price executive transfers to every UK airport in electric vehicles. The business our driver and operator software was developed for.",
+    challenge:
+      "Airport transfer customers want a fixed price and a booking they can trust before they travel, and every job needs capturing accurately, including flight details, extra stops and returns.",
+    solution:
+      "A calm, executive website built around a three-step booking flow, with published fixed prices for every UK airport and customer accounts, alongside driver and operator software developed for the business.",
     built: [
       "Three-step online booking with returns, extra stops and flight details",
       "Customer accounts and booking look-up by reference",
@@ -67,6 +75,10 @@ export const projects: Project[] = [
     sector: "Traditional Thai massage",
     location: "Wallasey, Wirral",
     summary: "An independent Thai massage studio, presented with the warmth and calm of the treatment room.",
+    challenge:
+      "A traditional Thai massage studio wanted its website to feel like the treatment room, and booking to be simple enough that customers never need to create an account.",
+    solution:
+      "A warm, editorial site with clear treatments and prices, a gallery and reviews, and a booking flow where customers simply pick a treatment and a time.",
     built: [
       "Treatments and a clear price list",
       "Online booking: pick a treatment and a time, no account needed",
@@ -88,6 +100,10 @@ export const projects: Project[] = [
     location: "Blackpool & the Fylde Coast",
     summary:
       "Our own platform for independent holiday homes, apartments and guest houses from local hosts, with the full price shown before you book.",
+    challenge:
+      "We wanted to give independent Fylde Coast hosts a local place to list their stays, with the full price shown to guests before they book.",
+    solution:
+      "Our own stays platform, with search by town, dates and guests, local guides for each town, airport transfers that can be added to a booking, and a dashboard for hosts.",
     built: [
       "Stay search by town, dates and guests",
       "Town-by-town local guides and experiences",
@@ -108,6 +124,10 @@ export const projects: Project[] = [
     sector: "Kettlebell coaching",
     location: "Cumbernauld",
     summary: "A kettlebell coach offering group classes, one-to-one sessions and online coaching.",
+    challenge:
+      "A kettlebell coach offering group classes, one-to-one sessions and online coaching needed one place that explains each option and its price, and makes booking straightforward.",
+    solution:
+      "A bold, monochrome site led by training film, with clear pricing for three ways to train and a simple three-step booking explanation.",
     built: [
       "Three ways to train, each with clear pricing",
       "Full-bleed training video hero",

@@ -10,7 +10,7 @@ const fystay = projectBySlug("fystay")!;
 
 export const metadata = pageMetadata(
   "/bespoke-systems",
-  "Bespoke systems",
+  "SaaS & bespoke software",
   "Custom booking platforms, integrations and web applications, scoped carefully and built around the way your business operates.",
 );
 
@@ -45,13 +45,13 @@ export default function BespokeSystemsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Bespoke systems"
-        title="Software shaped around your operation."
+        eyebrow="SaaS & bespoke software"
+        title="SaaS and software, built around how you work."
         lede="When off-the-shelf tools don't fit, we design and build systems around how your business actually works, and agree the scope in writing before you commit."
       >
         <div className="btn-row">
           <Link href="/contact?topic=bespoke" className="btn btn--primary">
-            Discuss a project
+            Build My SaaS
             <ArrowRight />
           </Link>
         </div>
@@ -153,7 +153,7 @@ export default function BespokeSystemsPage() {
         body="A short description of what you do and what isn't working is enough to start."
       >
         <Link href="/contact?topic=bespoke" className="btn btn--primary">
-          Discuss a project
+          Build My SaaS
         </Link>
       </CtaBand>
     </>

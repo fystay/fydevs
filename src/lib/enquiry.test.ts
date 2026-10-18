@@ -23,6 +23,15 @@ describe("validateEnquiry", () => {
       expect(r.ok && r.data.topic).toBe("other");
     }
   });
+  it("requires budget and timeline only when asked to", () => {
+    const r = validateEnquiry({ ...valid, budget: "lots" }, { detailsRequired: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(Object.keys(r.errors).sort()).toEqual(["budget", "timeline"]);
+    const ok = validateEnquiry({ ...valid, budget: "unsure", timeline: "flexible" }, { detailsRequired: true });
+    expect(ok.ok && [ok.data.budget, ok.data.timeline]).toEqual(["unsure", "flexible"]);
+    expect(validateEnquiry(valid).ok).toBe(true);
+  });
+
   it("rejects over-long messages", () => {
     expect(validateEnquiry({ ...valid, message: "x".repeat(5001) }).ok).toBe(false);
   });

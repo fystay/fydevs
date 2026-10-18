@@ -95,11 +95,11 @@ export default function AboutPage() {
       </section>
 
       <CtaBand title="Let's build something you're proud of.">
-        <Link href="/build" className="btn btn--primary">
-          Build your website
+        <Link href="/contact?topic=website" className="btn btn--primary">
+          Start a Project
         </Link>
-        <Link href="/contact" className="btn btn--secondary">
-          Get in touch
+        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
+          Build My SaaS
         </Link>
       </CtaBand>
     </>

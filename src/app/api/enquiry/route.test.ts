@@ -18,6 +18,8 @@ const contact = {
   name: "Ada Lovelace",
   email: "ada@example.com",
   topic: "website",
+  budget: "2k-5k",
+  timeline: "1-3m",
   message: "We'd like a new website.",
   startedAt: Date.now() - 10_000,
 };
@@ -53,6 +55,24 @@ describe("POST /api/enquiry", () => {
     expect(sent.reply_to).toBe("ada@example.com");
     expect(sent.text).toContain("We'd like a new website.");
     expect(sent.html).toBeUndefined();
+    expect(sent.text).toContain("Budget: £2,000 to £5,000");
+    expect(sent.text).toContain("Timeline: Within 1 to 3 months");
+  });
+
+  it("requires budget and timeline on contact enquiries, but not on briefs", async () => {
+    const res = await post({ ...contact, budget: undefined, timeline: "soon" });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(Object.keys(body.fields).sort()).toEqual(["budget", "timeline"]);
+    const brief = await post({
+      ...contact,
+      kind: "brief",
+      budget: undefined,
+      timeline: undefined,
+      message: "",
+      answers: DEFAULT_ANSWERS,
+    });
+    expect(brief.status).toBe(200);
   });
 
   it("recalculates the estimate on the server for briefs", async () => {

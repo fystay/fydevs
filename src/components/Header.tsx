@@ -233,8 +233,8 @@ export function Header() {
           </nav>
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
-            <Link href="/build" className="btn btn--primary btn--sm">
-              Build your website
+            <Link href="/contact?topic=website" className="btn btn--primary btn--sm">
+              Start a Project
             </Link>
           </div>
 
@@ -301,8 +301,8 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <Link href="/build" className="btn btn--primary mm-cta" onClick={closeAll} style={{ "--i": primaryNav.length } as React.CSSProperties}>
-            Build your website
+          <Link href="/contact?topic=website" className="btn btn--primary mm-cta" onClick={closeAll} style={{ "--i": primaryNav.length } as React.CSSProperties}>
+            Start a Project
             <ArrowRight />
           </Link>
         </nav>

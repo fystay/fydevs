@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { LIMITS, MIN_FILL_MS, TOPICS, clean, validateEnquiry } from "@/lib/enquiry";
+import { BUDGETS, LIMITS, MIN_FILL_MS, TIMELINES, TOPICS, clean, validateEnquiry } from "@/lib/enquiry";
 import { mailConfig, sendEnquiryEmail } from "@/lib/mailer";
 import { formatBrief } from "@/lib/brief";
 import { PROJECT_TYPES, parseAnswers } from "@/lib/pricing";
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   const kind = body.kind === "brief" ? "brief" : "contact";
-  const result = validateEnquiry(body, { messageRequired: kind === "contact" });
+  const result = validateEnquiry(body, { messageRequired: kind === "contact", detailsRequired: kind === "contact" });
   if (!result.ok) return reply(422, { error: "Please check the highlighted fields.", fields: result.errors });
   const fields = result.data;
 
@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
     `Name: ${fields.name}`,
     `Email: ${fields.email}`,
     ...(fields.company ? [`Company: ${fields.company}`] : []),
-    `Topic: ${TOPICS[fields.topic]}`,
+    `Project type: ${TOPICS[fields.topic]}`,
+    ...(fields.budget ? [`Budget: ${BUDGETS[fields.budget]}`] : []),
+    ...(fields.timeline ? [`Timeline: ${TIMELINES[fields.timeline]}`] : []),
     "",
   ];
   let subject = `Enquiry from ${fields.name}: ${TOPICS[fields.topic]}`;
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
     lines.push(formatBrief(answers, details), "");
   }
 
-  if (fields.message) lines.push(kind === "brief" ? "ADDITIONAL NOTES" : "MESSAGE", fields.message);
+  if (fields.message) lines.push(kind === "brief" ? "ADDITIONAL NOTES" : "GOALS", fields.message);
 
   const config = mailConfig();
   if (!config) {

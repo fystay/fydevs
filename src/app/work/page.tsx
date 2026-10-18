@@ -18,8 +18,8 @@ export default function WorkPage() {
     <>
       <PageHero
         eyebrow="Our work"
-        title="Every site built for the business it serves."
-        lede="A transfer company, a massage studio, a kettlebell coach and our own holiday platform. Different customers, so different identities, structures and features."
+        title="Case studies."
+        lede="Four live projects: three client websites and our own platform. For each one, the challenge, how we approached it and exactly what we built, with real desktop and mobile screenshots."
       />
 
       <section className="section--tight" style={{ paddingTop: 0 }}>
@@ -63,15 +63,29 @@ export default function WorkPage() {
                     </span>
                   </div>
                   <p className="muted">{p.summary}</p>
-                  <ul role="list" className="checks">
-                    {p.built.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                  <p className="fine">Identity: {p.identity}</p>
+                  <dl className="case">
+                    <div>
+                      <dt>The challenge</dt>
+                      <dd>{p.challenge}</dd>
+                    </div>
+                    <div>
+                      <dt>Our solution</dt>
+                      <dd>{p.solution}</dd>
+                    </div>
+                    <div>
+                      <dt>What we built</dt>
+                      <dd>
+                        <ul role="list" className="checks">
+                          {p.built.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
                   <p>
-                    <a href={p.url} className="arrow-link" target="_blank" rel="noopener noreferrer">
-                      Visit {p.host}
+                    <a href={p.url} className="btn btn--secondary btn--sm" target="_blank" rel="noopener noreferrer">
+                      Visit the live site
                       <ArrowRight />
                       <span className="visually-hidden"> (opens in a new tab)</span>
                     </a>
@@ -89,12 +103,15 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <CtaBand title="Your business, its own website." body="Configure your project for an instant estimate.">
-        <Link href="/build" className="btn btn--primary">
-          Build your website
+      <CtaBand
+        title="Your business could be next."
+        body="Tell us what you need. We reply with honest advice, a clear price and a plan."
+      >
+        <Link href="/contact?topic=website" className="btn btn--primary">
+          Start a Project
         </Link>
-        <Link href="/contact" className="btn btn--secondary">
-          Ask about our work
+        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
+          Build My SaaS
         </Link>
       </CtaBand>
     </>

@@ -224,11 +224,11 @@ export default function WebsitesPage() {
         title="See what your website would cost."
         body="Nine short steps, an instant indicative estimate, and a summary you can send us when you're ready."
       >
-        <Link href="/build" className="btn btn--primary">
-          Build your website
+        <Link href="/contact?topic=website" className="btn btn--primary">
+          Start a Project
         </Link>
-        <Link href="/contact?topic=website" className="btn btn--secondary">
-          Ask a question
+        <Link href="/build" className="btn btn--secondary">
+          Get an instant estimate
         </Link>
       </CtaBand>
     </>

@@ -3,19 +3,82 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { LIMITS, TOPICS, validateEnquiry, type FieldErrors, type Topic } from "@/lib/enquiry";
+import {
+  BUDGETS,
+  LIMITS,
+  TIMELINES,
+  TOPICS,
+  validateEnquiry,
+  type Budget,
+  type FieldErrors,
+  type Timeline,
+  type Topic,
+} from "@/lib/enquiry";
 import { useEnquirySubmit } from "./useEnquirySubmit";
 
 const initialTopic = (value: string | null): Topic =>
   value && Object.prototype.hasOwnProperty.call(TOPICS, value) ? (value as Topic) : "website";
 
+type Fields = {
+  name: string;
+  email: string;
+  topic: Topic;
+  budget: Budget | "";
+  timeline: Timeline | "";
+  message: string;
+  website: string;
+};
+
+function ChipGroup<K extends string>({
+  name,
+  legend,
+  options,
+  value,
+  onChange,
+  error,
+}: {
+  name: string;
+  legend: string;
+  options: Record<K, string>;
+  value: K | "";
+  onChange: (v: K) => void;
+  error?: string;
+}) {
+  return (
+    <fieldset className="field chips" aria-describedby={error ? `contact-${name}-error` : undefined}>
+      <legend>{legend}</legend>
+      <div className="chips__options">
+        {(Object.keys(options) as K[]).map((key) => (
+          <label key={key} className="chip">
+            <input
+              type="radio"
+              name={`contact-${name}`}
+              id={key === Object.keys(options)[0] ? `contact-${name}` : undefined}
+              value={key}
+              checked={value === key}
+              onChange={() => onChange(key)}
+            />
+            <span>{options[key]}</span>
+          </label>
+        ))}
+      </div>
+      {error && (
+        <p id={`contact-${name}-error`} className="field-error">
+          {error}
+        </p>
+      )}
+    </fieldset>
+  );
+}
+
 export function ContactForm() {
   const params = useSearchParams();
-  const [fields, setFields] = useState({
+  const [fields, setFields] = useState<Fields>({
     name: "",
     email: "",
-    company: "",
     topic: initialTopic(params.get("topic")),
+    budget: "",
+    timeline: "",
     message: "",
     website: "",
   });
@@ -23,15 +86,14 @@ export function ContactForm() {
   const [startedAt] = useState(() => Date.now());
   const { state, submit } = useEnquirySubmit();
 
-  const update = (key: keyof typeof fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-    setFields((f) => ({ ...f, [key]: e.target.value }));
+  const set = <K extends keyof Fields>(key: K, value: Fields[K]) => setFields((f) => ({ ...f, [key]: value }));
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const check = validateEnquiry(fields);
+    const check = validateEnquiry(fields, { detailsRequired: true });
     if (!check.ok) {
       setErrors(check.errors);
-      const first = Object.keys(check.errors)[0];
+      const first = (["budget", "timeline", "message", "name", "email"] as const).find((k) => check.errors[k]);
       event.currentTarget.querySelector<HTMLElement>(`#contact-${first}`)?.focus();
       return;
     }
@@ -42,8 +104,8 @@ export function ContactForm() {
   if (state.status === "success") {
     return (
       <div className="form-status form-status--success" role="status">
-        <strong>Thank you. Your message has been sent.</strong>
-        We&apos;ll reply to {fields.email} as soon as we can.
+        <strong>Thank you. Your enquiry has been sent.</strong>
+        We&apos;ll reply to {fields.email} with next steps.
       </div>
     );
   }
@@ -53,6 +115,61 @@ export function ContactForm() {
 
   return (
     <form className="form" onSubmit={onSubmit} noValidate>
+      <div className="field">
+        <label htmlFor="contact-topic">What do you need?</label>
+        <select
+          id="contact-topic"
+          className="select"
+          value={fields.topic}
+          onChange={(e) => set("topic", e.target.value as Topic)}
+        >
+          {(Object.keys(TOPICS) as Topic[]).map((t) => (
+            <option key={t} value={t}>
+              {TOPICS[t]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <ChipGroup
+        name="budget"
+        legend="Budget"
+        options={BUDGETS}
+        value={fields.budget}
+        onChange={(v) => set("budget", v)}
+        error={allErrors.budget}
+      />
+
+      <ChipGroup
+        name="timeline"
+        legend="Timeline"
+        options={TIMELINES}
+        value={fields.timeline}
+        onChange={(v) => set("timeline", v)}
+        error={allErrors.timeline}
+      />
+
+      <div className="field">
+        <label htmlFor="contact-message">What are your goals?</label>
+        <textarea
+          id="contact-message"
+          className="textarea"
+          rows={5}
+          required
+          maxLength={LIMITS.message}
+          placeholder="For example: more enquiries from local customers, online bookings, or replacing a spreadsheet with proper software."
+          value={fields.message}
+          onChange={(e) => set("message", e.target.value)}
+          aria-invalid={allErrors.message ? true : undefined}
+          aria-describedby={describe("message")}
+        />
+        {allErrors.message && (
+          <p id="contact-message-error" className="field-error">
+            {allErrors.message}
+          </p>
+        )}
+      </div>
+
       <div className="form-row">
         <div className="field">
           <label htmlFor="contact-name">Your name</label>
@@ -63,7 +180,7 @@ export function ContactForm() {
             required
             maxLength={LIMITS.name}
             value={fields.name}
-            onChange={update("name")}
+            onChange={(e) => set("name", e.target.value)}
             aria-invalid={allErrors.name ? true : undefined}
             aria-describedby={describe("name")}
           />
@@ -83,7 +200,7 @@ export function ContactForm() {
             required
             maxLength={LIMITS.email}
             value={fields.email}
-            onChange={update("email")}
+            onChange={(e) => set("email", e.target.value)}
             aria-invalid={allErrors.email ? true : undefined}
             aria-describedby={describe("email")}
           />
@@ -94,59 +211,22 @@ export function ContactForm() {
           )}
         </div>
       </div>
-      <div className="form-row">
-        <div className="field">
-          <label htmlFor="contact-company">
-            Business name <span className="optional">(optional)</span>
-          </label>
-          <input
-            id="contact-company"
-            className="input"
-            autoComplete="organization"
-            maxLength={LIMITS.company}
-            value={fields.company}
-            onChange={update("company")}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="contact-topic">What&apos;s it about?</label>
-          <select id="contact-topic" className="select" value={fields.topic} onChange={update("topic")}>
-            {(Object.keys(TOPICS) as Topic[]).map((t) => (
-              <option key={t} value={t}>
-                {TOPICS[t]}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div className="field">
-        <label htmlFor="contact-message">Message</label>
-        <textarea
-          id="contact-message"
-          className="textarea"
-          rows={6}
-          required
-          maxLength={LIMITS.message}
-          value={fields.message}
-          onChange={update("message")}
-          aria-invalid={allErrors.message ? true : undefined}
-          aria-describedby={describe("message")}
-        />
-        {allErrors.message && (
-          <p id="contact-message-error" className="field-error">
-            {allErrors.message}
-          </p>
-        )}
-      </div>
+
       <div className="hp-field" aria-hidden="true">
         <label htmlFor="contact-website">Leave this field empty</label>
-        <input id="contact-website" tabIndex={-1} autoComplete="off" value={fields.website} onChange={update("website")} />
+        <input
+          id="contact-website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={fields.website}
+          onChange={(e) => set("website", e.target.value)}
+        />
       </div>
 
       <div aria-live="polite">
         {(state.status === "error" || state.status === "not_configured") && (
           <p className="form-status form-status--error" role="alert">
-            {state.status === "not_configured" && <strong>Your message has not been sent.</strong>}
+            {state.status === "not_configured" && <strong>Your enquiry has not been sent.</strong>}
             {state.message}
           </p>
         )}
@@ -157,7 +237,7 @@ export function ContactForm() {
       </p>
       <div className="btn-row">
         <button type="submit" className="btn btn--primary" disabled={state.status === "submitting"}>
-          {state.status === "submitting" ? "Sending…" : "Send message"}
+          {state.status === "submitting" ? "Sending…" : fields.topic === "bespoke" ? "Build My SaaS" : "Start a Project"}
         </button>
       </div>
     </form>

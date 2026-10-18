@@ -70,8 +70,8 @@ export const primaryNav: NavItem[] = [
     menu: {
       primary: [
         { href: "/websites", label: "Explore websites" },
-        { href: "/build", label: "Build your website" },
-        { href: "/websites#packages", label: "Packages" },
+        { href: "/build", label: "Instant estimate" },
+        { href: "/websites#packages", label: "Packages & prices" },
         { href: "/websites#care", label: "Hosting & care" },
       ],
       groups: [
@@ -87,7 +87,7 @@ export const primaryNav: NavItem[] = [
           title: "Get started",
           links: [
             { href: "/build", label: "Instant estimate" },
-            { href: "/contact?topic=website", label: "Ask a question" },
+            { href: "/contact?topic=website", label: "Start a Project" },
           ],
         },
       ],
@@ -115,11 +115,11 @@ export const primaryNav: NavItem[] = [
   },
   {
     href: "/bespoke-systems",
-    label: "Bespoke systems",
+    label: "SaaS & software",
     menu: {
       primary: [
-        { href: "/bespoke-systems", label: "Explore bespoke systems" },
-        { href: "/contact?topic=bespoke", label: "Discuss a project" },
+        { href: "/bespoke-systems", label: "SaaS & bespoke software" },
+        { href: "/contact?topic=bespoke", label: "Build My SaaS" },
       ],
       groups: [
         {
@@ -141,24 +141,26 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
   {
     title: "Websites",
     links: [
-      { href: "/websites", label: "Services & packages" },
-      { href: "/build", label: "Build your website" },
+      { href: "/websites", label: "Web design" },
+      { href: "/websites#packages", label: "Packages & prices" },
+      { href: "/build", label: "Instant estimate" },
       { href: "/websites#care", label: "Hosting & care" },
-      { href: "/work", label: "Our work" },
     ],
   },
   {
     title: "Software",
     links: [
+      { href: "/bespoke-systems", label: "SaaS & bespoke software" },
       { href: "/booking-software", label: "Booking software" },
-      { href: "/bespoke-systems", label: "Bespoke systems" },
+      { href: "/work", label: "Case studies" },
     ],
   },
   {
     title: "Company",
     links: [
       { href: "/about", label: "About" },
-      { href: "/contact", label: "Contact" },
+      { href: "/#faq", label: "FAQ" },
+      { href: "/contact", label: "Start a Project" },
       { href: "/privacy", label: "Privacy" },
     ],
   },

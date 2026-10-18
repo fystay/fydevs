@@ -533,10 +533,11 @@ This section records the technical decisions made for the first build. Items in 
 | --- | --- |
 | Pricing rules, packages, care plans (single source of truth) | `src/lib/pricing.ts` |
 | Brief formatting shared by the summary screen and the email | `src/lib/brief.ts` |
-| Enquiry validation (client and server) | `src/lib/enquiry.ts` |
+| Enquiry validation and form options: project type, budget, timeline (client and server) | `src/lib/enquiry.ts` |
+| FAQ answers (only state what the site already commits to) | `src/lib/faq.ts` |
 | Enquiry API: validation, spam checks, server-side estimate, email | `src/app/api/enquiry/route.ts` |
 | Website configurator | `src/components/configurator/` |
-| Portfolio entries (EV Exec, Boonma, FYStay, Alex K Bells: confirmed FY Devs work) | `src/lib/projects.ts` |
+| Case studies: challenge, solution and what was built (EV Exec, Boonma, FYStay, Alex K Bells) | `src/lib/projects.ts` |
 | Browser and phone frames for real screenshots | `src/components/Devices.tsx` |
 | Project screenshots (captured from the live sites) | `public/work/` |
 | Navigation and confirmed site facts | `src/lib/site.ts` |
@@ -581,6 +582,9 @@ npm run build && npm start
 | `ENQUIRY_FROM_EMAIL` | Server-only. Sender on a domain verified in Resend. |
 
 ### Before launch
+
+- Review the case-study wording in `src/lib/projects.ts` (challenge and solution are framed from each live site, not from client interviews) and the FAQ answers in `src/lib/faq.ts`, especially payments and ownership.
+- Add genuine client testimonials, with permission, if you have them. None are shown, so none are invented.
 
 - Confirm package, care-plan and estimator prices and VAT treatment.
 - Configure email delivery and send a test enquiry.

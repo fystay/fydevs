@@ -24,7 +24,8 @@ export function Reveal() {
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
+          // Reveal on entry, and also anything already scrolled past (e.g. after an anchor jump).
+          if (entry.isIntersecting || entry.boundingClientRect.bottom < 0) {
             entry.target.classList.add("is-in");
             io.unobserve(entry.target);
           }

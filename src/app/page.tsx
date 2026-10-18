@@ -1,105 +1,77 @@
 import Link from "next/link";
-import { ArrowLink, CtaBand, PricingNotice } from "@/components/Blocks";
+import { CtaBand, PricingNotice } from "@/components/Blocks";
+import { Faq } from "@/components/Faq";
 import { ArrowRight } from "@/components/Icons";
-import { QuickEstimate } from "@/components/estimate/QuickEstimate";
-import { HoverList, type HoverItem } from "@/components/interactive/HoverList";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { Tilt } from "@/components/interactive/Tilt";
 import { WorkCarousel } from "@/components/interactive/WorkCarousel";
-import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
+import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
-import evexecBooking from "../../public/work/evexec-booking.webp";
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
-const alex = projectBySlug("alex-k-bells")!;
 const fystay = projectBySlug("fystay")!;
 
-const services: HoverItem[] = [
-  {
-    title: "Bespoke websites",
-    body: "Designed and hand-built around your brand, fast and accessible by default.",
-    href: "/websites",
-    image: boonma.desktop,
-    caption: "Boonma / boonma.vercel.app",
-  },
-  {
-    title: "Identity for the web",
-    body: "Type, colour and layout chosen for your customers, not a theme.",
-    href: "/work#alex-k-bells",
-    image: alex.desktop,
-    caption: "Alex K Bells / alexkbells.vercel.app",
-  },
-  {
-    title: "Online booking",
-    body: "Quotes, bookings and payments built into the site where they earn their place.",
-    href: "/websites",
-    image: evexecBooking,
-    caption: "EV Exec / three-step booking",
-  },
-  {
-    title: "Booking software",
-    body: "Driver and operator applications, developed for a working transfer business.",
-    href: "/booking-software",
-    image: evexec.desktop,
-    caption: "EV Exec / evexec.co.uk",
-  },
-  {
-    title: "Platforms",
-    body: "Products like FYStay, which we design, build and run ourselves.",
-    href: "/work#fystay",
-    image: fystay.desktop,
-    caption: "FYStay / fystay.co.uk",
-  },
-  {
-    title: "Bespoke systems",
-    body: "Custom booking platforms, integrations and internal tools.",
-    href: "/bespoke-systems",
-    image: fystay.mobile,
-    caption: "FYStay / stay search on mobile",
-  },
+const webBenefits = [
+  ["Designed for your customers", "A bespoke design built around your brand and the people you sell to, never a reskinned template."],
+  ["Fast on every phone", "Hand-built, accessible pages that load quickly and work beautifully on mobile."],
+  ["Built to win enquiries", "Clear calls to action, enquiry forms, and online booking or payments where they help."],
+  ["Easy to look after", "Optional content management, hosting and care, so your site stays secure and up to date."],
 ];
 
-const steps = [
-  ["Configure", "Answer a few questions and see an indicative price in minutes."],
-  ["Confirm scope", "We agree deliverables, assumptions and the price in writing."],
-  ["Design", "A visual direction built around your brand, refined over agreed rounds."],
-  ["Build & test", "Responsive development, tested across devices, browsers and keyboards."],
-  ["Launch & care", "We put it live and, if you choose, look after it afterwards."],
+const saasBenefits = [
+  ["Built around your workflow", "We learn how your team works today and design the software around it, not the other way round."],
+  ["Proven in a real operation", `Our driver and operator software was developed for ${evexec.name}, a working airport transfer business.`],
+  ["Products we run ourselves", "FYStay, our holiday stays platform, is designed, built and operated by FY Devs."],
+  ["Scoped before you commit", "A written scope, fixed price and payment schedule before any work begins."],
+];
+
+const process = [
+  ["Enquiry", "Tell us what you need using the short form or the instant estimate. We reply by email."],
+  ["Discovery call", "A conversation about your goals, your customers and what success looks like."],
+  ["Proposal & quote", "A written scope, fixed price, payment schedule and timeline for you to approve."],
+  ["Design", "We design your key pages and refine them with you over the agreed revision rounds."],
+  ["Build & test", "We build, then test on phones, tablets and desktops, with a keyboard and a screen reader."],
+  ["Launch & support", "We put it live, hand everything over, and support you afterwards if you choose a care plan."],
 ];
 
 const packageOrder: PackageId[] = ["essential", "professional", "premium"];
+const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
+const planOrder: CarePlan[] = ["hosting", "care", "carePlus"];
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero: a typographic statement over real, interactive work */}
+      {/* Hero: what we build, and why it matters */}
       <section className="hero-ed">
         <div className="container container--wide">
           <ul role="list" className="hero-meta rise">
-            <li>Websites</li>
+            <li>Web design</li>
+            <li>SaaS development</li>
             <li>Booking software</li>
-            <li>Bespoke systems</li>
           </ul>
           <div className="hero-ed__grid">
             <h1 className="display rise">
-              Digital experiences, <span className="serif-em">built with intent.</span>
+              Websites and software <span className="serif-em">that grow your business.</span>
             </h1>
             <div className="hero-ed__aside rise" style={{ "--i": 1 } as React.CSSProperties}>
               <p className="lede">
-                FY Devs is an independent studio designing and building bespoke websites, booking software and
-                digital systems for businesses that care how they work and how they&apos;re seen.
+                We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
+                software that saves your team time. Published prices, no templates, and real work you can visit.
               </p>
               <div className="btn-row">
-                <Link href="/build" className="btn btn--primary">
-                  Build your website
+                <Link href="/contact?topic=website" className="btn btn--primary">
+                  Start a Project
                   <ArrowRight />
                 </Link>
-                <Link href="/work" className="btn btn--secondary">
-                  See our work
+                <Link href="/contact?topic=bespoke" className="btn btn--secondary">
+                  Build My SaaS
                 </Link>
               </div>
+              <p className="hero-note">
+                Or <Link href="/build">get an instant website estimate</Link> in two minutes.
+              </p>
             </div>
           </div>
         </div>
@@ -109,20 +81,149 @@ export default function HomePage() {
         <ShowcaseStage items={projects} />
       </section>
 
-      {/* Selected work: a swipeable, full-bleed carousel */}
+      {/* Proof: facts anyone can check */}
+      <section className="proof" aria-label="At a glance">
+        <div className="container container--wide">
+          <ul role="list" className="proof__list">
+            <li>
+              <strong>4</strong>
+              <span>live projects you can visit</span>
+            </li>
+            <li>
+              <strong>{formatGBP(PACKAGES.essential.from)}</strong>
+              <span>websites from, prices published</span>
+            </li>
+            <li>
+              <strong>0</strong>
+              <span>templates, every design is bespoke</span>
+            </li>
+            <li>
+              <strong>2</strong>
+              <span>software products designed and built</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Web design */}
+      <section id="web-design" className="section" aria-labelledby="web-title">
+        <div className="container container--wide split split--media-wide service-split">
+          <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
+            <p className="eyebrow eyebrow--num">Web design & development</p>
+            <h2 id="web-title" className="h2">
+              A website that brings you customers.
+            </h2>
+            <p className="lede">
+              Bespoke websites designed around your brand and built to turn visitors into enquiries, bookings and
+              sales.
+            </p>
+            <ul role="list" className="benefits">
+              {webBenefits.map(([title, body]) => (
+                <li key={title}>
+                  <strong>{title}</strong>
+                  <span>{body}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="btn-row">
+              <Link href="/contact?topic=website" className="btn btn--primary">
+                Start a Project
+                <ArrowRight />
+              </Link>
+              <Link href="#pricing" className="btn btn--secondary">
+                See prices
+              </Link>
+            </div>
+          </div>
+          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+            <Tilt max={4}>
+              <Link href="/work#boonma" className="media-panel scroll-trigger" style={{ display: "block" }}>
+                <ScrollShot
+                  src={boonma.page}
+                  host={boonma.host}
+                  alt="The Boonma website, designed and built by FY Devs"
+                  sizes="(min-width: 64rem) 640px, 90vw"
+                />
+              </Link>
+            </Tilt>
+            <p className="media-caption">
+              Boonma, a client website. <span className="on-hover">Hover to scroll the full page.</span>
+              <span className="on-touch">Scrolling the full page.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SaaS */}
+      <section id="saas" className="section inverse" aria-labelledby="saas-title">
+        <div className="container container--wide split split--media-wide service-split">
+          <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
+            <p className="eyebrow eyebrow--num">SaaS & software development</p>
+            <h2 id="saas-title" className="h2">
+              Software that runs your business.
+            </h2>
+            <p className="lede">
+              Booking systems, customer portals and web applications built around how you work. We run software of
+              our own, so we know what it takes.
+            </p>
+            <ul role="list" className="benefits">
+              {saasBenefits.map(([title, body]) => (
+                <li key={title}>
+                  <strong>{title}</strong>
+                  <span>{body}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="btn-row">
+              <Link href="/contact?topic=bespoke" className="btn btn--primary">
+                Build My SaaS
+                <ArrowRight />
+              </Link>
+              <Link href="/booking-software" className="btn btn--secondary">
+                Booking software demo
+              </Link>
+            </div>
+          </div>
+          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+            <Tilt max={4}>
+              <Link href="/work#fystay" className="media-panel scroll-trigger" style={{ display: "block" }}>
+                <ScrollShot
+                  src={fystay.page}
+                  host={fystay.host}
+                  alt="FYStay, the holiday stays platform built and run by FY Devs"
+                  sizes="(min-width: 64rem) 640px, 90vw"
+                />
+              </Link>
+            </Tilt>
+            <p className="media-caption">
+              FYStay, our own platform. <span className="on-hover">Hover to scroll the full page.</span>
+              <span className="on-touch">Scrolling the full page.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Case studies */}
       <section className="section" aria-labelledby="work-title">
         <div className="container container--wide">
           <div className="section-head section-head--split" data-reveal>
             <div className="stack">
-              <p className="eyebrow">Selected work</p>
+              <p className="eyebrow">Case studies</p>
               <h2 id="work-title" className="h2">
-                Built for four very different businesses.
+                Real projects, live today.
               </h2>
             </div>
-            <p className="muted">
-              A transfer company, a massage studio, a coach and our own holiday platform, none of them sharing a
-              template. Swipe through, and watch each site scroll.
-            </p>
+            <div className="stack" style={{ "--stack": "var(--space-4)" } as React.CSSProperties}>
+              <p className="muted">
+                Three client websites and our own platform. Swipe through, then read the challenge, our solution and
+                what we built for each.
+              </p>
+              <p>
+                <Link href="/work" className="arrow-link">
+                  Read the case studies <ArrowRight />
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
         <div data-reveal>
@@ -130,100 +231,118 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services: hover rows with live previews */}
-      <section className="section section--ruled" aria-labelledby="services-title">
+      {/* Pricing */}
+      <section id="pricing" className="section section--ruled" aria-labelledby="pricing-title">
         <div className="container container--wide">
           <div className="section-head section-head--split" data-reveal>
             <div className="stack">
-              <p className="eyebrow">What we do</p>
-              <h2 id="services-title" className="h2">
-                Websites, and the software behind them.
-              </h2>
-            </div>
-            <p className="muted">From a polished marketing site to the systems a business runs on each day.</p>
-          </div>
-          <div data-reveal>
-            <HoverList items={services} />
-          </div>
-        </div>
-      </section>
-
-      {/* Software: dark product band */}
-      <section className="section inverse product-band" aria-labelledby="software-title">
-        <div className="container container--wide product-band__grid">
-          <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties} data-reveal>
-            <p className="eyebrow eyebrow--num">Software</p>
-            <h2 id="software-title" className="h2">
-              Software that runs real operations.
-            </h2>
-            <p className="lede">
-              Our booking software was developed for {evexec.name}, a working airport transfer business. FYStay is
-              our own platform for holiday stays on the Fylde Coast.
-            </p>
-            <ul role="list" className="product-list">
-              <li>
-                <Link href="/booking-software">
-                  <strong>Booking software</strong>
-                  <span>Driver and operator applications for taxi and transfer firms.</span>
-                  <ArrowRight size={18} />
-                </Link>
-              </li>
-              <li>
-                <Link href="/work#fystay">
-                  <strong>FYStay</strong>
-                  <span>Holiday homes and guest houses from local Fylde Coast hosts.</span>
-                  <ArrowRight size={18} />
-                </Link>
-              </li>
-              <li>
-                <Link href="/bespoke-systems">
-                  <strong>Bespoke systems</strong>
-                  <span>Booking platforms and tools shaped around your operation.</span>
-                  <ArrowRight size={18} />
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-            <Tilt max={4}>
-              <a
-                href={fystay.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="media-panel scroll-trigger"
-                style={{ display: "block" }}
-              >
-                <ScrollShot
-                  src={fystay.page}
-                  host={fystay.host}
-                  alt="The FYStay holiday stays platform. Hover to scroll the page."
-                  sizes="(min-width: 64rem) 640px, 90vw"
-                />
-                <span className="visually-hidden">Visit fystay.co.uk (opens in a new tab)</span>
-              </a>
-            </Tilt>
-            <p className="media-caption">Fig. 02 — FYStay. Hover to scroll the live page.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Approach: a sequence of steps */}
-      <section className="section" aria-labelledby="approach-title">
-        <div className="container container--wide">
-          <div className="section-head section-head--split" data-reveal>
-            <div className="stack">
-              <p className="eyebrow">Approach</p>
-              <h2 id="approach-title" className="h2">
-                How a project runs.
+              <p className="eyebrow">Pricing</p>
+              <h2 id="pricing-title" className="h2">
+                Clear starting prices.
               </h2>
             </div>
             <p className="muted">
-              Agency projects are often slow to quote and vague about cost. We work the other way round: clear
-              choices, visible prices and a scope agreed in writing before any commitment.
+              Every website is bespoke, so these are starting points. Your exact price is confirmed in writing before
+              you commit.
+            </p>
+          </div>
+
+          <div className="plans">
+            {packageOrder.map((id, i) => {
+              const pkg = PACKAGES[id];
+              return (
+                <article
+                  key={id}
+                  className={`plan${id === "professional" ? " plan--featured" : ""}`}
+                  data-reveal
+                  style={{ "--d": i } as React.CSSProperties}
+                >
+                  <h3 className="plan__name">{pkg.name}</h3>
+                  <p className="plan__summary">{pkg.summary}</p>
+                  <p className="plan__price">
+                    <span>from</span> {formatGBP(pkg.from)}
+                  </p>
+                  <ul role="list" className="checks">
+                    {pkg.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={`/build?pages=${packagePages[id]}`}
+                    className={`btn ${id === "professional" ? "btn--primary" : "btn--secondary"} plan__cta`}
+                  >
+                    Start a Project
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="plan-wide" data-reveal>
+            <div>
+              <h3 className="plan__name">SaaS & bespoke software</h3>
+              <p className="plan__summary">
+                Priced after a scoping conversation. You receive a written scope, fixed price and payment schedule
+                before any commitment.
+              </p>
+            </div>
+            <p className="plan__price">Custom quote</p>
+            <Link href="/contact?topic=bespoke" className="btn btn--primary">
+              Build My SaaS
+            </Link>
+          </div>
+
+          <div className="mt-6">
+            <PricingNotice />
+          </div>
+
+          {/* Ongoing services */}
+          <div id="ongoing" className="ongoing" data-reveal>
+            <div className="ongoing__intro">
+              <h3 className="h3">After launch: hosting, care and future development</h3>
+              <p className="muted small">
+                Monthly plans are optional and always priced separately from your build. New features and larger
+                improvements are quoted as separate work, or covered by the hours in Care Plus.
+              </p>
+            </div>
+            <ul role="list" className="ongoing__plans">
+              {planOrder.map((id) => {
+                const plan = CARE_PLANS[id];
+                return (
+                  <li key={id}>
+                    <p className="ongoing__name">
+                      {plan.label}
+                      <span>{formatGBP(plan.monthly)}/mo</span>
+                    </p>
+                    <ul role="list" className="checks">
+                      {plan.includes.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Process */}
+      <section id="process" className="section" aria-labelledby="process-title">
+        <div className="container container--wide">
+          <div className="section-head section-head--split" data-reveal>
+            <div className="stack">
+              <p className="eyebrow">Process</p>
+              <h2 id="process-title" className="h2">
+                From first message to launch.
+              </h2>
+            </div>
+            <p className="muted">
+              Six clear stages, with nothing to pay until you&apos;ve approved a written scope and price.
             </p>
           </div>
           <ol role="list" className="steps">
-            {steps.map(([title, body], i) => (
+            {process.map(([title, body], i) => (
               <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
                 <h3>{title}</h3>
                 <p>{body}</p>
@@ -233,57 +352,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="section section--ruled" aria-labelledby="pricing-title">
-        <div className="container container--wide">
+      {/* FAQ */}
+      <section id="faq" className="section section--ruled" aria-labelledby="faq-title">
+        <div className="container container--wide faq-layout">
           <div className="section-head" data-reveal>
-            <p className="eyebrow">Pricing</p>
-            <h2 id="pricing-title" className="h2">
-              Clear prices, before any call.
+            <p className="eyebrow">FAQ</p>
+            <h2 id="faq-title" className="h2">
+              Questions, answered.
             </h2>
+            <p className="muted">
+              Anything else? <Link href="/contact?topic=other">Ask us directly</Link>.
+            </p>
           </div>
-          <div className="pricing-split">
-            <div data-reveal>
-              <ul role="list" className="price-rows">
-                {packageOrder.map((id) => {
-                  const pkg = PACKAGES[id];
-                  return (
-                    <li key={id}>
-                      <h3>{pkg.name}</h3>
-                      <span className="price">
-                        <small>from</small>
-                        {formatGBP(pkg.from)}
-                      </span>
-                      <p>
-                        {pkg.summary} {pkg.includes[0]}.
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="mt-6" style={{ display: "grid", gap: "var(--space-5)" }}>
-                <PricingNotice />
-                <p>
-                  <ArrowLink href="/websites#packages">Compare packages in full</ArrowLink>
-                </p>
-              </div>
-            </div>
-            <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-              <QuickEstimate />
-            </div>
+          <div data-reveal>
+            <Faq />
           </div>
         </div>
       </section>
 
       <CtaBand
-        title="Tell us what you're building."
-        body="Configure a website for an instant estimate, or tell us about software and bespoke systems."
+        title="Ready to start?"
+        body="Tell us your goals, budget and timeline. We'll reply with honest advice and a clear next step."
       >
-        <Link href="/build" className="btn btn--primary">
-          Build your website
+        <Link href="/contact?topic=website" className="btn btn--primary">
+          Start a Project
         </Link>
-        <Link href="/contact" className="btn btn--secondary">
-          Get in touch
+        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
+          Build My SaaS
         </Link>
       </CtaBand>
     </>
