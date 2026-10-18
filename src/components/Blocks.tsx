@@ -48,7 +48,7 @@ export function SectionHead({
   split?: boolean;
 }) {
   return (
-    <div className={`section-head${split ? " section-head--split" : ""}`}>
+    <div className={`section-head${split ? " section-head--split" : ""}`} data-reveal>
       <div className="stack">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h2 className="h2">{title}</h2>
@@ -90,7 +90,7 @@ export function CtaBand({
 }) {
   return (
     <section className="section inverse">
-      <div className="container container--wide cta-band">
+      <div className="container container--wide cta-band" data-reveal>
         <div className="stack">
           <h2 className="h1" style={{ maxWidth: "18ch" }}>
             {title}

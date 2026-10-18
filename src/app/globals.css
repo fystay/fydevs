@@ -1376,7 +1376,7 @@ main {
   .work-row--flip {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   }
-  .work-row--flip .work-row__media {
+  .work-row--flip > .tilt {
     order: 2;
   }
 }
@@ -2044,4 +2044,685 @@ main {
 .build-line li + li::before {
   content: "/";
   color: var(--color-line-strong);
+}
+
+/* ==========================================================================
+   Interaction
+   ========================================================================== */
+
+/* Tilt: content leans towards the cursor, with a soft light following it. */
+.tilt {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  transform: perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 700ms var(--ease);
+}
+
+.tilt[data-tilting] {
+  transition: transform 120ms linear;
+}
+
+.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 0%), rgb(255 255 255 / 0.18), transparent 70%);
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+.tilt[data-tilting]::after {
+  opacity: 1;
+}
+
+/* Scroll-shot: a full page that scrolls inside its browser frame on hover. */
+.scrollshot {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+}
+
+.scrollshot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0%;
+  transition: object-position 1.2s var(--ease);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .scroll-trigger:hover .scrollshot img {
+    object-position: 50% 100%;
+    transition: object-position var(--scroll-dur, 6s) cubic-bezier(0.45, 0, 0.3, 1);
+  }
+}
+
+.scroll-trigger:focus-visible .scrollshot img {
+  object-position: 50% 100%;
+  transition: object-position var(--scroll-dur, 6s) linear;
+}
+
+/* Reveal on scroll (only once Reveal has run; see components/interactive/Reveal). */
+[data-reveal] {
+  transition:
+    opacity 900ms var(--ease),
+    transform 900ms var(--ease);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+
+.js-reveal [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+/* Showcase (homepage hero stage). */
+.showcase__stage {
+  --px: 0;
+  --py: 0;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.showcase__layer {
+  transition: transform 600ms var(--ease);
+}
+
+.showcase__layer--back {
+  transform: translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0);
+}
+
+.showcase__layer--front {
+  transform: translate3d(calc(var(--px) * 22px), calc(var(--py) * 18px), 0);
+}
+
+.showcase__frames {
+  display: grid;
+}
+
+.showcase__frames > img {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: scale(1.025);
+  transition:
+    opacity 700ms var(--ease),
+    transform 1200ms var(--ease);
+}
+
+.showcase__frames > img.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.showcase__bar {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 64rem) {
+  .showcase__bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+}
+
+.showcase__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.showcase__tab {
+  display: grid;
+  gap: 2px;
+  padding: 0 0 var(--space-3);
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-ink-3);
+  transition: color var(--duration) var(--ease);
+}
+
+.showcase__tab:hover,
+.showcase__tab[aria-pressed="true"] {
+  color: var(--color-ink);
+}
+
+.showcase__tab-num {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.showcase__tab-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.showcase__progress {
+  position: relative;
+  height: 2px;
+  margin-top: var(--space-2);
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.showcase__tab[aria-pressed="true"] .showcase__progress {
+  background: var(--color-line-strong);
+}
+
+.showcase__progress span {
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  transform-origin: left;
+  animation: progress linear forwards;
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase__progress span {
+    animation: none;
+    transform: none;
+  }
+}
+
+.showcase__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-2);
+}
+
+.showcase__caption {
+  min-width: 12rem;
+}
+
+.showcase__link {
+  color: var(--color-ink);
+  text-underline-offset: 0.25em;
+}
+
+.showcase__pause {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.showcase__pause:hover {
+  border-color: var(--color-ink);
+}
+
+/* Carousel: a full-bleed, swipeable row of projects. */
+.carousel .carousel__track {
+  --edge: max(var(--gutter), calc((100% - var(--width-wide)) / 2));
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(86%, 26rem);
+  gap: var(--space-4);
+  padding: var(--space-3) var(--edge) var(--space-6);
+  margin: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--edge);
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.carousel .carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel .carousel__track[data-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.carousel .carousel__track[data-dragging] * {
+  pointer-events: none;
+}
+
+.carousel .carousel__track:focus-visible {
+  outline-offset: -2px;
+}
+
+@media (min-width: 48rem) {
+  .carousel .carousel__track {
+    grid-auto-columns: min(60%, 36rem);
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 80rem) {
+  .carousel .carousel__track {
+    grid-auto-columns: 40rem;
+  }
+}
+
+.carousel__item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-width: 0;
+}
+
+.carousel__card {
+  display: grid;
+  gap: var(--space-4);
+  padding: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+  text-decoration: none;
+  -webkit-user-drag: none;
+}
+
+.carousel__card img {
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.carousel__meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--space-4);
+  align-items: center;
+  padding: 0 var(--space-1) var(--space-1);
+}
+
+.carousel__name {
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.carousel__sector {
+  grid-column: 1;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.carousel__sector span::before {
+  content: " / ";
+}
+
+.carousel__go {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: var(--color-inverse-ink);
+  transform: scale(0.85);
+  opacity: 0.85;
+  transition:
+    transform var(--duration) var(--ease),
+    opacity var(--duration) var(--ease);
+}
+
+.carousel__card:hover .carousel__go,
+.carousel__card:focus-visible .carousel__go {
+  transform: scale(1) rotate(-45deg);
+  opacity: 1;
+}
+
+.carousel__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.carousel__count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.carousel__count span {
+  color: var(--color-ink);
+}
+
+.carousel__dots {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.carousel__dots span {
+  height: 2px;
+  flex: 0 0 1.5rem;
+  background: var(--color-line-strong);
+  transition:
+    flex-basis var(--duration) var(--ease),
+    background-color var(--duration) var(--ease);
+}
+
+.carousel__dots span.is-active {
+  flex-basis: 3.5rem;
+  background: var(--color-ink);
+}
+
+.carousel__buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.carousel__buttons button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.carousel__buttons button:hover:not(:disabled) {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-inverse-ink);
+}
+
+.carousel__buttons button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* Hover list with a cursor-following preview. */
+.hover-list {
+  border-top: 1px solid var(--color-ink);
+}
+
+.hover-list li {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.hover-list a {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-5);
+  align-items: center;
+  padding: var(--space-5) 0;
+  text-decoration: none;
+  isolation: isolate;
+}
+
+@media (min-width: 48rem) {
+  .hover-list a {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) auto;
+  }
+}
+
+.hover-list a::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(var(--space-4) * -1);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  transform: scaleY(0.6);
+  opacity: 0;
+  transition:
+    opacity var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.hover-list a:hover::before,
+.hover-list a:focus-visible::before {
+  opacity: 1;
+  transform: none;
+}
+
+.hover-list strong {
+  font-size: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  transition: transform var(--duration) var(--ease);
+}
+
+.hover-list span {
+  grid-column: 1;
+  color: var(--color-ink-2);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 48rem) {
+  .hover-list span {
+    grid-column: 2;
+  }
+}
+
+.hover-list svg {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  opacity: 0.35;
+  transition:
+    transform var(--duration) var(--ease),
+    opacity var(--duration) var(--ease);
+}
+
+@media (min-width: 48rem) {
+  .hover-list svg {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+.hover-list a:hover strong,
+.hover-list a:focus-visible strong {
+  transform: translateX(10px);
+}
+
+.hover-list a:hover svg,
+.hover-list a:focus-visible svg {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.hover-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 18rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms var(--ease);
+}
+
+.hover-preview.is-visible {
+  opacity: 1;
+}
+
+.hover-preview figure {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  transform: scale(0.94);
+  transition:
+    opacity 300ms var(--ease),
+    transform 400ms var(--ease);
+}
+
+.hover-preview figure.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.hover-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 30px 60px -20px rgb(32 33 36 / 0.45);
+}
+
+.hover-preview figcaption {
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-ink-2);
+}
+
+/* Process steps as a swipeable / horizontal sequence. */
+ol.steps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78%, 17rem);
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: var(--space-2);
+  counter-reset: step;
+}
+
+.steps::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  ol.steps {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+ol.steps li {
+  scroll-snap-stop: always;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 15rem;
+  padding: var(--space-5) var(--space-5) var(--space-7);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  scroll-snap-align: start;
+  transition:
+    transform var(--duration) var(--ease),
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+
+ol.steps li::before {
+  counter-increment: step;
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-3);
+}
+
+ol.steps li::after {
+  content: "";
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  bottom: var(--space-5);
+  height: 2px;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms var(--ease);
+}
+
+@media (hover: hover) {
+  ol.steps li:hover {
+    transform: translateY(-6px);
+    background: var(--color-surface-raised);
+    border-color: var(--color-line-strong);
+  }
+  ol.steps li:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+.steps h3 {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.steps p {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+/* Lift on hover for price rows. */
+.price-rows > li {
+  transition:
+    padding var(--duration) var(--ease),
+    background-color var(--duration) var(--ease);
+}
+
+@media (hover: hover) {
+  .price-rows > li:hover {
+    padding-inline: var(--space-4);
+    background: var(--color-surface);
+  }
+}
+
+/* On touch screens there is no hover, so the project in focus scrolls itself. */
+@keyframes page-scroll {
+  0%,
+  12% {
+    object-position: 50% 0%;
+  }
+  88%,
+  100% {
+    object-position: 50% 100%;
+  }
+}
+
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .carousel__item.is-current .scrollshot img,
+  .work-row.is-in .scrollshot img {
+    animation: page-scroll calc(var(--scroll-dur, 6s) * 1.6) ease-in-out 800ms infinite alternate;
+  }
 }

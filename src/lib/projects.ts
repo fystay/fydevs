@@ -1,12 +1,16 @@
 import type { StaticImageData } from "next/image";
 import alexDesktop from "../../public/work/alex-desktop.webp";
 import alexMobile from "../../public/work/alex-mobile.webp";
+import alexPage from "../../public/work/alex-page.webp";
 import boonmaDesktop from "../../public/work/boonma-desktop.webp";
 import boonmaMobile from "../../public/work/boonma-mobile.webp";
+import boonmaPage from "../../public/work/boonma-page.webp";
 import evexecDesktop from "../../public/work/evexec-desktop.webp";
 import evexecMobile from "../../public/work/evexec-mobile.webp";
+import evexecPage from "../../public/work/evexec-page.webp";
 import fystayDesktop from "../../public/work/fystay-desktop.webp";
 import fystayMobile from "../../public/work/fystay-mobile.webp";
+import fystayPage from "../../public/work/fystay-page.webp";
 
 /**
  * Portfolio entries. Every project here was designed and built by FY Devs (confirmed
@@ -28,6 +32,8 @@ export type Project = {
   host: string;
   desktop: StaticImageData;
   mobile: StaticImageData;
+  /** Full-page capture, used for hover-to-scroll previews. */
+  page: StaticImageData;
   /** Short note on the visual identity, to show the range of bespoke work. */
   identity: string;
 };
@@ -51,6 +57,7 @@ export const projects: Project[] = [
     host: "evexec.co.uk",
     desktop: evexecDesktop,
     mobile: evexecMobile,
+    page: evexecPage,
     identity: "Dark, executive and calm, with gold used sparingly for action.",
   },
   {
@@ -70,6 +77,7 @@ export const projects: Project[] = [
     host: "boonma.vercel.app",
     desktop: boonmaDesktop,
     mobile: boonmaMobile,
+    page: boonmaPage,
     identity: "Warm editorial serif, soft ivory and a deep plum accent.",
   },
   {
@@ -90,6 +98,7 @@ export const projects: Project[] = [
     host: "fystay.co.uk",
     desktop: fystayDesktop,
     mobile: fystayMobile,
+    page: fystayPage,
     identity: "Seaside warmth: terracotta, sand and an app-like mobile tab bar.",
   },
   {
@@ -109,6 +118,7 @@ export const projects: Project[] = [
     host: "alexkbells.vercel.app",
     desktop: alexDesktop,
     mobile: alexMobile,
+    page: alexPage,
     identity: "Heavy uppercase type and monochrome film, built for energy.",
   },
 ];

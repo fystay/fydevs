@@ -1,29 +1,64 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLink, CtaBand, PricingNotice } from "@/components/Blocks";
-import { BrowserFrame, PhoneFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
 import { QuickEstimate } from "@/components/estimate/QuickEstimate";
+import { HoverList, type HoverItem } from "@/components/interactive/HoverList";
+import { ScrollShot } from "@/components/interactive/ScrollShot";
+import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
+import { Tilt } from "@/components/interactive/Tilt";
+import { WorkCarousel } from "@/components/interactive/WorkCarousel";
 import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
+import evexecBooking from "../../public/work/evexec-booking.webp";
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const alex = projectBySlug("alex-k-bells")!;
 const fystay = projectBySlug("fystay")!;
 
-const websiteServices = [
-  ["Design", "A visual identity for the web, built from your brand and your customers."],
-  ["Development", "Fast, accessible, hand-built sites that are easy to maintain."],
-  ["Booking & payments", "Online booking, quotes and payments where they earn their place."],
-  ["Hosting & care", "Optional hosting and maintenance, priced separately and clearly."],
-];
-
-const softwareServices = [
-  ["Booking software", "Driver and operator tools, developed for a working transfer business."],
-  ["Platforms", "Products like FYStay, which we design, build and run ourselves."],
-  ["Bespoke systems", "Custom booking platforms, integrations and internal tools."],
-  ["Integrations", "Connecting the services you already use, so data moves without retyping."],
+const services: HoverItem[] = [
+  {
+    title: "Bespoke websites",
+    body: "Designed and hand-built around your brand, fast and accessible by default.",
+    href: "/websites",
+    image: boonma.desktop,
+    caption: "Boonma / boonma.vercel.app",
+  },
+  {
+    title: "Identity for the web",
+    body: "Type, colour and layout chosen for your customers, not a theme.",
+    href: "/work#alex-k-bells",
+    image: alex.desktop,
+    caption: "Alex K Bells / alexkbells.vercel.app",
+  },
+  {
+    title: "Online booking",
+    body: "Quotes, bookings and payments built into the site where they earn their place.",
+    href: "/websites",
+    image: evexecBooking,
+    caption: "EV Exec / three-step booking",
+  },
+  {
+    title: "Booking software",
+    body: "Driver and operator applications, developed for a working transfer business.",
+    href: "/booking-software",
+    image: evexec.desktop,
+    caption: "EV Exec / evexec.co.uk",
+  },
+  {
+    title: "Platforms",
+    body: "Products like FYStay, which we design, build and run ourselves.",
+    href: "/work#fystay",
+    image: fystay.desktop,
+    caption: "FYStay / fystay.co.uk",
+  },
+  {
+    title: "Bespoke systems",
+    body: "Custom booking platforms, integrations and internal tools.",
+    href: "/bespoke-systems",
+    image: fystay.mobile,
+    caption: "FYStay / stay search on mobile",
+  },
 ];
 
 const steps = [
@@ -39,7 +74,7 @@ const packageOrder: PackageId[] = ["essential", "professional", "premium"];
 export default function HomePage() {
   return (
     <>
-      {/* Hero: a typographic statement over real work */}
+      {/* Hero: a typographic statement over real, interactive work */}
       <section className="hero-ed">
         <div className="container container--wide">
           <ul role="list" className="hero-meta rise">
@@ -70,45 +105,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section aria-label="Recent work" className="container container--wide">
-        <div className="stage">
-          <BrowserFrame
-            className="stage__browser"
-            src={evexec.desktop}
-            host={evexec.host}
-            alt={`The ${evexec.name} website: premium airport transfers and private hire`}
-            sizes="(min-width: 80rem) 960px, 80vw"
-            preload
-          />
-          <PhoneFrame
-            className="stage__phone stage__phone--a"
-            src={boonma.mobile}
-            alt={`The ${boonma.name} website on a phone`}
-            sizes="(min-width: 48rem) 230px, 28vw"
-          />
-          <PhoneFrame
-            className="stage__phone stage__phone--b"
-            src={alex.mobile}
-            alt={`The ${alex.name} website on a phone`}
-            sizes="(min-width: 48rem) 200px, 25vw"
-          />
-        </div>
-        <div className="stage-caption">
-          <p>Fig. 01 — Recent work, each designed and built from scratch</p>
-          <ul role="list">
-            {projects.map((p) => (
-              <li key={p.slug}>
-                <Link href={`/work#${p.slug}`}>{p.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <section aria-label="Recent work" className="container container--wide rise" style={{ "--i": 2 } as React.CSSProperties}>
+        <ShowcaseStage items={projects} />
       </section>
 
-      {/* Selected work: an editorial index */}
+      {/* Selected work: a swipeable, full-bleed carousel */}
       <section className="section" aria-labelledby="work-title">
         <div className="container container--wide">
-          <div className="section-head section-head--split">
+          <div className="section-head section-head--split" data-reveal>
             <div className="stack">
               <p className="eyebrow">Selected work</p>
               <h2 id="work-title" className="h2">
@@ -116,79 +120,30 @@ export default function HomePage() {
               </h2>
             </div>
             <p className="muted">
-              A transfer company, a massage studio, a coach and our own holiday platform. None of them share a
-              template, because none of them share customers.
+              A transfer company, a massage studio, a coach and our own holiday platform, none of them sharing a
+              template. Swipe through, and watch each site scroll.
             </p>
           </div>
-          <ol role="list" className="work-index">
-            {projects.map((p) => (
-              <li key={p.slug}>
-                <Link href={`/work#${p.slug}`} className="work-index__row">
-                  <span className="work-index__thumb">
-                    <Image src={p.mobile} alt="" sizes="96px" />
-                  </span>
-                  <span className="work-index__name">{p.name}</span>
-                  <span className="work-index__meta">
-                    {p.sector}
-                    <span>{p.location}</span>
-                  </span>
-                  <span className="work-index__go" aria-hidden="true">
-                    <ArrowRight size={18} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-6">
-            <ArrowLink href="/work">See every project in detail</ArrowLink>
-          </p>
+        </div>
+        <div data-reveal>
+          <WorkCarousel items={projects} />
         </div>
       </section>
 
-      {/* Services: two halves of the business */}
+      {/* Services: hover rows with live previews */}
       <section className="section section--ruled" aria-labelledby="services-title">
         <div className="container container--wide">
-          <div className="section-head">
-            <p className="eyebrow">What we do</p>
-            <h2 id="services-title" className="h2">
-              Websites, and the software behind them.
-            </h2>
+          <div className="section-head section-head--split" data-reveal>
+            <div className="stack">
+              <p className="eyebrow">What we do</p>
+              <h2 id="services-title" className="h2">
+                Websites, and the software behind them.
+              </h2>
+            </div>
+            <p className="muted">From a polished marketing site to the systems a business runs on each day.</p>
           </div>
-          <div className="service-index">
-            <div className="service-index__col">
-              <header>
-                <h3 className="h3">Websites</h3>
-                <p className="muted small">Bespoke design and development, with prices you can see up front.</p>
-              </header>
-              <ul role="list">
-                {websiteServices.map(([title, body]) => (
-                  <li key={title}>
-                    <strong>{title}</strong>
-                    <span>{body}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5">
-                <ArrowLink href="/websites">Services and packages</ArrowLink>
-              </p>
-            </div>
-            <div className="service-index__col">
-              <header>
-                <h3 className="h3">Software & systems</h3>
-                <p className="muted small">Practical tools built around how a business actually operates.</p>
-              </header>
-              <ul role="list">
-                {softwareServices.map(([title, body]) => (
-                  <li key={title}>
-                    <strong>{title}</strong>
-                    <span>{body}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5">
-                <ArrowLink href="/bespoke-systems">Bespoke systems</ArrowLink>
-              </p>
-            </div>
+          <div data-reveal>
+            <HoverList items={services} />
           </div>
         </div>
       </section>
@@ -196,7 +151,7 @@ export default function HomePage() {
       {/* Software: dark product band */}
       <section className="section inverse product-band" aria-labelledby="software-title">
         <div className="container container--wide product-band__grid">
-          <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties}>
+          <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">Software</p>
             <h2 id="software-title" className="h2">
               Software that runs real operations.
@@ -229,21 +184,33 @@ export default function HomePage() {
               </li>
             </ul>
           </div>
-          <div className="media-panel">
-            <BrowserFrame
-              src={fystay.desktop}
-              host={fystay.host}
-              alt="The FYStay holiday stays platform, showing a stay search for Blackpool"
-              sizes="(min-width: 64rem) 640px, 90vw"
-            />
+          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+            <Tilt max={4}>
+              <a
+                href={fystay.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="media-panel scroll-trigger"
+                style={{ display: "block" }}
+              >
+                <ScrollShot
+                  src={fystay.page}
+                  host={fystay.host}
+                  alt="The FYStay holiday stays platform. Hover to scroll the page."
+                  sizes="(min-width: 64rem) 640px, 90vw"
+                />
+                <span className="visually-hidden">Visit fystay.co.uk (opens in a new tab)</span>
+              </a>
+            </Tilt>
+            <p className="media-caption">Fig. 02 — FYStay. Hover to scroll the live page.</p>
           </div>
         </div>
       </section>
 
-      {/* Approach */}
+      {/* Approach: a sequence of steps */}
       <section className="section" aria-labelledby="approach-title">
         <div className="container container--wide">
-          <div className="section-head section-head--split">
+          <div className="section-head section-head--split" data-reveal>
             <div className="stack">
               <p className="eyebrow">Approach</p>
               <h2 id="approach-title" className="h2">
@@ -255,12 +222,11 @@ export default function HomePage() {
               choices, visible prices and a scope agreed in writing before any commitment.
             </p>
           </div>
-          <ol role="list" className="ruled-list">
+          <ol role="list" className="steps">
             {steps.map(([title, body], i) => (
-              <li key={title}>
-                <span className="ruled-list__num">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="h3">{title}</h3>
-                <p className="muted">{body}</p>
+              <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                <h3>{title}</h3>
+                <p>{body}</p>
               </li>
             ))}
           </ol>
@@ -270,14 +236,14 @@ export default function HomePage() {
       {/* Pricing */}
       <section className="section section--ruled" aria-labelledby="pricing-title">
         <div className="container container--wide">
-          <div className="section-head">
+          <div className="section-head" data-reveal>
             <p className="eyebrow">Pricing</p>
             <h2 id="pricing-title" className="h2">
               Clear prices, before any call.
             </h2>
           </div>
           <div className="pricing-split">
-            <div>
+            <div data-reveal>
               <ul role="list" className="price-rows">
                 {packageOrder.map((id) => {
                   const pkg = PACKAGES[id];
@@ -302,7 +268,9 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <QuickEstimate />
+            <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+              <QuickEstimate />
+            </div>
           </div>
         </div>
       </section>

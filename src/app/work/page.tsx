@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { CtaBand, PageHero } from "@/components/Blocks";
-import { BrowserFrame, PhoneFrame } from "@/components/Devices";
+import { PhoneFrame } from "@/components/Devices";
+import { ScrollShot } from "@/components/interactive/ScrollShot";
+import { Tilt } from "@/components/interactive/Tilt";
 import { ArrowRight } from "@/components/Icons";
 import { pageMetadata } from "@/lib/metadata";
 import { projects } from "@/lib/projects";
@@ -28,23 +30,25 @@ export default function WorkPage() {
                 key={p.slug}
                 id={p.slug}
                 className={`work-row${i % 2 === 1 ? " work-row--flip" : ""}`}
+                data-reveal
                 aria-labelledby={`${p.slug}-title`}
               >
-                <div className="work-row__media">
-                  <BrowserFrame
-                    src={p.desktop}
-                    host={p.host}
-                    alt={`The ${p.name} website on desktop`}
-                    sizes="(min-width: 80rem) 680px, (min-width: 64rem) 55vw, 90vw"
-                    preload={i === 0}
-                  />
-                  <PhoneFrame
-                    className="work-row__phone"
-                    src={p.mobile}
-                    alt={`The ${p.name} website on a phone`}
-                    sizes="(min-width: 64rem) 170px, 22vw"
-                  />
-                </div>
+                <Tilt max={3}>
+                  <div className="work-row__media scroll-trigger" role="group" tabIndex={0} aria-label={`${p.name}: focus to scroll the full page`}>
+                    <ScrollShot
+                      src={p.page}
+                      host={p.host}
+                      alt={`The ${p.name} website, full page`}
+                      sizes="(min-width: 80rem) 680px, (min-width: 64rem) 55vw, 90vw"
+                    />
+                    <PhoneFrame
+                      className="work-row__phone"
+                      src={p.mobile}
+                      alt={`The ${p.name} website on a phone`}
+                      sizes="(min-width: 64rem) 170px, 22vw"
+                    />
+                  </div>
+                </Tilt>
                 <div className="work-row__text">
                   <p className="work-row__meta">
                     <span>{p.sector}</span>
