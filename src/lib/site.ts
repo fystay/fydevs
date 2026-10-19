@@ -10,7 +10,7 @@ export const site = {
   description:
     "FY Devs designs and builds bespoke websites and booking software for businesses that want considered design, clear pricing and technology that fits how they work.",
   locale: "en_GB",
-  themeColor: "#F7F5EF",
+  themeColor: "#F2ECE2",
 } as const;
 
 /**

@@ -6,23 +6,28 @@
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Colour: warm ivory surfaces, charcoal ink (matches the logo), one accent */
-  --color-bg: #f7f5ef;
-  --color-surface: #fbfaf6;
-  --color-surface-raised: #ffffff;
-  --color-surface-sunken: #efece3;
-  --color-ink: #202124;
-  --color-ink-2: #4a4b4f;
-  --color-ink-3: #67686c; /* ≥ 4.5:1 on --color-bg */
-  --color-line: #e2ded3;
-  --color-line-strong: #cfcabd;
-  --color-accent: #9a4a2b; /* used sparingly: markers, active states */
-  --color-accent-soft: #f1e4dc;
-  --color-inverse-bg: #202124;
-  --color-inverse-ink: #f7f5ef;
-  --color-inverse-ink-2: #b9b7b0;
-  --color-inverse-line: #3a3b3f;
-  --color-success: #2f6b4a;
+  /*
+   * Colour: sand surfaces, near-black ink, the logo's warm brown, terracotta for
+   * emphasis and sage as a quiet secondary. Text colours meet WCAG AA on --color-bg.
+   */
+  --color-bg: #f2ece2;
+  --color-surface: #f7f3eb;
+  --color-surface-raised: #fffdf9;
+  --color-surface-sunken: #e9e0d2;
+  --color-ink: #1c1c1c;
+  --color-ink-2: #4a4540;
+  --color-ink-3: #665f57; /* ≥ 4.5:1 on --color-bg */
+  --color-line: #e0d6c7;
+  --color-line-strong: #cbbeab;
+  --color-brand: #4a3f35; /* the logo */
+  --color-accent: #a84a26; /* terracotta: emphasis, markers, active states (4.9:1 on bg) */
+  --color-accent-soft: #f3dfd3;
+  --color-sage: #8e9a7e; /* decorative only; not for text */
+  --color-inverse-bg: #1c1c1c;
+  --color-inverse-ink: #f2ece2;
+  --color-inverse-ink-2: #bdb4a8;
+  --color-inverse-line: #3a3632;
+  --color-success: #56624a; /* deep sage */
   --color-error: #a3322a;
   --color-error-soft: #f7e4e1;
 
@@ -546,7 +551,7 @@ main {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgb(247 245 239 / 0.86);
+  background: rgb(242 236 226 / 0.86);
   backdrop-filter: saturate(1.4) blur(14px);
   -webkit-backdrop-filter: saturate(1.4) blur(14px);
   border-bottom: 1px solid transparent;
@@ -849,7 +854,7 @@ main {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgb(247 245 239 / 0.55);
+  background: rgb(242 236 226 / 0.55);
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
   opacity: 0;
@@ -1495,7 +1500,7 @@ main {
 .select {
   appearance: none;
   padding-right: 2.75rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath stroke='%23202124' stroke-width='1.5' d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath stroke='%231c1c1c' stroke-width='1.5' d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1.15rem center;
 }
@@ -1610,7 +1615,7 @@ main {
 
 .hero-ed__aside .lede {
   font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
-  color: #53534f;
+  color: var(--color-ink-2);
 }
 
 .hero-ed .btn-row {
@@ -1687,9 +1692,9 @@ main {
  */
 .stage {
   position: relative;
-  border: 1px solid #d2cec3;
+  border: 1px solid var(--color-line-strong);
   border-radius: var(--radius-lg);
-  background: #eae7de;
+  background: var(--color-surface-sunken);
   padding: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
   overflow: hidden;
 }
@@ -1700,9 +1705,9 @@ main {
 }
 
 .stage .stage__browser {
-  border: 1px solid #d2cec3;
+  border: 1px solid var(--color-line-strong);
   border-radius: clamp(0.625rem, 0.4rem + 0.6vw, 0.875rem);
-  background: #ffffff;
+  background: var(--color-surface-raised);
   box-shadow:
     0 1px 2px rgb(32 33 36 / 0.06),
     0 10px 24px -14px rgb(32 33 36 / 0.22),
@@ -1712,21 +1717,21 @@ main {
 .stage .stage__bar {
   height: clamp(1.6rem, 1.3rem + 0.8vw, 2.25rem);
   padding-inline: clamp(0.6rem, 0.4rem + 0.6vw, 1rem);
-  background: #f7f5ef;
-  border-bottom-color: #d2cec3;
+  background: var(--color-bg);
+  border-bottom-color: var(--color-line-strong);
 }
 
 .stage .stage__dots i {
   width: clamp(6px, 4px + 0.25vw, 9px);
   height: clamp(6px, 4px + 0.25vw, 9px);
-  background: #d2cec3;
+  background: var(--color-line-strong);
 }
 
 .stage .stage__url {
   max-width: 22rem;
-  border: 1px solid #e2ded3;
-  background: #ffffff;
-  color: #53534f;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-raised);
+  color: var(--color-ink-2);
 }
 
 .stage__phone {
@@ -3359,7 +3364,7 @@ ol.steps li::after {
 
 /* A soft spotlight that follows the cursor. */
 .plan::after {
-  --glow: rgb(154 74 43 / 0.09);
+  --glow: rgb(168 74 38 / 0.09);
   content: "";
   position: absolute;
   inset: 0;
@@ -3391,7 +3396,7 @@ ol.steps li::after {
 }
 
 .plan--inverse::after {
-  --glow: rgb(154 74 43 / 0.3);
+  --glow: rgb(168 74 38 / 0.3);
 }
 
 .plan--inverse .plan__summary {
@@ -3796,7 +3801,7 @@ ol.steps li::after {
   height: 1.25rem;
   border-radius: 50%;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none'%3E%3Cpath d='m2.5 6.25 2.25 2.25L9.5 3.75' stroke='%23f7f5ef' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none'%3E%3Cpath d='m2.5 6.25 2.25 2.25L9.5 3.75' stroke='%23f2ece2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
       center / 12px no-repeat,
     var(--color-ink);
   opacity: 0;
