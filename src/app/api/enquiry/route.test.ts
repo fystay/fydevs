@@ -50,8 +50,12 @@ describe("POST /api/enquiry", () => {
   it("sends a valid contact enquiry as plain text with reply-to", async () => {
     const res = await post(contact);
     expect(res.status).toBe(200);
+    const { reference } = await res.json();
+    expect(reference).toMatch(/^FYD-[0-9A-F]{6}$/);
     const [, init] = fetchMock.mock.calls[0];
     const sent = JSON.parse(init.body);
+    expect(sent.subject).toContain(`[${reference}]`);
+    expect(sent.text).toContain(`Reference: ${reference}`);
     expect(sent.reply_to).toBe("ada@example.com");
     expect(sent.text).toContain("We'd like a new website.");
     expect(sent.html).toBeUndefined();

@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { BUDGETS, LIMITS, MIN_FILL_MS, TIMELINES, TOPICS, clean, validateEnquiry } from "@/lib/enquiry";
 import { mailConfig, sendEnquiryEmail } from "@/lib/mailer";
@@ -11,6 +12,9 @@ const MAX_BODY_BYTES = 32 * 1024;
 
 type Json = Record<string, unknown>;
 const reply = (status: number, body: Json) => NextResponse.json(body, { status });
+
+/** A short reference quoted to the customer and in the email subject, so follow-up can be matched up. */
+const newReference = () => `FYD-${randomBytes(3).toString("hex").toUpperCase()}`;
 
 export async function POST(request: NextRequest) {
   const length = Number(request.headers.get("content-length") ?? 0);
@@ -79,13 +83,14 @@ export async function POST(request: NextRequest) {
     return reply(429, { error: "Too many submissions from this connection. Please try again in a few minutes." });
   }
 
+  const reference = newReference();
   const sent = await sendEnquiryEmail(config, {
-    subject: subject.replace(/\s+/g, " ").slice(0, 200),
-    text: lines.join("\n"),
+    subject: `${subject.replace(/\s+/g, " ").slice(0, 180)} [${reference}]`,
+    text: [`Reference: ${reference}`, ...lines].join("\n"),
     replyTo: fields.email,
   });
   if (!sent) {
     return reply(502, { error: "We couldn't send your message just now. Please try again shortly." });
   }
-  return reply(200, { ok: true });
+  return reply(200, { ok: true, reference });
 }

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { PageHero } from "@/components/Blocks";
 import { ContactForm } from "@/components/ContactForm";
 import { ArrowRight } from "@/components/Icons";
+import { NEXT_STEPS } from "@/lib/enquiry";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -11,20 +12,13 @@ export const metadata = pageMetadata(
   "Tell FY Devs about your website or software project: what you need, your budget, your goals and your timeline.",
 );
 
-const next = [
-  ["We review your enquiry", "Your goals, budget and timeline tell us how we can help."],
-  ["We reply by email", "With questions, honest advice, or a suggested next step."],
-  ["Discovery call", "A short conversation about your goals, if the project is a good fit."],
-  ["Written scope & price", "A fixed quote to approve. Nothing to pay until you do."],
-];
-
 export default function ContactPage() {
   return (
     <>
       <PageHero
         eyebrow="Start a project"
         title="Tell us what you need."
-        lede="Four quick questions: project type, budget, timeline and goals. It takes about a minute."
+        lede="Three short steps and a quick review: your project, budget and timing, and how to reach you. It takes about a minute."
       />
       <section className="section--tight" style={{ paddingTop: 0 }}>
         <div className="container container--wide">
@@ -38,7 +32,7 @@ export default function ContactPage() {
               <div>
                 <h2 className="h3">What happens next</h2>
                 <ol role="list" className="next-steps mt-5">
-                  {next.map(([title, body], i) => (
+                  {NEXT_STEPS.map(([title, body], i) => (
                     <li key={title}>
                       <span className="next-steps__num">{String(i + 1).padStart(2, "0")}</span>
                       <div>
