@@ -2,9 +2,11 @@ import Link from "next/link";
 import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Blocks";
 import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
+import { PlanSwiper } from "@/components/interactive/PlanSwiper";
 import { projects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/metadata";
-import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
+import { carePlanCards } from "@/lib/plans";
+import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 
 export const metadata = pageMetadata(
   "/websites",
@@ -40,7 +42,6 @@ const services = [
 ];
 
 const packageOrder: PackageId[] = ["essential", "professional", "premium"];
-const planOrder: CarePlan[] = ["hosting", "care", "carePlus"];
 
 const costRows: [string, string][] = [
   ["Domain registration and renewal", "Charged separately, or registered in your name"],
@@ -168,29 +169,13 @@ export default function WebsitesPage() {
               site yourself after handover.
             </p>
           </SectionHead>
-          <div className="grid-3">
-            {planOrder.map((id) => {
-              const plan = CARE_PLANS[id];
-              return (
-                <div key={id} className="card package">
-                  <div className="stack" style={{ "--stack": "var(--space-2)" } as React.CSSProperties}>
-                    <h3 className="h3">{plan.label}</h3>
-                    <p className="muted small">{plan.summary}</p>
-                  </div>
-                  <p className="package__price">
-                    <strong>{formatGBP(plan.monthly)}</strong>
-                    <span className="fine">per month</span>
-                  </p>
-                  <ul role="list" className="checks">
-                    {plan.includes.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+        </div>
 
+        <div data-reveal>
+          <PlanSwiper plans={carePlanCards} initial="care" label="Hosting and care plans" />
+        </div>
+
+        <div className="container container--wide">
           <h3 className="h3 mt-8">What&apos;s not included in any plan</h3>
           <p className="muted small mt-4" style={{ maxWidth: "40rem" }}>
             These costs depend on choices you make and the services you use. We&apos;ll always tell you about them

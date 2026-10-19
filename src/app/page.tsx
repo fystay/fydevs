@@ -7,7 +7,8 @@ import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { Tilt } from "@/components/interactive/Tilt";
 import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
 import { WorkCarousel } from "@/components/interactive/WorkCarousel";
-import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
+import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
+import { carePlanCards } from "@/lib/plans";
 import { projectBySlug, projects } from "@/lib/projects";
 
 const evexec = projectBySlug("ev-exec")!;
@@ -39,7 +40,6 @@ const process = [
 
 const packageOrder: PackageId[] = ["essential", "professional", "premium"];
 const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
-const planOrder: CarePlan[] = ["hosting", "care", "carePlus"];
 
 const plans: PlanCard[] = [
   ...packageOrder.map((id): PlanCard => ({
@@ -70,16 +70,6 @@ const plans: PlanCard[] = [
   },
 ];
 
-const carePlans: PlanCard[] = planOrder.map((id) => ({
-  id,
-  name: CARE_PLANS[id].label,
-  summary: CARE_PLANS[id].summary,
-  price: formatGBP(CARE_PLANS[id].monthly),
-  suffix: "/month",
-  includes: CARE_PLANS[id].includes,
-  href: `/build?care=${id}`,
-  cta: `Choose ${CARE_PLANS[id].label}`,
-}));
 
 export default function HomePage() {
   return (
@@ -311,7 +301,7 @@ export default function HomePage() {
         </div>
 
         <div data-reveal>
-          <PlanSwiper plans={carePlans} initial="care" label="Hosting and care plans" />
+          <PlanSwiper plans={carePlanCards} initial="care" label="Hosting and care plans" />
         </div>
       </section>
 
