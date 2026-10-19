@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
+import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight } from "@/components/Icons";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
@@ -96,11 +97,7 @@ export default function HomePage() {
         </div>
         <div className="container container--wide hero-ed__layout">
           <div className="hero-ed__copy">
-            <ul role="list" className="hero-meta rise">
-              <li>Web design</li>
-              <li>SaaS development</li>
-              <li>Booking software</li>
-            </ul>
+            <ServiceSwitcher current="web" />
             <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
               Websites{" "}
               <br />

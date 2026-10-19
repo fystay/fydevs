@@ -70,6 +70,7 @@
   --width-prose: 38rem;
   --width-measure: 34rem; /* comfortable line length for supporting copy */
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --svc-top: clamp(1.75rem, 1rem + 2.5vw, 3.5rem); /* space between the header and the service switcher */
   --logo-h: 2.75rem; /* header logo height; the bar grows with it */
   --header-h: max(4rem, calc(var(--logo-h) + 1.75rem));
 
@@ -1151,6 +1152,11 @@ main {
   margin-bottom: var(--space-5);
 }
 
+/* Service pages: the switcher sits at exactly the same height as on the homepage. */
+.page-hero--service {
+  padding-top: var(--svc-top);
+}
+
 .page-hero .lede {
   margin-top: var(--space-5);
 }
@@ -1622,46 +1628,8 @@ main {
 .hero-ed__copy {
   display: grid;
   gap: var(--space-5);
-  align-content: center;
-  padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--space-6);
-}
-
-.hero-ed .hero-meta {
-  position: relative;
-  margin-bottom: var(--space-1);
-  padding-top: var(--space-5);
-  color: var(--color-ink-2);
-}
-
-/* A short burnt-orange rule above the services, as on a printed title page. */
-.hero-ed .hero-meta::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2.75rem;
-  height: 2px;
-  background: var(--hx-accent);
-}
-
-/* Separators trail each label, so a wrapped line never starts with one. */
-.hero-ed .hero-meta li {
-  gap: var(--space-4);
-}
-
-.hero-ed .hero-meta li + li::before {
-  content: none;
-}
-
-.hero-ed .hero-meta li:not(:last-child)::after {
-  content: "/";
-  color: var(--color-line-strong);
-}
-
-@media (max-width: 39.99rem) {
-  .hero-ed .hero-meta li:not(:last-child)::after {
-    content: none;
-  }
+  align-content: start;
+  padding-block: var(--svc-top) var(--space-6);
 }
 
 .hero-ed__title {
@@ -1796,7 +1764,7 @@ main {
   .hero-ed {
     min-height: clamp(38rem, calc(100svh - var(--header-h)), 54rem);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
   .hero-ed__layout {
     width: 100%;
@@ -1804,13 +1772,10 @@ main {
   .hero-ed__copy {
     max-width: min(42%, 36rem);
     gap: var(--space-4);
-    padding-block: var(--space-7);
+    padding-block: var(--svc-top) var(--space-7);
   }
   .hero-ed__title {
     font-size: clamp(3.5rem, 0.6rem + 4.4vw, 6rem);
-  }
-  .hero-ed .hero-meta {
-    margin-bottom: 0;
   }
   .hero-ed__visual {
     position: absolute;
@@ -2570,30 +2535,6 @@ main {
 /* ==========================================================================
    Technical detailing
    ========================================================================== */
-
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
-  margin-bottom: var(--space-6);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-ink-3);
-}
-
-.hero-meta li {
-  display: inline-flex;
-  gap: var(--space-5);
-}
-
-@media (min-width: 40rem) {
-  .hero-meta li + li::before {
-    content: "/";
-    color: var(--color-line-strong);
-  }
-}
 
 /* Media panels position their overlaid devices. */
 .stage,
@@ -4362,4 +4303,139 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
   }
+}
+
+/* ==========================================================================
+   Service switcher (components/ServiceSwitcher)
+   ========================================================================== */
+
+.svc {
+  margin-bottom: var(--space-5);
+}
+
+.svc__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.svc__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Separators trail each label, so a wrapped line never starts with one. */
+.svc__item:not(:last-child)::after {
+  content: "/";
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-line-strong);
+}
+
+.svc__link {
+  position: relative;
+  display: inline-block;
+  padding: 1.1rem 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-ink-3);
+  transition: color var(--duration) var(--ease);
+}
+
+.svc__link:hover,
+.svc__link[aria-current="page"] {
+  color: var(--color-ink);
+}
+
+/* The line above the current service; it glides to the next one when you switch. */
+.svc__line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--svc-accent);
+}
+
+.svc[data-current="web"] {
+  --svc-accent: #d45b32;
+}
+
+.svc[data-current="saas"] {
+  --svc-accent: #56624a;
+}
+
+.svc[data-current="booking"] {
+  --svc-accent: #2f5d62;
+}
+
+/* Phones drop the separators and tighten up so all three fit on one row. */
+@media (max-width: 39.99rem) {
+  .svc__list {
+    column-gap: var(--space-3);
+  }
+
+  .svc__item:not(:last-child)::after {
+    content: none;
+  }
+
+  .svc__link {
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (max-width: 23.99rem) {
+  .svc__link {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Each service page takes its own accent across the site's markers, links and states. */
+:root:has(.svc[data-current="saas"]) {
+  --color-accent: #56624a; /* olive (5.5:1 on the background) */
+  --color-accent-soft: #e2e5d9;
+}
+
+:root:has(.svc[data-current="booking"]) {
+  --color-accent: #2f5d62; /* deep teal (6.2:1 on the background) */
+  --color-accent-soft: #d9e4e3;
+}
+
+.page-hero:has(.svc[data-current="saas"]) {
+  background: linear-gradient(to bottom, #e8eade, var(--color-bg));
+}
+
+.page-hero:has(.svc[data-current="booking"]) {
+  background: linear-gradient(to bottom, #e3eae8, var(--color-bg));
+}
+
+/* Switching services: the labels stay put; the line slides and changes colour. */
+::view-transition-group(svc-labels) {
+  animation-duration: 0s;
+}
+
+::view-transition-old(svc-labels) {
+  animation: page-fade-out 200ms ease both;
+}
+
+::view-transition-new(svc-labels) {
+  animation: page-fade-in 300ms ease 100ms both;
+}
+
+::view-transition-group(svc-line) {
+  z-index: 101;
+  animation-duration: 650ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+::view-transition-old(svc-line),
+::view-transition-new(svc-line) {
+  height: 100%;
+  animation-duration: 650ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }

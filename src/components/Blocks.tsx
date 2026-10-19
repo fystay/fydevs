@@ -2,22 +2,26 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { PRICING_STATUS, VAT_NOTE } from "@/lib/pricing";
 import { ArrowRight } from "./Icons";
+import { ServiceSwitcher, type Service } from "./ServiceSwitcher";
 
 export function PageHero({
   eyebrow,
+  service,
   title,
   lede,
   children,
 }: {
   eyebrow: string;
+  /** On a service page, the service switcher takes the eyebrow's place. */
+  service?: Service;
   title: ReactNode;
   lede?: ReactNode;
   children?: ReactNode;
 }) {
   return (
-    <section className="page-hero">
+    <section className={`page-hero${service ? " page-hero--service" : ""}`}>
       <div className="container container--wide">
-        <p className="eyebrow rise">{eyebrow}</p>
+        {service ? <ServiceSwitcher current={service} /> : <p className="eyebrow rise">{eyebrow}</p>}
         <h1 className="h1 rise" style={{ "--i": 1, maxWidth: "20ch" } as React.CSSProperties}>
           {title}
         </h1>
