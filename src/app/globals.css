@@ -3151,21 +3151,35 @@ ol.steps li::after {
   color: var(--color-inverse-ink-2);
 }
 
-/* Pricing plans. */
-.plans {
-  display: grid;
-  gap: var(--space-4);
+/* Pricing plans: a swipeable row of cards (see components/interactive/PlanSwiper). */
+.carousel--plans .carousel__track {
+  grid-auto-columns: min(84%, 21rem);
+  padding-block: var(--space-4) var(--space-8);
+  margin-bottom: calc(var(--space-4) - var(--space-8));
 }
 
-@media (min-width: 64rem) {
-  .plans {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
+.carousel--plans .carousel__item {
+  display: grid;
+}
+
+@media (min-width: 48rem) {
+  .carousel--plans .carousel__track {
+    grid-auto-columns: 22rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  .carousel--plans .carousel__track {
+    grid-auto-columns: 25rem;
   }
 }
 
 .plan {
+  --mx: 50%;
+  --my: 0%;
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -3173,37 +3187,102 @@ ol.steps li::after {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+  user-select: none;
   transition:
     transform var(--duration) var(--ease),
     border-color var(--duration) var(--ease),
     box-shadow var(--duration) var(--ease);
 }
 
-@media (hover: hover) {
+/* An accent edge that follows the cursor around the border. */
+.plan::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(16rem circle at var(--mx) var(--my), var(--color-accent), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+/* A soft spotlight over a fine technical grid, revealed around the cursor. */
+.plan::after {
+  --grid-line: rgb(32 33 36 / 0.07);
+  --glow: rgb(154 74 43 / 0.09);
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(20rem circle at var(--mx) var(--my), var(--glow), transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px;
+  -webkit-mask-image: radial-gradient(14rem circle at var(--mx) var(--my), #000, transparent 75%);
+  mask-image: radial-gradient(14rem circle at var(--mx) var(--my), #000, transparent 75%);
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .plan:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     border-color: var(--color-line-strong);
-    box-shadow: var(--shadow-md);
+    box-shadow:
+      0 1px 2px rgb(32 33 36 / 0.05),
+      0 28px 50px -28px rgb(32 33 36 / 0.35);
   }
+  .plan:hover::before,
+  .plan:hover::after {
+    opacity: 1;
+  }
+}
+
+.plan--inverse {
+  border-color: var(--color-inverse-bg);
+  background: var(--color-inverse-bg);
+  color: var(--color-inverse-ink);
+}
+
+.plan--inverse::after {
+  --grid-line: rgb(247 245 239 / 0.08);
+  --glow: rgb(154 74 43 / 0.3);
+}
+
+.plan--inverse .plan__summary {
+  color: var(--color-inverse-ink-2);
+}
+
+.plan.plan--inverse .plan__price {
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+}
+
+.plan.plan--inverse .checks {
+  border-top-color: var(--color-inverse-line);
+}
+
+.plan--inverse .checks li::before {
+  border-color: var(--color-inverse-ink);
+}
+
+.plan--inverse .btn--primary {
+  background: var(--color-inverse-ink);
+  color: var(--color-ink);
 }
 
 .plan--featured {
   border-color: var(--color-ink);
   background: var(--color-surface-raised);
-}
-
-.plan__flag {
-  position: absolute;
-  top: -0.7rem;
-  left: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
-  padding: 0.15rem 0.55rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-ink);
-  color: var(--color-inverse-ink);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .plan__name {
@@ -3215,12 +3294,6 @@ ol.steps li::after {
 .plan__summary {
   font-size: var(--text-sm);
   color: var(--color-ink-2);
-}
-
-@media (min-width: 64rem) {
-  .plans .plan__summary {
-    min-height: 3.2em;
-  }
 }
 
 .plan__price {
@@ -3243,46 +3316,14 @@ ol.steps li::after {
 
 .plan .checks {
   flex: 1;
+  align-content: start;
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-line);
 }
 
 .plan__cta {
   width: 100%;
-  margin-top: var(--space-2);
-}
-
-.plan-wide {
-  display: grid;
-  gap: var(--space-4);
-  align-items: center;
-  margin-top: var(--space-4);
-  padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
-  border-radius: var(--radius-lg);
-  background: var(--color-inverse-bg);
-  color: var(--color-inverse-ink);
-}
-
-.plan-wide .plan__summary {
-  color: var(--color-inverse-ink-2);
-  max-width: 34rem;
-  margin-top: var(--space-2);
-}
-
-.plan-wide .plan__price {
-  font-size: var(--text-2xl);
-}
-
-.plan-wide .btn--primary {
-  background: var(--color-inverse-ink);
-  color: var(--color-ink);
-}
-
-@media (min-width: 48rem) {
-  .plan-wide {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: var(--space-7);
-  }
+  margin-top: auto;
 }
 
 /* Ongoing services. */

@@ -5,6 +5,7 @@ import { ArrowRight } from "@/components/Icons";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { Tilt } from "@/components/interactive/Tilt";
+import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
 import { WorkCarousel } from "@/components/interactive/WorkCarousel";
 import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
@@ -39,6 +40,36 @@ const process = [
 const packageOrder: PackageId[] = ["essential", "professional", "premium"];
 const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
 const planOrder: CarePlan[] = ["hosting", "care", "carePlus"];
+
+const plans: PlanCard[] = [
+  ...packageOrder.map((id): PlanCard => ({
+    id,
+    name: PACKAGES[id].name,
+    summary: PACKAGES[id].summary,
+    price: formatGBP(PACKAGES[id].from),
+    from: true,
+    includes: PACKAGES[id].includes,
+    href: `/build?pages=${packagePages[id]}`,
+    cta: "Start a Project",
+    variant: id === "professional" ? "featured" : undefined,
+  })),
+  {
+    id: "saas",
+    name: "SaaS & bespoke software",
+    summary:
+      "Priced after a scoping conversation, with everything agreed in writing before any commitment.",
+    price: "Custom quote",
+    includes: [
+      "Booking systems, customer portals and web applications",
+      "Discovery call and written scope",
+      "Fixed price and payment schedule",
+      "Working software delivered in agreed stages",
+    ],
+    href: "/contact?topic=bespoke",
+    cta: "Build My SaaS",
+    variant: "inverse",
+  },
+];
 
 export default function HomePage() {
   return (
@@ -246,52 +277,13 @@ export default function HomePage() {
               you commit.
             </p>
           </div>
+        </div>
 
-          <div className="plans">
-            {packageOrder.map((id, i) => {
-              const pkg = PACKAGES[id];
-              return (
-                <article
-                  key={id}
-                  className={`plan${id === "professional" ? " plan--featured" : ""}`}
-                  data-reveal
-                  style={{ "--d": i } as React.CSSProperties}
-                >
-                  <h3 className="plan__name">{pkg.name}</h3>
-                  <p className="plan__summary">{pkg.summary}</p>
-                  <p className="plan__price">
-                    <span>from</span> {formatGBP(pkg.from)}
-                  </p>
-                  <ul role="list" className="checks">
-                    {pkg.includes.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={`/build?pages=${packagePages[id]}`}
-                    className={`btn ${id === "professional" ? "btn--primary" : "btn--secondary"} plan__cta`}
-                  >
-                    Start a Project
-                  </Link>
-                </article>
-              );
-            })}
-          </div>
+        <div data-reveal>
+          <PlanSwiper plans={plans} />
+        </div>
 
-          <div className="plan-wide" data-reveal>
-            <div>
-              <h3 className="plan__name">SaaS & bespoke software</h3>
-              <p className="plan__summary">
-                Priced after a scoping conversation. You receive a written scope, fixed price and payment schedule
-                before any commitment.
-              </p>
-            </div>
-            <p className="plan__price">Custom quote</p>
-            <Link href="/contact?topic=bespoke" className="btn btn--primary">
-              Build My SaaS
-            </Link>
-          </div>
-
+        <div className="container container--wide">
           <div className="mt-6">
             <PricingNotice />
           </div>

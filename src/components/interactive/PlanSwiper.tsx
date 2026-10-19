@@ -1,0 +1,98 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "../Icons";
+import { useDragScroll } from "./useDragScroll";
+
+export type PlanCard = {
+  id: string;
+  name: string;
+  summary: string;
+  /** Price label, e.g. "£1,800"; `from` adds the "from" prefix. */
+  price: string;
+  from?: boolean;
+  includes?: readonly string[];
+  href: string;
+  cta: string;
+  variant?: "featured" | "inverse";
+};
+
+const canSpotlight = () =>
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Pricing as a swipeable row of cards. A soft spotlight and accent edge follow
+ * the cursor across each card; inert on touch and with reduced motion.
+ */
+export function PlanSwiper({ plans }: { plans: PlanCard[] }) {
+  const { trackRef, active, atStart, atEnd, step, trackProps } = useDragScroll<HTMLUListElement>();
+
+  const onMove = (e: React.PointerEvent) => {
+    trackProps.onPointerMove(e);
+    if (e.pointerType !== "mouse" || !canSpotlight()) return;
+    const card = (e.target as HTMLElement).closest<HTMLElement>(".plan");
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty("--mx", `${(e.clientX - r.left).toFixed(0)}px`);
+    card.style.setProperty("--my", `${(e.clientY - r.top).toFixed(0)}px`);
+  };
+
+  return (
+    <div className="carousel carousel--plans">
+      <ul
+        ref={trackRef}
+        role="list"
+        className="carousel__track"
+        aria-label="Starting prices"
+        {...trackProps}
+        onPointerMove={onMove}
+      >
+        {plans.map((plan, i) => (
+          <li key={plan.id} className="carousel__item" aria-label={`${i + 1} of ${plans.length}: ${plan.name}`}>
+            <article className={`plan${plan.variant ? ` plan--${plan.variant}` : ""}`}>
+              <h3 className="plan__name">{plan.name}</h3>
+              <p className="plan__summary">{plan.summary}</p>
+              <p className="plan__price">
+                {plan.from && <span>from</span>} {plan.price}
+              </p>
+              {plan.includes && (
+                <ul role="list" className="checks">
+                  {plan.includes.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              )}
+              <Link
+                href={plan.href}
+                draggable={false}
+                className={`btn ${plan.variant ? "btn--primary" : "btn--secondary"} plan__cta`}
+              >
+                {plan.cta}
+              </Link>
+            </article>
+          </li>
+        ))}
+      </ul>
+
+      <div className="container container--wide carousel__controls">
+        <p className="carousel__count" aria-hidden="true">
+          <span>{String(active + 1).padStart(2, "0")}</span> / {String(plans.length).padStart(2, "0")}
+        </p>
+        <div className="carousel__dots" aria-hidden="true">
+          {plans.map((p, i) => (
+            <span key={p.id} className={i === active ? "is-active" : undefined} />
+          ))}
+        </div>
+        <div className="carousel__buttons">
+          <button type="button" onClick={() => step(-1)} disabled={atStart} aria-label="Previous price">
+            <ArrowLeft size={16} />
+          </button>
+          <button type="button" onClick={() => step(1)} disabled={atEnd} aria-label="Next price">
+            <ArrowRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
