@@ -578,17 +578,7 @@ main {
   height: var(--header-h);
 }
 
-/* The logo sits in the centre of the bar; navigation and actions arrange around it. */
-.site-header__inner > .brand {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-}
 
-.menu-toggle {
-  margin-left: auto;
-}
 
 .brand {
   display: inline-flex;
@@ -1065,28 +1055,21 @@ main {
   }
 }
 
-/* The full menu needs room either side of the centred logo, so it starts at 80rem. */
-@media (max-width: 79.99rem) {
+/* Below 68rem (where the links would wrap beside the logo) the hamburger menu is used. */
+@media (max-width: 67.99rem) {
   .flyout,
   .nav-backdrop {
     display: none;
   }
 }
 
-@media (min-width: 80rem) {
+@media (min-width: 68rem) {
   .nav-desktop,
   .header-cta {
     display: block;
   }
-  /* Three links left of the logo, three to its right beside the call to action. */
+  /* Logo on the left; navigation and the call to action together on the right. */
   .nav-desktop {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-  .nav-desktop ul {
-    width: 100%;
-  }
-  .nav-desktop .nav-item:nth-child(4) {
     margin-left: auto;
   }
   .menu-toggle,
@@ -1616,30 +1599,31 @@ main {
    ========================================================================== */
 
 /*
- * Homepage hero: an editorial, portfolio-led composition. The message sits left in
- * a serif display face with one terracotta italic phrase; the live work sits right,
- * presented like a page on a brand board with two small cards beside it.
+ * Homepage hero: the message on the left over warm cream; on the right, a studio desk
+ * whose laptop shows our real portfolio. The photo fades into the cream, so the two
+ * read as one sunlit scene. On phones the photo follows the copy, cropped to the desk.
  */
 .hero-ed {
-  --hx-terracotta: #c65a32; /* large text and decoration only (3.6:1) */
-  --hx-sage: #929780;
-  --hx-cream: #e9ddca;
-  --hx-ink: #171717;
-  --hx-ivory: #f7f2e9;
-  --hx-taupe: #b8a995;
+  --hx-cream: #f3ebdd;
+  --hx-accent: #d45b32; /* large text and decoration only (3.3:1 on the cream) */
+  --hx-ink: #1c1c1c;
   --hx-border: #d8cbbb;
-  padding-block: clamp(2rem, 1rem + 4vw, 5rem) clamp(2.5rem, 1rem + 4vw, 5rem);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--hx-cream);
 }
 
 .hero-ed__layout {
-  display: grid;
-  gap: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  position: relative;
+  z-index: 1;
 }
 
 .hero-ed__copy {
   display: grid;
   gap: var(--space-5);
   align-content: center;
+  padding-block: clamp(2rem, 1rem + 4vw, 4.5rem) var(--space-6);
 }
 
 .hero-ed .hero-meta {
@@ -1649,127 +1633,24 @@ main {
   color: var(--color-ink-2);
 }
 
-/* A short terracotta rule above the services, as on a printed title page. */
+/* A short burnt-orange rule above the services, as on a printed title page. */
 .hero-ed .hero-meta::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 2.5rem;
+  width: 2.75rem;
   height: 2px;
-  background: var(--hx-terracotta);
+  background: var(--hx-accent);
 }
 
-.hero-ed__title {
-  max-width: 13ch;
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: clamp(2.75rem, 1.4rem + 4.2vw, 5.25rem);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  color: var(--hx-ink);
-  text-wrap: balance;
-}
-
-.hero-ed__title .serif-em {
-  display: block;
-  margin-top: 0.04em;
-  font-family: inherit;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: var(--hx-terracotta);
-}
-
-.hero-ed .lede {
-  max-width: 34rem;
-  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  line-height: 1.6;
-  color: var(--color-ink-2);
-}
-
-.hero-ed .btn-row {
-  gap: var(--space-3);
-  margin-top: var(--space-1);
-}
-
-.hero-ed__links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3) var(--space-6);
-}
-
-/* Circular arrow link, after the reference's "View live". */
-.circle-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-height: 2.75rem;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-ink);
-  text-decoration: none;
-}
-
-.circle-link__icon {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--hx-terracotta);
-  border-radius: 50%;
-  color: var(--color-accent);
-  transition:
-    background-color var(--duration) var(--ease),
-    color var(--duration) var(--ease),
-    transform var(--duration) var(--ease);
-}
-
-.circle-link:hover .circle-link__icon,
-.circle-link:focus-visible .circle-link__icon {
-  background: var(--hx-terracotta);
-  color: var(--hx-ivory);
-  transform: translateX(3px);
-}
-
-.circle-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
-}
-
-/* The work: full width under the copy on phones and tablets, the right-hand column on desktop. */
-.hero-ed__visual {
-  position: relative;
-  min-width: 0;
-}
-
-.hero-ed .stage {
-  border-color: var(--hx-border);
-  background: var(--hx-cream);
-}
-
-.hero-ed .stage .stage__browser {
-  border-color: var(--hx-border);
-  background: var(--hx-ivory);
-}
-
-.hero-ed .stage .stage__bar {
-  background: var(--hx-ivory);
-  border-bottom-color: var(--hx-border);
-}
-
-/* Brand-board cards: hidden on small screens, where they would crowd the work. */
-.brand-cards {
-  display: none;
-}
-
-/* Service labels: separators trail each item, so a wrapped line never starts with one. */
-.hero-ed .hero-meta li + li::before {
-  content: none;
-}
-
+/* Separators trail each label, so a wrapped line never starts with one. */
 .hero-ed .hero-meta li {
   gap: var(--space-4);
+}
+
+.hero-ed .hero-meta li + li::before {
+  content: none;
 }
 
 .hero-ed .hero-meta li:not(:last-child)::after {
@@ -1783,129 +1664,194 @@ main {
   }
 }
 
+.hero-ed__title {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(2.875rem, 1.6rem + 4.6vw, 5.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--hx-ink);
+}
+
+.hero-ed__title .serif-em {
+  display: block;
+  margin-top: 0.02em;
+  font-family: inherit;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: var(--hx-accent);
+}
+
+.hero-ed__title {
+  margin-bottom: var(--space-2);
+}
+
+.hero-ed .lede {
+  max-width: 31rem;
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.6;
+  color: var(--color-ink-2);
+}
+
+.hero-ed .btn-row {
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.hero-ed .btn--primary {
+  color: var(--hx-cream);
+}
+
+.hero-ed .btn--secondary {
+  border-color: var(--hx-border);
+  background: transparent;
+}
+
+.hero-ed__links {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+/* Circular arrow link. */
+.circle-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 2.75rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.circle-link__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1.5px solid var(--hx-accent);
+  border-radius: 50%;
+  color: var(--color-accent);
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.circle-link:hover .circle-link__icon,
+.circle-link:focus-visible .circle-link__icon {
+  background: var(--hx-accent);
+  color: var(--hx-cream);
+  transform: translateX(3px);
+}
+
+.circle-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+/* The desk photo. Phones: full bleed beneath the copy, cropped to the laptop and desk. */
+.hero-ed__visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 34rem;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+}
+
+.hero-ed__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 78%;
+}
+
 @media (max-width: 63.99rem) {
   .hero-ed {
-    padding-bottom: var(--space-4);
-  }
-}
-
-@media (min-width: 64rem) {
-  .hero-ed__layout {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    align-items: center;
-    column-gap: clamp(2.5rem, 1rem + 3vw, 5rem);
-  }
-
-  .hero-ed .showcase__bar {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* The cards share the stage's grid cell, so they are placed against the preview itself. */
-  .hero-ed .showcase {
-    display: grid;
-  }
-
-  /* Below 80rem the preview is too small to carry them without crowding. */
-  @media (max-width: 79.99rem) {
-    .brand-cards {
-      visibility: hidden;
-    }
-  }
-
-  .hero-ed .showcase > .stage,
-  .brand-cards {
-    grid-area: 1 / 1;
-  }
-
-  .brand-cards {
-    position: relative;
-    z-index: 2;
-    display: block;
-    pointer-events: none;
-  }
-
-  .brand-card {
-    position: absolute;
-    z-index: 2;
-    display: grid;
-    gap: var(--space-2);
-    padding: 1rem 1.15rem 1.05rem;
-    border: 1px solid var(--hx-border);
-    border-radius: 1rem;
-    background: var(--hx-ivory);
-    box-shadow:
-      0 1px 2px rgb(23 23 23 / 0.05),
-      0 18px 36px -18px rgb(23 23 23 / 0.28);
-    pointer-events: none;
-  }
-
-  .brand-card--palette {
-    top: 14%;
-    left: -1.5rem;
-    rotate: -4deg;
-  }
-
-  .brand-card--type {
-    bottom: 8%;
-    left: -2rem;
-    min-width: 9.5rem;
-    rotate: 3deg;
-  }
-
-  .brand-card__swatches {
     display: flex;
-    gap: 0.4rem;
+    flex-direction: column;
   }
-
-  /* Rounded squares rather than circles: these are colour chips, not markers. */
-  .brand-card__swatches i {
-    width: 1.35rem;
-    height: 1.35rem;
-    border-radius: 0.375rem;
-    box-shadow: inset 0 0 0 1px rgb(23 23 23 / 0.08);
-  }
-
-  .brand-card__label {
-    font-size: 0.6875rem;
-    letter-spacing: 0.02em;
-    color: var(--color-ink-2);
-  }
-
-  .brand-card__aa {
-    font-family: var(--font-playfair), var(--font-serif);
-    font-size: 2.5rem;
-    line-height: 1;
-    color: var(--hx-ink);
-  }
-
-  .brand-card__font {
-    font-size: 0.8125rem;
-    color: var(--color-ink-2);
-  }
-
-  .brand-card__font--sub {
-    margin-top: -0.4rem;
-    font-size: 0.6875rem;
-    color: var(--color-ink-3);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .brand-card {
-      animation: brand-card-in 900ms var(--ease) both;
-      animation-delay: 500ms;
-    }
-    .brand-card--type {
-      animation-delay: 650ms;
-    }
+  .hero-ed__visual {
+    order: 2;
+    margin-top: calc(var(--space-6) * -1);
   }
 }
 
-@keyframes brand-card-in {
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .hero-ed__visual {
+    aspect-ratio: 16 / 13;
+    max-height: none;
+  }
+  .hero-ed__photo {
+    object-position: 70% 70%;
+  }
+}
+
+/* Desktop: copy on the left; the photo fills the right and fades into the cream. */
+@media (min-width: 64rem) {
+  .hero-ed {
+    min-height: clamp(38rem, calc(100svh - var(--header-h)), 54rem);
+    display: flex;
+    align-items: center;
+  }
+  .hero-ed__layout {
+    width: 100%;
+  }
+  .hero-ed__copy {
+    max-width: min(42%, 36rem);
+    gap: var(--space-4);
+    padding-block: var(--space-7);
+  }
+  .hero-ed__title {
+    font-size: clamp(3.5rem, 0.6rem + 4.4vw, 6rem);
+  }
+  .hero-ed .hero-meta {
+    margin-bottom: 0;
+  }
+  .hero-ed__visual {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 62%;
+    max-height: none;
+    aspect-ratio: auto;
+    max-width: 72rem;
+    /* Fade in from the copy side, and softly out at the bottom into the next section. */
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0, #000 24%),
+      linear-gradient(to bottom, #000 86%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent 0, #000 24%),
+      linear-gradient(to bottom, #000 86%, transparent);
+    mask-composite: intersect;
+  }
+  .hero-ed__photo {
+    object-position: 70% 55%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-ed__photo {
+    animation: hero-photo-in 1200ms var(--ease) both;
+  }
+}
+
+@keyframes hero-photo-in {
   from {
     opacity: 0;
-    translate: 0 14px;
+    transform: scale(1.02);
   }
 }
+
+/* The project showcase follows the hero as its own section. */
+.showcase-section {
+  padding-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+}
+
 
 /*
  * Featured project: the real site presented as an object on the page, in a quiet
@@ -1969,14 +1915,14 @@ main {
     perspective: 2400px;
   }
   .stage .showcase__layer--back {
-    transform-origin: 100% 50%;
-    transform: rotateY(-7deg) rotateX(2deg) translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0);
+    transform-origin: 0% 50%;
+    transform: rotateY(9deg) rotateX(2deg) translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0);
   }
 }
 
 @media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
   .stage .showcase__layer--back {
-    transform: rotateY(-7deg) rotateX(2deg);
+    transform: rotateY(9deg) rotateX(2deg);
   }
 }
 

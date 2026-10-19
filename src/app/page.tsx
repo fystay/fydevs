@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
@@ -12,6 +13,7 @@ import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 import { carePlanCards } from "@/lib/plans";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
+import workspace from "../../public/hero/fydevs-workspace.webp";
 
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
@@ -80,8 +82,18 @@ const plans: PlanCard[] = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero: the message on the left, the work itself on the right */}
+      {/* Hero: the message on the left, the studio desk (with our real work on screen) on the right */}
       <section className="hero-ed" data-nav="/work" aria-labelledby="hero-title">
+        <div className="hero-ed__visual">
+          <Image
+            src={workspace}
+            alt="A FY Devs desk: a laptop showing our portfolio of EV Exec, Boonma, FYStay and Alex K Bells, beside a FY Devs mug, notebook and business cards."
+            sizes="(min-width: 64rem) 60vw, 100vw"
+            placeholder="blur"
+            preload
+            className="hero-ed__photo"
+          />
+        </div>
         <div className="container container--wide hero-ed__layout">
           <div className="hero-ed__copy">
             <ul role="list" className="hero-meta rise">
@@ -90,7 +102,14 @@ export default function HomePage() {
               <li>Booking software</li>
             </ul>
             <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-              Websites and software <span className="serif-em">that grow your business.</span>
+              Websites{" "}
+              <br />
+              and software{" "}
+              <span className="serif-em">
+                that grow{" "}
+                <br />
+                your business.
+              </span>
             </h1>
             <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
               We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
@@ -117,33 +136,11 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-
-          <div className="hero-ed__visual rise" style={{ "--i": 2 } as React.CSSProperties} aria-label="Recent work" role="region">
-            <ShowcaseStage
-              items={projects}
-              aside={
-                /* Our own palette and type, presented like the cards on a brand board. Decorative. */
-                <div className="brand-cards" aria-hidden="true">
-                  <div className="brand-card brand-card--palette">
-                    <span className="brand-card__swatches">
-                      <i style={{ background: "#c65a32" }} />
-                      <i style={{ background: "#929780" }} />
-                      <i style={{ background: "#e9ddca" }} />
-                      <i style={{ background: "#171717" }} />
-                    </span>
-                    <span className="brand-card__label">Colour palette</span>
-                  </div>
-                  <div className="brand-card brand-card--type">
-                    <span className="brand-card__label">Typography</span>
-                    <span className="brand-card__aa">Aa</span>
-                    <span className="brand-card__font">Playfair Display</span>
-                    <span className="brand-card__font brand-card__font--sub">+ Inter</span>
-                  </div>
-                </div>
-              }
-            />
-          </div>
         </div>
+      </section>
+
+      <section aria-label="Recent work" data-nav="/work" className="container container--wide showcase-section">
+        <ShowcaseStage items={projects} />
       </section>
 
       {/* Proof: facts anyone can check */}
