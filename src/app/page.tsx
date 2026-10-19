@@ -6,6 +6,7 @@ import { Faq } from "@/components/Faq";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight } from "@/components/Icons";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
+import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { Tilt } from "@/components/interactive/Tilt";
 import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
@@ -19,6 +20,14 @@ import workspace from "../../public/hero/fydevs-workspace.webp";
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
 export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
+
+// Where the laptop screen sits in the hero photo, in image pixels (it runs off the photo's right edge).
+const LAPTOP_SCREEN: ScreenQuad = [
+  [603, 548],
+  [1060, 510],
+  [1118, 1006],
+  [672, 1062],
+];
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
@@ -83,59 +92,67 @@ const plans: PlanCard[] = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero: the message on the left, the studio desk (with our real work on screen) on the right */}
-      <section className="hero-ed" data-nav="/work" aria-labelledby="hero-title">
-        <div className="hero-ed__visual">
-          <Image
-            src={workspace}
-            alt="A FY Devs desk: a laptop showing our portfolio of EV Exec, Boonma, FYStay and Alex K Bells, beside a FY Devs mug, notebook and business cards."
-            sizes="(min-width: 64rem) 75vw, 100vw"
-            placeholder="blur"
-            preload
-            className="hero-ed__photo"
-          />
-        </div>
-        <div className="container container--wide hero-ed__layout">
-          <div className="hero-ed__copy">
-            <ServiceSwitcher current="web" />
-            <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-              Websites{" "}
-              <br />
-              and software{" "}
-              <span className="serif-em">
-                that grow{" "}
-                <br />
-                your business.
-              </span>
-            </h1>
-            <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
-              We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
-              software that saves your team time. Published prices, no templates, and real work you can visit.
-            </p>
-            <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
-              <Link href="/contact?topic=website" className="btn btn--primary">
-                Start a Project
-                <ArrowRight />
-              </Link>
+      {/*
+        Hero: the message on the left, the studio desk (with our real work on screen) on the right.
+        Scrolling zooms into the laptop, whose screen becomes the project showcase.
+      */}
+      <LaptopZoom
+        screen={LAPTOP_SCREEN}
+        hero={
+          <section className="hero-ed" data-nav="/work" aria-labelledby="hero-title">
+            <div className="hero-ed__visual">
+              <Image
+                src={workspace}
+                alt="A FY Devs desk: a laptop showing our portfolio of EV Exec, Boonma, FYStay and Alex K Bells, beside a FY Devs mug, notebook and business cards."
+                sizes="(min-width: 64rem) 75vw, 100vw"
+                placeholder="blur"
+                preload
+                className="hero-ed__photo"
+              />
             </div>
-            <div className="hero-ed__links rise" style={{ "--i": 4 } as React.CSSProperties}>
-              <Link href="/work" className="circle-link">
-                <span className="circle-link__icon" aria-hidden="true">
-                  <ArrowRight size={14} />
-                </span>
-                View our work
-              </Link>
-              <p className="hero-note">
-                Or <Link href="/build">get an instant website estimate</Link> in two minutes.
-              </p>
+            <div className="container container--wide hero-ed__layout">
+              <div className="hero-ed__copy">
+                <ServiceSwitcher current="web" />
+                <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
+                  Websites{" "}
+                  <br />
+                  and software{" "}
+                  <span className="serif-em">
+                    that grow{" "}
+                    <br />
+                    your business.
+                  </span>
+                </h1>
+                <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
+                  We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
+                  software that saves your team time. Published prices, no templates, and real work you can visit.
+                </p>
+                <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
+                  <Link href="/contact?topic=website" className="btn btn--primary">
+                    Start a Project
+                    <ArrowRight />
+                  </Link>
+                </div>
+                <div className="hero-ed__links rise" style={{ "--i": 4 } as React.CSSProperties}>
+                  <Link href="/work" className="circle-link">
+                    <span className="circle-link__icon" aria-hidden="true">
+                      <ArrowRight size={14} />
+                    </span>
+                    View our work
+                  </Link>
+                  <p className="hero-note">
+                    Or <Link href="/build">get an instant website estimate</Link> in two minutes.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section aria-label="Recent work" data-nav="/work" className="container container--wide showcase-section">
-        <ShowcaseStage items={projects} />
-      </section>
+          </section>
+        }
+      >
+        <section aria-label="Recent work" data-nav="/work" className="container container--wide showcase-section">
+          <ShowcaseStage items={projects} />
+        </section>
+      </LaptopZoom>
 
       {/* Proof: facts anyone can check */}
       <section className="proof" aria-label="At a glance">

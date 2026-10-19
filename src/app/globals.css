@@ -1821,7 +1821,7 @@ main {
 /* Desktop: the photo fills the right and runs under the copy, fading into the wall. */
 @media (min-width: 64rem) {
   .hero-ed {
-    min-height: clamp(38rem, calc(100svh - var(--header-h)), 54rem);
+    min-height: max(38rem, calc(100svh - var(--header-h)));
     display: flex;
     align-items: flex-start;
   }
@@ -1870,6 +1870,90 @@ main {
 /* The project showcase follows the hero as its own section. */
 .showcase-section {
   padding-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+}
+
+/*
+ * Laptop zoom (components/interactive/LaptopZoom). Scrolling through a runway keeps the
+ * hero pinned while the camera moves into the laptop and its screen becomes the showcase.
+ * Everything here waits for the script's .is-zoom class, so without JavaScript or with
+ * reduced motion the hero and showcase simply stack, as before.
+ */
+.zoom.is-zoom {
+  --zoom-run: 115lvh; /* how far you scroll while the zoom plays */
+  height: calc(100lvh - var(--header-h) + var(--zoom-run));
+}
+
+.zoom.is-zoom .zoom__stage {
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100lvh - var(--header-h));
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.zoom.is-zoom .hero-ed {
+  transform-origin: 0 0;
+}
+
+/* Desktop: the hero fills the pinned stage. Phones and tablets keep their own height. */
+@media (min-width: 64rem) {
+  .zoom.is-zoom .hero-ed {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+/* The live portfolio, laid over the laptop screen in perspective, with the screen's bezel. */
+.zoom.is-zoom .zoom__panel {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform-origin: 0 0;
+  border-radius: calc(var(--bezel) * 0.5);
+  background: var(--color-bg);
+  box-shadow: 0 0 0 var(--bezel) #151514;
+  backface-visibility: hidden;
+}
+
+/* Glass: a soft reflection and the room's warm light, gone by the time the screen faces you. */
+.zoom.is-zoom .zoom__panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, rgb(255 255 255 / 0.24), rgb(255 255 255 / 0.05) 38%, transparent 56%),
+    rgb(70 48 26 / 0.1);
+  opacity: var(--glare, 0);
+  pointer-events: none;
+}
+
+/* At the end of the zoom this column is exactly the visible stage; the showcase sits centred in it. */
+.zoom.is-zoom .zoom__column {
+  position: absolute;
+  top: var(--col-y);
+  left: var(--col-x);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: var(--col-w);
+  height: var(--col-h);
+  padding-bottom: 3%;
+  overflow: hidden;
+}
+
+.zoom.is-zoom .showcase-section {
+  width: 100%;
+  padding-top: 0;
+}
+
+/* Sized so the whole showcase, tabs included, fits the screen (its frame is about 0.57 as tall as wide). */
+.zoom.is-zoom .showcase {
+  max-width: calc((var(--zoom-h) - 10rem) / 0.57);
+  margin-inline: auto;
 }
 
 
