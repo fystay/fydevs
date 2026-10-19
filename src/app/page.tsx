@@ -85,7 +85,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero: what we build, and why it matters */}
-      <section className="hero-ed">
+      <section className="hero-ed" data-nav="/work">
         <div className="container container--wide">
           <ul role="list" className="hero-meta rise">
             <li>Web design</li>
@@ -118,7 +118,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section aria-label="Recent work" className="container container--wide rise" style={{ "--i": 2 } as React.CSSProperties}>
+      <section aria-label="Recent work" data-nav="/work" className="container container--wide rise" style={{ "--i": 2 } as React.CSSProperties}>
         <ShowcaseStage items={projects} />
       </section>
 
@@ -147,7 +147,7 @@ export default function HomePage() {
       </section>
 
       {/* Web design */}
-      <section id="web-design" className="section" aria-labelledby="web-title">
+      <section id="web-design" data-nav="/websites" className="section" aria-labelledby="web-title">
         <div className="container container--wide split split--media-wide service-split">
           <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">Web design & development</p>
@@ -196,7 +196,7 @@ export default function HomePage() {
       </section>
 
       {/* SaaS */}
-      <section id="saas" className="section inverse" aria-labelledby="saas-title">
+      <section id="saas" data-nav="/bespoke-systems" className="section inverse" aria-labelledby="saas-title">
         <div className="container container--wide split split--media-wide service-split">
           <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">SaaS & software development</p>
@@ -245,7 +245,7 @@ export default function HomePage() {
       </section>
 
       {/* Case studies */}
-      <section className="section" aria-labelledby="work-title">
+      <section className="section" data-nav="/work" aria-labelledby="work-title">
         <div className="container container--wide">
           <div className="section-head section-head--split" data-reveal>
             <div className="stack">
@@ -273,7 +273,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="section section--ruled" aria-labelledby="pricing-title">
+      <section id="pricing" data-nav="/websites" className="section section--ruled" aria-labelledby="pricing-title">
         <div className="container container--wide">
           <div className="section-head section-head--split" data-reveal>
             <div className="stack">
@@ -316,7 +316,7 @@ export default function HomePage() {
       </section>
 
       {/* Process */}
-      <section id="process" className="section" aria-labelledby="process-title">
+      <section id="process" data-nav="/about" className="section" aria-labelledby="process-title">
         <div className="container container--wide">
           <div className="section-head section-head--split" data-reveal>
             <div className="stack">
@@ -341,7 +341,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="section section--ruled" aria-labelledby="faq-title">
+      <section id="faq" data-nav="/about" className="section section--ruled" aria-labelledby="faq-title">
         <div className="container container--wide faq-layout">
           <div className="section-head" data-reveal>
             <p className="eyebrow">FAQ</p>

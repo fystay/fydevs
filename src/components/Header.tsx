@@ -77,6 +77,9 @@ export function Header() {
   const flyoutRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const [bar, setBar] = useState<{ x: number; w: number; on: boolean }>({ x: 0, w: 0, on: false });
+  // On the homepage, the nav item for the section in view (sections carry data-nav="/path").
+  const [spy, setSpy] = useState<string | null>(null);
+  const pointing = useRef(false);
 
   // The line under the nav: rests under the current section, follows hover and focus.
   const moveBar = useCallback((link: HTMLElement | null | undefined) => {
@@ -88,17 +91,41 @@ export function Header() {
     setBar({ x, w: link.offsetWidth - pad * 2, on: true });
   }, []);
   const restBar = useCallback(
-    () => moveBar(navRef.current?.querySelector<HTMLElement>('.nav-link[aria-current="page"]')),
+    () =>
+      moveBar(navRef.current?.querySelector<HTMLElement>('.nav-link[aria-current="page"], .nav-link[data-section]')),
     [moveBar],
   );
 
   useEffect(() => {
-    restBar();
+    if (!pointing.current) restBar();
     window.addEventListener("resize", restBar);
     // Web fonts change link widths once they load.
     document.fonts?.ready.then(restBar).catch(() => {});
     return () => window.removeEventListener("resize", restBar);
-  }, [pathname, restBar]);
+  }, [pathname, spy, restBar]);
+
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("main [data-nav]"));
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.35;
+      let current = sections[0]?.dataset.nav ?? null;
+      for (const section of sections) if (section.getBoundingClientRect().top <= line) current = section.dataset.nav ?? null;
+      setSpy(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
   const subRef = useRef<number | null>(null);
@@ -223,7 +250,14 @@ export function Header() {
           </Link>
 
           <nav className="nav-desktop" aria-label="Main" ref={navRef}>
-            <ul role="list" onMouseLeave={restBar}>
+            <ul
+              role="list"
+              onMouseEnter={() => (pointing.current = true)}
+              onMouseLeave={() => {
+                pointing.current = false;
+                restBar();
+              }}
+            >
               {primaryNav.map((item, i) => (
                 <li
                   key={item.href}
@@ -238,6 +272,7 @@ export function Header() {
                     className="nav-link"
                     aria-current={isCurrent(pathname, item) ? "page" : undefined}
                     data-active={flyout === i || undefined}
+                    data-section={(spy === item.href && !isCurrent(pathname, item)) || undefined}
                     onFocus={(e) => moveBar(e.currentTarget)}
                     onBlur={restBar}
                   >
@@ -330,7 +365,7 @@ export function Header() {
                     className="mm-link"
                     onClick={() => openSub(i)}
                     aria-label={`${item.label}: more`}
-                    data-current={isCurrent(pathname, item) || undefined}
+                    data-current={isCurrent(pathname, item) || spy === item.href || undefined}
                   >
                     {item.label}
                     <Chevron dir="right" size={14} />
@@ -340,6 +375,7 @@ export function Header() {
                     href={item.href}
                     className="mm-link"
                     aria-current={isCurrent(pathname, item) ? "page" : undefined}
+                    data-current={spy === item.href || undefined}
                     onClick={closeAll}
                   >
                     {item.label}
