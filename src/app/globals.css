@@ -1408,9 +1408,9 @@ main {
 .textarea {
   width: 100%;
   min-height: 2.875rem;
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem 1.15rem;
   border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   background: var(--color-surface-raised);
   font-size: 1rem; /* ≥16px prevents iOS zoom */
   transition:
@@ -1418,18 +1418,21 @@ main {
     box-shadow var(--duration-fast) var(--ease);
 }
 
+/* A pill can't hold several lines, so the textarea takes the card radius instead. */
 .textarea {
   min-height: 9rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 1.25rem;
   resize: vertical;
   line-height: 1.5;
 }
 
 .select {
   appearance: none;
-  padding-right: 2.5rem;
+  padding-right: 2.75rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath stroke='%23202124' stroke-width='1.5' d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
+  background-position: right 1.15rem center;
 }
 
 .input:hover,
