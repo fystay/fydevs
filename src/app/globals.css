@@ -614,7 +614,7 @@ main {
   bottom: -0.2rem;
   height: 2px;
   border-radius: var(--radius-pill);
-  background: var(--color-ink);
+  background: var(--color-accent);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -988,6 +988,7 @@ main {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.3em;
+  text-decoration-color: var(--color-accent);
 }
 
 .mm-cta {
@@ -2857,7 +2858,7 @@ main {
 .showcase__progress span {
   position: absolute;
   inset: 0;
-  background: var(--color-ink);
+  background: var(--color-accent);
   transform-origin: left;
   animation: progress linear forwards;
 }
@@ -3076,7 +3077,7 @@ main {
 
 .carousel__dots span.is-active {
   flex-basis: 3.5rem;
-  background: var(--color-ink);
+  background: var(--color-accent);
 }
 
 .carousel__buttons {
@@ -3886,7 +3887,7 @@ ol.steps li::after {
 }
 
 .onboard-steps li[aria-current="step"] > * {
-  border-bottom-color: var(--color-ink);
+  border-bottom-color: var(--color-accent);
   color: var(--color-ink);
   font-weight: 600;
 }
