@@ -2216,38 +2216,6 @@ main {
    Technical detailing
    ========================================================================== */
 
-/* A faint 12-column blueprint grid behind the hero. */
-.hero-ed > .container {
-  position: relative;
-  isolation: isolate;
-}
-
-.hero-ed > .container::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -12rem var(--gutter) -6rem;
-  border-inline: 1px solid rgb(32 33 36 / 0.06);
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 calc(100% / 12 - 1px),
-    rgb(32 33 36 / 0.05) calc(100% / 12 - 1px) calc(100% / 12)
-  );
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
-  pointer-events: none;
-}
-
-@media (max-width: 47.99rem) {
-  .hero-ed > .container::before {
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0 calc(100% / 4 - 1px),
-      rgb(32 33 36 / 0.05) calc(100% / 4 - 1px) calc(100% / 4)
-    );
-  }
-}
-
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
@@ -2272,35 +2240,11 @@ main {
   }
 }
 
-/* Registration marks in the corners of media panels. */
+/* Media panels position their overlaid devices. */
 .stage,
 .work-row__media,
 .media-panel {
   position: relative;
-}
-
-.stage::after,
-.work-row__media::after,
-.media-panel::after {
-  --tick: 10px;
-  --tick-color: rgb(32 33 36 / 0.28);
-  content: "";
-  position: absolute;
-  inset: 10px;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--tick-color), var(--tick-color)) top left / var(--tick) 1px no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) top left / 1px var(--tick) no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) top right / var(--tick) 1px no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) top right / 1px var(--tick) no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) bottom left / var(--tick) 1px no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) bottom left / 1px var(--tick) no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) bottom right / var(--tick) 1px no-repeat,
-    linear-gradient(var(--tick-color), var(--tick-color)) bottom right / 1px var(--tick) no-repeat;
-}
-
-.inverse .media-panel::after {
-  --tick-color: rgb(247 245 239 / 0.3);
 }
 
 /* Footer build line: factual notes about how this site is made. */
@@ -3230,20 +3174,14 @@ ol.steps li::after {
   pointer-events: none;
 }
 
-/* A soft spotlight over a fine technical grid, revealed around the cursor. */
+/* A soft spotlight that follows the cursor. */
 .plan::after {
-  --grid-line: rgb(32 33 36 / 0.07);
   --glow: rgb(154 74 43 / 0.09);
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    radial-gradient(20rem circle at var(--mx) var(--my), var(--glow), transparent 70%),
-    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px,
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 22px 22px;
-  -webkit-mask-image: radial-gradient(14rem circle at var(--mx) var(--my), #000, transparent 75%);
-  mask-image: radial-gradient(14rem circle at var(--mx) var(--my), #000, transparent 75%);
+  background: radial-gradient(20rem circle at var(--mx) var(--my), var(--glow), transparent 70%);
   opacity: 0;
   transition: opacity 400ms var(--ease);
   pointer-events: none;
@@ -3270,7 +3208,6 @@ ol.steps li::after {
 }
 
 .plan--inverse::after {
-  --grid-line: rgb(247 245 239 / 0.08);
   --glow: rgb(154 74 43 / 0.3);
 }
 
