@@ -884,29 +884,49 @@ main {
   display: none;
 }
 
+/*
+ * Moving between menu levels is a two-step dissolve: the current level fades out
+ * quickly with a small shift, then the next fades in after it. The two never overlap,
+ * and nothing travels far enough to be clipped at the screen edge.
+ */
 .mm-pane {
+  --mm-out: opacity 200ms ease, transform 200ms ease, visibility 0s linear 200ms;
+  --mm-in: opacity 360ms ease 180ms, transform 520ms cubic-bezier(0.22, 1, 0.36, 1) 180ms, visibility 0s linear 0s;
   position: absolute;
   inset: 0;
   overflow-y: auto;
   padding: var(--space-4) calc(var(--gutter) + var(--space-3)) var(--space-8);
-  transition:
-    transform 480ms cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 320ms var(--ease);
 }
 
+/* Shown level: arrives with the gentle timing. */
+.mm-pane--root,
+.mobile-menu[data-sub="true"] .mm-pane--sub {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: var(--mm-in);
+}
+
+/* Hidden level: leaves with the quick timing, a little to the side it came from. */
 .mm-pane--sub {
-  transform: translateX(100%);
   opacity: 0;
+  transform: translateX(16px);
+  visibility: hidden;
+  transition: var(--mm-out);
 }
 
 .mobile-menu[data-sub="true"] .mm-pane--root {
-  transform: translateX(-28%);
   opacity: 0;
+  transform: translateX(-16px);
+  visibility: hidden;
+  transition: var(--mm-out);
 }
 
-.mobile-menu[data-sub="true"] .mm-pane--sub {
-  transform: none;
-  opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .mm-pane {
+    --mm-out: none;
+    --mm-in: none;
+  }
 }
 
 .mm-link {
@@ -1001,8 +1021,8 @@ main {
   }
   .mobile-menu[data-sub="true"] .menu--mobile .menu__primary li,
   .mobile-menu[data-sub="true"] .menu--mobile .menu__group {
-    animation: mm-in 480ms cubic-bezier(0.32, 0.72, 0, 1) both;
-    animation-delay: calc(120ms + var(--i, 0) * 30ms);
+    animation: mm-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(200ms + var(--i, 0) * 35ms);
   }
   .mobile-menu:not([hidden]) {
     animation: mm-sheet 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
