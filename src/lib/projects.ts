@@ -40,11 +40,6 @@ export type Project = {
   page: StaticImageData;
   /** Short note on the visual identity, to show the range of bespoke work. */
   identity: string;
-  /**
-   * True only when the live site sends no X-Frame-Options or frame-ancestors header,
-   * so it can be previewed in an iframe on request. Re-check if the site's headers change.
-   */
-  embeddable?: boolean;
 };
 
 export const projects: Project[] = [
@@ -96,7 +91,6 @@ export const projects: Project[] = [
     mobile: boonmaMobile,
     page: boonmaPage,
     identity: "Warm editorial serif, soft ivory and a deep plum accent.",
-    embeddable: true,
   },
   {
     slug: "fystay",
