@@ -1751,9 +1751,35 @@ main {
   mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
 }
 
-/* Room below the copy for the desk: about two-thirds of the photo's height. */
+/*
+ * Room below the copy for the desk. On phones the buttons and links overlap the top
+ * of the photo (wall and leaves), so the laptop and mug are in view on arrival.
+ */
 .hero-ed__copy {
-  padding-bottom: calc(100vw * 1.05);
+  padding-bottom: calc(100vw * 0.64);
+}
+
+@media (max-width: 39.99rem) {
+  .hero-ed__copy {
+    gap: var(--space-4);
+  }
+  .hero-ed__title {
+    font-size: clamp(2.625rem, 2rem + 3vw, 3rem);
+  }
+  .hero-ed .lede {
+    font-size: 1rem;
+  }
+  .hero-ed__links {
+    gap: var(--space-3);
+  }
+  /* The buttons may sit over the laptop's top edge, so the second one is frosted. */
+  .hero-ed .btn--secondary {
+    background: rgb(255 255 255 / 0.72);
+  }
+  /* Keeps the last lines of copy on the wall, clear of the laptop screen on the right. */
+  .hero-ed .hero-note {
+    max-width: 12.5rem;
+  }
 }
 
 .hero-ed .btn--secondary {
@@ -4545,4 +4571,87 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
     opacity: 0;
     transform: translateX(-48px);
   }
+}
+
+/* ==========================================================================
+   Homepage palette: the hero's burnt orange, sage, beige and soft black,
+   with Playfair Display headings, carried down the whole page.
+   ========================================================================== */
+
+:root:has(.hero-ed) {
+  --color-bg: #f3ebdd;
+  --color-surface: #f7f1e6;
+  --color-surface-raised: #fbf7ef;
+  --color-surface-sunken: #e6ded3;
+  --color-line: #e2d6c5;
+  --color-line-strong: #cdbea9;
+  --color-accent-soft: #f2dccd;
+  --color-inverse-bg: #181819;
+  --color-inverse-line: #34322f;
+  --home-orange: #d45b32; /* large text and decoration only */
+  --home-sage: #8e9a7e; /* decoration only */
+  --home-sage-deep: #56624a; /* text-safe sage (5.6:1 on the wash) */
+  --home-sage-wash: #e3e5d9;
+}
+
+main:has(.hero-ed) :is(.h1, .h2) {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+}
+
+main:has(.hero-ed) .h2 {
+  font-size: clamp(2.25rem, 1.5rem + 2.6vw, 3.75rem);
+}
+
+main:has(.hero-ed) :is(.h1, .h2) .serif-em {
+  font-family: inherit;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--home-orange);
+}
+
+main:has(.hero-ed) :is(.steps h3, .ongoing .h3, .proof__list strong, .plan__name, .plan__price) {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+main:has(.hero-ed) :is(.steps h3, .ongoing .h3) {
+  font-size: 1.375rem;
+}
+
+/* Sage: the quiet secondary, on the rules between benefits and through the process. */
+main:has(.hero-ed) .benefits li {
+  border-top-color: var(--home-sage);
+}
+
+main:has(.hero-ed) #process {
+  background: var(--home-sage-wash);
+}
+
+main:has(.hero-ed) #process ol.steps li {
+  border-color: #d2d7c6;
+  background: #eceee5;
+}
+
+main:has(.hero-ed) #process ol.steps li::before {
+  color: var(--home-sage-deep);
+}
+
+main:has(.hero-ed) #process ol.steps li::after {
+  background: var(--home-sage-deep);
+}
+
+@media (hover: hover) {
+  main:has(.hero-ed) #process ol.steps li:hover {
+    background: #f4f5ef;
+    border-color: var(--home-sage);
+  }
+}
+
+/* The proof strip's figures sit on an orange rule, like the hero's switcher line. */
+main:has(.hero-ed) .proof__list {
+  border-top: 2px solid var(--home-orange);
 }

@@ -170,7 +170,8 @@ export default function HomePage() {
           <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">Web design & development</p>
             <h2 id="web-title" className="h2">
-              A website that brings you customers.
+              A website that brings{" "}
+              <span className="serif-em">you customers.</span>
             </h2>
             <p className="lede">
               Bespoke websites designed around your brand and built to turn visitors into enquiries, bookings and
@@ -219,7 +220,7 @@ export default function HomePage() {
           <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">SaaS & software development</p>
             <h2 id="saas-title" className="h2">
-              Software that runs your business.
+              Software that runs <span className="serif-em">your business.</span>
             </h2>
             <p className="lede">
               Booking systems, customer portals and web applications built around how you work. We run software of
@@ -269,7 +270,7 @@ export default function HomePage() {
             <div className="stack">
               <p className="eyebrow">Case studies</p>
               <h2 id="work-title" className="h2">
-                Real projects, live today.
+                Real projects, <span className="serif-em">live today.</span>
               </h2>
             </div>
             <div className="stack" style={{ "--stack": "var(--space-4)" } as React.CSSProperties}>
@@ -297,7 +298,7 @@ export default function HomePage() {
             <div className="stack">
               <p className="eyebrow">Pricing</p>
               <h2 id="pricing-title" className="h2">
-                Clear starting prices.
+                Clear <span className="serif-em">starting prices.</span>
               </h2>
             </div>
             <p className="muted">
@@ -340,7 +341,7 @@ export default function HomePage() {
             <div className="stack">
               <p className="eyebrow">Process</p>
               <h2 id="process-title" className="h2">
-                From first message to launch.
+                From first message <span className="serif-em">to launch.</span>
               </h2>
             </div>
             <p className="muted">
@@ -364,7 +365,7 @@ export default function HomePage() {
           <div className="section-head" data-reveal>
             <p className="eyebrow">FAQ</p>
             <h2 id="faq-title" className="h2">
-              Questions, answered.
+              Questions, <span className="serif-em">answered.</span>
             </h2>
             <p className="muted">
               Anything else? <Link href="/contact?topic=other">Ask us directly</Link>.
