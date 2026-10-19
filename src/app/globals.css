@@ -1759,18 +1759,48 @@ main {
   padding-bottom: calc(100vw * 0.64);
 }
 
+/*
+ * Phones: the hero fills the screen on arrival, with the bottom of the desk photo on the
+ * bottom edge. The type scales with the screen height so the copy always ends above
+ * the mug, and the photo's lower two-fifths (desk, mug, notebook) stay clear of text.
+ */
 @media (max-width: 39.99rem) {
+  .hero-ed {
+    min-height: calc(100svh - var(--header-h));
+  }
+  .hero-ed .svc {
+    margin-bottom: var(--space-3);
+  }
   .hero-ed__copy {
-    gap: var(--space-4);
+    gap: clamp(0.5rem, 1.2svh, 0.875rem);
+    padding-bottom: calc(100vw * 0.64);
   }
   .hero-ed__title {
-    font-size: clamp(2.625rem, 2rem + 3vw, 3rem);
+    font-size: clamp(1.75rem, 3.95svh, 2.5rem);
+    margin-bottom: 0;
   }
   .hero-ed .lede {
-    font-size: 1rem;
+    font-size: clamp(0.875rem, 1.85svh, 1rem);
+    line-height: 1.45;
+  }
+  .hero-ed .btn-row {
+    margin-top: 0;
+  }
+  .hero-ed .btn {
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    padding-inline: 1.1rem;
+    font-size: 0.9375rem;
   }
   .hero-ed__links {
-    gap: var(--space-3);
+    gap: var(--space-2);
+  }
+  .hero-ed .circle-link {
+    font-size: 0.9375rem;
+  }
+  .hero-ed .circle-link__icon {
+    width: 2.25rem;
+    height: 2.25rem;
   }
   /* The buttons may sit over the laptop's top edge, so the second one is frosted. */
   .hero-ed .btn--secondary {
@@ -1779,6 +1809,7 @@ main {
   /* Keeps the last lines of copy on the wall, clear of the laptop screen on the right. */
   .hero-ed .hero-note {
     max-width: 12.5rem;
+    font-size: 0.8125rem;
   }
 }
 
