@@ -1613,7 +1613,6 @@ main {
   --hx-cream: #f3ebdd;
   --hx-accent: #d45b32; /* large text and decoration only (3.3:1 on the cream) */
   --hx-ink: #1c1c1c;
-  --hx-border: #d8cbbb;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -1668,11 +1667,6 @@ main {
 
 .hero-ed .btn--primary {
   color: var(--hx-cream);
-}
-
-.hero-ed .btn--secondary {
-  border-color: var(--hx-border);
-  background: transparent;
 }
 
 .hero-ed__links {
@@ -1802,10 +1796,6 @@ main {
     width: 2.25rem;
     height: 2.25rem;
   }
-  /* The buttons may sit over the laptop's top edge, so the second one is frosted. */
-  .hero-ed .btn--secondary {
-    background: rgb(255 255 255 / 0.72);
-  }
   /* Keeps the last lines of copy on the wall, clear of the laptop screen on the right. */
   .hero-ed .hero-note {
     max-width: 12.5rem;
@@ -1813,12 +1803,6 @@ main {
   }
 }
 
-.hero-ed .btn--secondary {
-  border-color: rgb(28 28 28 / 0.18);
-  background: rgb(255 255 255 / 0.32);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
 
 /* Tablets: a desk-height crop of the photo rather than the whole tall image. */
 @media (min-width: 40rem) and (max-width: 63.99rem) {

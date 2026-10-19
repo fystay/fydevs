@@ -117,9 +117,6 @@ export default function HomePage() {
                 Start a Project
                 <ArrowRight />
               </Link>
-              <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-                Build My SaaS
-              </Link>
             </div>
             <div className="hero-ed__links rise" style={{ "--i": 4 } as React.CSSProperties}>
               <Link href="/work" className="circle-link">
