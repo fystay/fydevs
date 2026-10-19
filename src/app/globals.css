@@ -68,10 +68,15 @@
   --header-h: 4rem;
 
   /* Shape & depth */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
   --radius-pill: 999px;
+  /* Cards: a hairline top highlight and a soft, layered drop. */
+  --shadow-card:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    0 1px 2px rgb(32 33 36 / 0.04),
+    0 8px 24px -16px rgb(32 33 36 / 0.18);
   --shadow-sm: 0 1px 2px rgb(32 33 36 / 0.05);
   --shadow-md: 0 1px 2px rgb(32 33 36 / 0.04), 0 8px 24px -12px rgb(32 33 36 / 0.12);
 
@@ -1129,6 +1134,7 @@ main {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
 }
 
@@ -2683,6 +2689,10 @@ main {
   gap: var(--space-5);
 }
 
+.carousel__controls[hidden] {
+  display: none;
+}
+
 .carousel__count {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -3187,6 +3197,7 @@ ol.steps li::after {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+  box-shadow: var(--shadow-card);
   user-select: none;
   transition:
     transform var(--duration) var(--ease),
@@ -3363,6 +3374,10 @@ ol.steps li::after {
   font-variant-numeric: tabular-nums;
 }
 
+.plan__price .plan__suffix {
+  margin-left: 0.35em;
+}
+
 .plan__price span {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -3387,61 +3402,15 @@ ol.steps li::after {
 
 /* Ongoing services. */
 .ongoing {
-  display: grid;
-  gap: var(--space-6);
   margin-top: var(--space-8);
   padding-top: var(--space-7);
   border-top: 1px solid var(--color-line);
 }
 
-@media (min-width: 64rem) {
-  .ongoing {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: var(--space-8);
-  }
-}
-
 .ongoing__intro {
   display: grid;
   gap: var(--space-3);
-  align-content: start;
-}
-
-.ongoing__plans {
-  display: grid;
-  gap: var(--space-5);
-}
-
-@media (min-width: 48rem) {
-  .ongoing__plans {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.ongoing__plans > li {
-  display: grid;
-  gap: var(--space-3);
-  align-content: start;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-ink);
-}
-
-.ongoing__name {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  font-weight: 600;
-}
-
-.ongoing__name span {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  color: var(--color-ink-2);
-}
-
-.ongoing .checks {
-  font-size: var(--text-xs);
+  max-width: 40rem;
 }
 
 /* FAQ layout. */

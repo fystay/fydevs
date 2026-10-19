@@ -70,6 +70,17 @@ const plans: PlanCard[] = [
   },
 ];
 
+const carePlans: PlanCard[] = planOrder.map((id) => ({
+  id,
+  name: CARE_PLANS[id].label,
+  summary: CARE_PLANS[id].summary,
+  price: formatGBP(CARE_PLANS[id].monthly),
+  suffix: "/month",
+  includes: CARE_PLANS[id].includes,
+  href: `/build?care=${id}`,
+  cta: `Choose ${CARE_PLANS[id].label}`,
+}));
+
 export default function HomePage() {
   return (
     <>
@@ -279,7 +290,7 @@ export default function HomePage() {
         </div>
 
         <div data-reveal>
-          <PlanSwiper plans={plans} initial="professional" />
+          <PlanSwiper plans={plans} initial="professional" label="Starting prices" />
         </div>
 
         <div className="container container--wide">
@@ -296,25 +307,11 @@ export default function HomePage() {
                 improvements are quoted as separate work, or covered by the hours in Care Plus.
               </p>
             </div>
-            <ul role="list" className="ongoing__plans">
-              {planOrder.map((id) => {
-                const plan = CARE_PLANS[id];
-                return (
-                  <li key={id}>
-                    <p className="ongoing__name">
-                      {plan.label}
-                      <span>{formatGBP(plan.monthly)}/mo</span>
-                    </p>
-                    <ul role="list" className="checks">
-                      {plan.includes.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </li>
-                );
-              })}
-            </ul>
           </div>
+        </div>
+
+        <div data-reveal>
+          <PlanSwiper plans={carePlans} initial="care" label="Hosting and care plans" />
         </div>
       </section>
 

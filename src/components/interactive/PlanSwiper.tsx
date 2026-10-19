@@ -12,6 +12,8 @@ export type PlanCard = {
   /** Price label, e.g. "£1,800"; `from` adds the "from" prefix. */
   price: string;
   from?: boolean;
+  /** Shown after the price, e.g. "/month". */
+  suffix?: string;
   includes?: readonly string[];
   href: string;
   cta: string;
@@ -28,8 +30,8 @@ const canSpotlight = () =>
  * becomes the primary one. A soft spotlight and accent edge follow the cursor
  * across each card; inert on touch and with reduced motion.
  */
-export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: string }) {
-  const { trackRef, active, atStart, atEnd, step, trackProps } = useDragScroll<HTMLUListElement>();
+export function PlanSwiper({ plans, initial, label }: { plans: PlanCard[]; initial?: string; label: string }) {
+  const { trackRef, active, atStart, atEnd, scrollable, step, trackProps } = useDragScroll<HTMLUListElement>();
   const [selected, setSelected] = useState(initial ?? plans[0]?.id);
 
   const onMove = (e: React.PointerEvent) => {
@@ -48,7 +50,7 @@ export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: st
         ref={trackRef}
         role="list"
         className="carousel__track"
-        aria-label="Starting prices"
+        aria-label={label}
         {...trackProps}
         onPointerMove={onMove}
       >
@@ -78,6 +80,7 @@ export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: st
                 <p className="plan__summary">{plan.summary}</p>
                 <p className="plan__price">
                   {plan.from && <span>from</span>} {plan.price}
+                  {plan.suffix && <span className="plan__suffix">{plan.suffix}</span>}
                 </p>
                 {plan.includes && (
                   <ul role="list" className="checks">
@@ -99,7 +102,7 @@ export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: st
         })}
       </ul>
 
-      <div className="container container--wide carousel__controls">
+      <div className="container container--wide carousel__controls" hidden={!scrollable}>
         <p className="carousel__count" aria-hidden="true">
           <span>{String(active + 1).padStart(2, "0")}</span> / {String(plans.length).padStart(2, "0")}
         </p>
@@ -109,10 +112,10 @@ export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: st
           ))}
         </div>
         <div className="carousel__buttons">
-          <button type="button" onClick={() => step(-1)} disabled={atStart} aria-label="Previous price">
+          <button type="button" onClick={() => step(-1)} disabled={atStart} aria-label="Previous option">
             <ArrowLeft size={16} />
           </button>
-          <button type="button" onClick={() => step(1)} disabled={atEnd} aria-label="Next price">
+          <button type="button" onClick={() => step(1)} disabled={atEnd} aria-label="Next option">
             <ArrowRight size={16} />
           </button>
         </div>

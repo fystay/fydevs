@@ -13,6 +13,7 @@ export function useDragScroll<T extends HTMLElement>() {
   const [active, setActive] = useState(0);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [scrollable, setScrollable] = useState(true);
 
   const measure = useCallback(() => {
     const track = trackRef.current;
@@ -25,10 +26,12 @@ export function useDragScroll<T extends HTMLElement>() {
     cards.forEach((card, i) => {
       if (offset(card) < offset(cards[nearest])) nearest = i;
     });
+    const overflows = track.scrollWidth > track.clientWidth + 8;
     const end = left + track.clientWidth >= track.scrollWidth - 8;
-    setActive(end ? cards.length - 1 : nearest);
+    setActive(end && overflows ? cards.length - 1 : nearest);
     setAtStart(left < 8);
     setAtEnd(end);
+    setScrollable(overflows);
   }, []);
 
   useEffect(() => {
@@ -93,6 +96,7 @@ export function useDragScroll<T extends HTMLElement>() {
     active,
     atStart,
     atEnd,
+    scrollable,
     step,
     trackProps: {
       onScroll: measure,

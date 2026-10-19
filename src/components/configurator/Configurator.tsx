@@ -98,6 +98,7 @@ function initialState(params: URLSearchParams): Saved {
     ...saved.answers,
     ...(params.get("type") && { projectType: params.get("type") }),
     ...(params.get("pages") && { pageBand: params.get("pages") }),
+    ...(params.get("care") && { carePlan: params.get("care") }),
   });
   return { answers: merged ?? saved.answers, details: saved.details };
 }
