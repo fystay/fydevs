@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { primaryNav, type NavLink, type NavMenu } from "@/lib/site";
+import { primaryNav, type NavItem, type NavLink, type NavMenu } from "@/lib/site";
 import { ArrowRight } from "./Icons";
 import { Logo } from "./Logo";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
+const isCurrent = (pathname: string, item: NavItem) =>
+  isActive(pathname, item.href) || (item.also ?? []).some((href) => isActive(pathname, href));
 
 function Chevron({ dir = "down", size = 10 }: { dir?: "down" | "right" | "left"; size?: number }) {
   const rotate = { down: 0, right: -90, left: 90 }[dir];
@@ -73,6 +75,30 @@ export function Header() {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const flyoutRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const [bar, setBar] = useState<{ x: number; w: number; on: boolean }>({ x: 0, w: 0, on: false });
+
+  // The line under the nav: rests under the current section, follows hover and focus.
+  const moveBar = useCallback((link: HTMLElement | null | undefined) => {
+    const nav = navRef.current;
+    if (!nav) return;
+    if (!link) return setBar((b) => ({ ...b, on: false }));
+    const pad = parseFloat(getComputedStyle(link).paddingLeft) || 0;
+    const x = link.getBoundingClientRect().left - nav.getBoundingClientRect().left + pad;
+    setBar({ x, w: link.offsetWidth - pad * 2, on: true });
+  }, []);
+  const restBar = useCallback(
+    () => moveBar(navRef.current?.querySelector<HTMLElement>('.nav-link[aria-current="page"]')),
+    [moveBar],
+  );
+
+  useEffect(() => {
+    restBar();
+    window.addEventListener("resize", restBar);
+    // Web fonts change link widths once they load.
+    document.fonts?.ready.then(restBar).catch(() => {});
+    return () => window.removeEventListener("resize", restBar);
+  }, [pathname, restBar]);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
   const subRef = useRef<number | null>(null);
@@ -196,15 +222,24 @@ export function Header() {
             <Logo preload />
           </Link>
 
-          <nav className="nav-desktop" aria-label="Main">
-            <ul role="list">
+          <nav className="nav-desktop" aria-label="Main" ref={navRef}>
+            <ul role="list" onMouseLeave={restBar}>
               {primaryNav.map((item, i) => (
-                <li key={item.href} className="nav-item" onMouseEnter={() => hoverItem(item.menu ? i : null)}>
+                <li
+                  key={item.href}
+                  className="nav-item"
+                  onMouseEnter={(e) => {
+                    hoverItem(item.menu ? i : null);
+                    moveBar(e.currentTarget.querySelector<HTMLElement>(".nav-link"));
+                  }}
+                >
                   <Link
                     href={item.href}
                     className="nav-link"
-                    aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                    aria-current={isCurrent(pathname, item) ? "page" : undefined}
                     data-active={flyout === i || undefined}
+                    onFocus={(e) => moveBar(e.currentTarget)}
+                    onBlur={restBar}
                   >
                     {item.label}
                   </Link>
@@ -230,6 +265,12 @@ export function Header() {
                 </li>
               ))}
             </ul>
+            <span
+              className="nav-indicator"
+              aria-hidden="true"
+              data-on={bar.on || undefined}
+              style={{ transform: `translateX(${bar.x}px)`, width: bar.w }}
+            />
           </nav>
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
@@ -284,7 +325,13 @@ export function Header() {
             {primaryNav.map((item, i) => (
               <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
                 {item.menu ? (
-                  <button type="button" className="mm-link" onClick={() => openSub(i)} aria-label={`${item.label}: more`}>
+                  <button
+                    type="button"
+                    className="mm-link"
+                    onClick={() => openSub(i)}
+                    aria-label={`${item.label}: more`}
+                    data-current={isCurrent(pathname, item) || undefined}
+                  >
                     {item.label}
                     <Chevron dir="right" size={14} />
                   </button>
@@ -292,7 +339,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     className="mm-link"
-                    aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                    aria-current={isCurrent(pathname, item) ? "page" : undefined}
                     onClick={closeAll}
                   >
                     {item.label}

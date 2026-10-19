@@ -37,7 +37,11 @@ export type NavMenu = {
   groups: { title: string; links: NavLink[] }[];
 };
 
-export type NavItem = NavLink & { menu?: NavMenu };
+export type NavItem = NavLink & {
+  menu?: NavMenu;
+  /** Other paths that belong to this section, for the current-section indicator. */
+  also?: string[];
+};
 
 export const primaryNav: NavItem[] = [
   {
@@ -67,6 +71,7 @@ export const primaryNav: NavItem[] = [
   {
     href: "/websites",
     label: "Websites",
+    also: ["/build"],
     menu: {
       primary: [
         { href: "/websites", label: "Explore websites" },
