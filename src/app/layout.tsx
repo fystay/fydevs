@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter, Newsreader } from "next/font/google";
+import { Geist_Mono, Inter, Newsreader, Playfair_Display } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Reveal } from "@/components/interactive/Reveal";
@@ -13,6 +13,14 @@ const newsreader = Newsreader({
   display: "swap",
   style: ["normal", "italic"],
   axes: ["opsz"],
+});
+
+/** Editorial display face for the homepage hero headline. */
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+  style: ["normal", "italic"],
 });
 
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
@@ -45,7 +53,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" data-scroll-behavior="smooth" className={`${inter.variable} ${newsreader.variable} ${mono.variable}`}>
+    <html lang="en-GB" data-scroll-behavior="smooth" className={`${inter.variable} ${newsreader.variable} ${playfair.variable} ${mono.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

@@ -80,42 +80,70 @@ const plans: PlanCard[] = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero: what we build, and why it matters */}
-      <section className="hero-ed" data-nav="/work">
-        <div className="container container--wide">
-          <ul role="list" className="hero-meta rise">
-            <li>Web design</li>
-            <li>SaaS development</li>
-            <li>Booking software</li>
-          </ul>
-          <div className="hero-ed__grid">
-            <h1 className="display rise">
+      {/* Hero: the message on the left, the work itself on the right */}
+      <section className="hero-ed" data-nav="/work" aria-labelledby="hero-title">
+        <div className="container container--wide hero-ed__layout">
+          <div className="hero-ed__copy">
+            <ul role="list" className="hero-meta rise">
+              <li>Web design</li>
+              <li>SaaS development</li>
+              <li>Booking software</li>
+            </ul>
+            <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
               Websites and software <span className="serif-em">that grow your business.</span>
             </h1>
-            <div className="hero-ed__aside rise" style={{ "--i": 1 } as React.CSSProperties}>
-              <p className="lede">
-                We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
-                software that saves your team time. Published prices, no templates, and real work you can visit.
-              </p>
-              <div className="btn-row">
-                <Link href="/contact?topic=website" className="btn btn--primary">
-                  Start a Project
-                  <ArrowRight />
-                </Link>
-                <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-                  Build My SaaS
-                </Link>
-              </div>
+            <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
+              We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
+              software that saves your team time. Published prices, no templates, and real work you can visit.
+            </p>
+            <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
+              <Link href="/contact?topic=website" className="btn btn--primary">
+                Start a Project
+                <ArrowRight />
+              </Link>
+              <Link href="/contact?topic=bespoke" className="btn btn--secondary">
+                Build My SaaS
+              </Link>
+            </div>
+            <div className="hero-ed__links rise" style={{ "--i": 4 } as React.CSSProperties}>
+              <Link href="/work" className="circle-link">
+                <span className="circle-link__icon" aria-hidden="true">
+                  <ArrowRight size={14} />
+                </span>
+                View our work
+              </Link>
               <p className="hero-note">
                 Or <Link href="/build">get an instant website estimate</Link> in two minutes.
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section aria-label="Recent work" data-nav="/work" className="container container--wide rise" style={{ "--i": 2 } as React.CSSProperties}>
-        <ShowcaseStage items={projects} />
+          <div className="hero-ed__visual rise" style={{ "--i": 2 } as React.CSSProperties} aria-label="Recent work" role="region">
+            <ShowcaseStage
+              items={projects}
+              aside={
+                /* Our own palette and type, presented like the cards on a brand board. Decorative. */
+                <div className="brand-cards" aria-hidden="true">
+                  <div className="brand-card brand-card--palette">
+                    <span className="brand-card__swatches">
+                      <i style={{ background: "#c65a32" }} />
+                      <i style={{ background: "#929780" }} />
+                      <i style={{ background: "#e9ddca" }} />
+                      <i style={{ background: "#171717" }} />
+                    </span>
+                    <span className="brand-card__label">Colour palette</span>
+                  </div>
+                  <div className="brand-card brand-card--type">
+                    <span className="brand-card__label">Typography</span>
+                    <span className="brand-card__aa">Aa</span>
+                    <span className="brand-card__font">Playfair Display</span>
+                    <span className="brand-card__font brand-card__font--sub">+ Inter</span>
+                  </div>
+                </div>
+              }
+            />
+          </div>
+        </div>
       </section>
 
       {/* Proof: facts anyone can check */}

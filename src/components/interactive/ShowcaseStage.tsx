@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Project } from "@/lib/projects";
 import devices from "../Devices.module.css";
 
@@ -15,7 +15,7 @@ const INTERVAL = 6000;
  * Tabs, swipe (touch) and an autoplay that pauses on hover, focus, or on request.
  * The layers drift slightly with the cursor on devices with a fine pointer.
  */
-export function ShowcaseStage({ items }: { items: Item[] }) {
+export function ShowcaseStage({ items, aside }: { items: Item[]; aside?: ReactNode }) {
   const [index, setIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
@@ -124,6 +124,8 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
           </div>
         </figure>
       </div>
+      {/* Optional decoration laid over the stage (it shares the stage's grid cell). */}
+      {aside}
 
       <div className="showcase__bar">
         <div className="showcase__tabs" aria-label="Choose a project" role="group">
