@@ -3936,3 +3936,120 @@ ol.steps li::after {
   color: #fff;
 }
 
+
+/* ==========================================================================
+   Page transitions from the header menu (app/template.tsx)
+   ========================================================================== */
+
+/* The old page leaves quickly; the new one settles in more slowly. */
+::view-transition-old(.page-out) {
+  animation: page-leave 220ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(.page-in) {
+  animation: page-arrive 600ms cubic-bezier(0.22, 1, 0.36, 1) 280ms both;
+}
+
+/* Other navigations swap instantly, as before. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* From the menu, everything outside the page content (footer, closing menu, backdrop) dissolves on the same rhythm. */
+html:active-view-transition-type(nav-menu)::view-transition-old(root) {
+  animation: page-fade-out 260ms ease both;
+}
+
+html:active-view-transition-type(nav-menu)::view-transition-new(root) {
+  animation: page-fade-in 480ms ease 240ms both;
+}
+
+/* The header is the fixed reference point: it never fades or moves. */
+::view-transition-group(site-header) {
+  z-index: 100;
+  animation: none;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/*
+ * An open menu (mobile sheet, or the dropdown and the blur behind it) stays solid while
+ * the old page fades out unseen beneath it, then dissolves straight onto the new page.
+ */
+::view-transition-group(nav-backdrop) {
+  z-index: 50;
+}
+
+::view-transition-group(mobile-menu) {
+  z-index: 60;
+}
+
+::view-transition-group(nav-flyout) {
+  z-index: 101;
+  animation: none;
+}
+
+::view-transition-old(mobile-menu),
+::view-transition-old(nav-backdrop),
+::view-transition-old(nav-flyout) {
+  animation: page-fade-out 220ms ease 160ms both;
+}
+
+::view-transition-new(mobile-menu),
+::view-transition-new(nav-backdrop),
+::view-transition-new(nav-flyout) {
+  animation: none;
+}
+
+/* The closed dropdown has no height; hide its new snapshot so only the fading panel shows. */
+::view-transition-new(nav-flyout) {
+  display: none;
+}
+
+/* Clicks during the transition reach the new page. */
+::view-transition {
+  pointer-events: none;
+}
+
+@keyframes page-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes page-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

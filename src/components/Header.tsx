@@ -20,7 +20,12 @@ function Chevron({ dir = "down", size = 10 }: { dir?: "down" | "right" | "left";
   );
 }
 
-function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: string; onNavigate?: () => void }) {
+/** Header navigations carry this type, so the page cross-fades (see app/template.tsx). */
+const NAV = ["nav-menu"];
+
+type OnNavigate = (e: React.MouseEvent<HTMLAnchorElement>) => void;
+
+function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: string; onNavigate?: OnNavigate }) {
   if (link.external) {
     return (
       <a href={link.href} className={className} target="_blank" rel="noopener noreferrer" onClick={onNavigate}>
@@ -30,14 +35,14 @@ function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: 
     );
   }
   return (
-    <Link href={link.href} className={className} onClick={onNavigate}>
+    <Link href={link.href} className={className} onClick={onNavigate} transitionTypes={NAV}>
       {link.label}
     </Link>
   );
 }
 
 /** The contents of a menu: large primary links, then smaller groups. Shared by desktop and mobile. */
-function MenuContents({ menu, variant, onNavigate }: { menu: NavMenu; variant: "flyout" | "mobile"; onNavigate: () => void }) {
+function MenuContents({ menu, variant, onNavigate }: { menu: NavMenu; variant: "flyout" | "mobile"; onNavigate: OnNavigate }) {
   let i = 0;
   return (
     <div className={`menu menu--${variant}`}>
@@ -149,6 +154,28 @@ export function Header() {
     setFlyout(null);
   }, []);
 
+  // Menus close in the same render as the new page, so an open menu is part of the
+  // outgoing snapshot and fades away with the old page rather than vanishing first.
+  const [shownPath, setShownPath] = useState(pathname);
+  if (pathname !== shownPath) {
+    setShownPath(pathname);
+    setOpen(false);
+    setSub(null);
+    setFlyout(null);
+  }
+
+  /**
+   * For menu links: a link to another page closes the menu with the navigation (above);
+   * one to this page, or to another site in a new tab, closes it now.
+   */
+  const closeIfSamePage = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      const url = new URL(e.currentTarget.href);
+      if (url.origin !== window.location.origin || url.pathname === window.location.pathname) closeAll();
+    },
+    [closeAll],
+  );
+
   const clearTimers = () => {
     if (openTimer.current) window.clearTimeout(openTimer.current);
     if (closeTimer.current) window.clearTimeout(closeTimer.current);
@@ -253,13 +280,21 @@ export function Header() {
     <>
       <header
         className="site-header"
+        style={{ viewTransitionName: "site-header" }}
         data-scrolled={scrolled || open || flyout !== null}
         data-open={open || flyout !== null}
         onMouseLeave={leaveHeader}
         onMouseEnter={() => closeTimer.current && window.clearTimeout(closeTimer.current)}
       >
         <div className="container container--wide site-header__inner">
-          <Link href="/" className="brand" aria-label="FY Devs home" onMouseEnter={() => hoverItem(null)}>
+          <Link
+            href="/"
+            className="brand"
+            aria-label="FY Devs home"
+            onMouseEnter={() => hoverItem(null)}
+            onClick={closeIfSamePage}
+            transitionTypes={NAV}
+          >
             <Logo preload />
           </Link>
 
@@ -289,10 +324,11 @@ export function Header() {
                     data-section={(spy === item.href && !isCurrent(pathname, item)) || undefined}
                     onFocus={(e) => moveBar(e.currentTarget)}
                     onBlur={restBar}
-                    onClick={() => {
+                    onClick={(e) => {
                       clearTimers();
-                      setFlyout(null);
+                      closeIfSamePage(e);
                     }}
+                    transitionTypes={NAV}
                   >
                     {item.label}
                   </Link>
@@ -327,7 +363,7 @@ export function Header() {
           </nav>
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
-            <Link href="/contact?topic=website" className="btn btn--primary btn--sm">
+            <Link href="/contact?topic=website" className="btn btn--primary btn--sm" onClick={closeIfSamePage} transitionTypes={NAV}>
               Start a Project
             </Link>
           </div>
@@ -360,12 +396,17 @@ export function Header() {
           data-switch={switching || undefined}
           aria-hidden={flyout === null}
           inert={flyout === null}
-          style={{ "--flyout-h": `${flyout !== null ? flyoutHeight : 0}px` } as React.CSSProperties}
+          style={
+            {
+              "--flyout-h": `${flyout !== null ? flyoutHeight : 0}px`,
+              viewTransitionName: "nav-flyout",
+            } as React.CSSProperties
+          }
         >
           <div className="flyout__clip">
             <div ref={measureRef}>
               <div className="container container--wide flyout__inner" key={lastFlyout ?? "none"}>
-                {flyoutItem?.menu && <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeAll} />}
+                {flyoutItem?.menu && <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeIfSamePage} />}
               </div>
             </div>
           </div>
@@ -373,10 +414,23 @@ export function Header() {
       </header>
 
       {/* Blurs the page behind the desktop flyout. Outside <header> so Safari sizes it to the viewport. */}
-      <div className="nav-backdrop" data-open={flyout !== null} aria-hidden="true" onMouseEnter={() => setFlyout(null)} />
+      <div
+        className="nav-backdrop"
+        data-open={flyout !== null}
+        aria-hidden="true"
+        onMouseEnter={() => setFlyout(null)}
+        style={{ viewTransitionName: "nav-backdrop" }}
+      />
 
       {/* Mobile menu, outside <header>: Safari sizes fixed children of a backdrop-filtered parent to that parent. */}
-      <div id="mobile-menu" ref={menuRef} className="mobile-menu" hidden={!open} data-sub={sub !== null}>
+      <div
+        id="mobile-menu"
+        ref={menuRef}
+        className="mobile-menu"
+        hidden={!open}
+        data-sub={sub !== null}
+        style={{ viewTransitionName: "mobile-menu" }}
+      >
         <nav aria-label="Main mobile" className="mm-pane mm-pane--root" inert={sub !== null}>
           <ul role="list">
             {primaryNav.map((item, i) => (
@@ -398,7 +452,8 @@ export function Header() {
                     className="mm-link"
                     aria-current={isCurrent(pathname, item) ? "page" : undefined}
                     data-current={spy === item.href || undefined}
-                    onClick={closeAll}
+                    onClick={closeIfSamePage}
+                    transitionTypes={NAV}
                   >
                     {item.label}
                   </Link>
@@ -406,7 +461,13 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <Link href="/contact?topic=website" className="btn btn--primary mm-cta" onClick={closeAll} style={{ "--i": primaryNav.length } as React.CSSProperties}>
+          <Link
+            href="/contact?topic=website"
+            className="btn btn--primary mm-cta"
+            onClick={closeIfSamePage}
+            transitionTypes={NAV}
+            style={{ "--i": primaryNav.length } as React.CSSProperties}
+          >
             Start a Project
             <ArrowRight />
           </Link>
@@ -419,7 +480,7 @@ export function Header() {
                 <Chevron dir="left" size={14} />
                 <span>Back</span>
               </button>
-              <MenuContents menu={subItem.menu} variant="mobile" onNavigate={closeAll} />
+              <MenuContents menu={subItem.menu} variant="mobile" onNavigate={closeIfSamePage} />
             </div>
           )}
         </div>
