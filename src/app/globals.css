@@ -70,7 +70,8 @@
   --width-prose: 38rem;
   --width-measure: 34rem; /* comfortable line length for supporting copy */
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
-  --header-h: 4rem;
+  --logo-h: 1.75rem; /* header logo height; the bar grows with it */
+  --header-h: max(4rem, calc(var(--logo-h) + 1.75rem));
 
   /* Shape & depth */
   --radius-sm: 8px;
@@ -569,11 +570,24 @@ main {
 }
 
 .site-header__inner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
   height: var(--header-h);
+}
+
+/* The logo sits in the centre of the bar; navigation and actions arrange around it. */
+.site-header__inner > .brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+
+.menu-toggle {
+  margin-left: auto;
 }
 
 .brand {
@@ -585,7 +599,7 @@ main {
 
 .brand img {
   width: auto;
-  height: 1.75rem;
+  height: var(--logo-h);
 }
 
 .nav-desktop {
@@ -1050,17 +1064,29 @@ main {
   }
 }
 
-@media (max-width: 63.99rem) {
+/* The full menu needs room either side of the centred logo, so it starts at 80rem. */
+@media (max-width: 79.99rem) {
   .flyout,
   .nav-backdrop {
     display: none;
   }
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 80rem) {
   .nav-desktop,
   .header-cta {
     display: block;
+  }
+  /* Three links left of the logo, three to its right beside the call to action. */
+  .nav-desktop {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .nav-desktop ul {
+    width: 100%;
+  }
+  .nav-desktop .nav-item:nth-child(4) {
+    margin-left: auto;
   }
   .menu-toggle,
   .mobile-menu {
