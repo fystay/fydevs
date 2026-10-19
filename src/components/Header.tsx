@@ -127,6 +127,10 @@ export function Header() {
     };
   }, [pathname]);
   const openTimer = useRef<number | null>(null);
+  // Desktop flyout height, measured so the panel glides between menus of different heights.
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [flyoutHeight, setFlyoutHeight] = useState(0);
+  const [switching, setSwitching] = useState(false);
   const closeTimer = useRef<number | null>(null);
   const subRef = useRef<number | null>(null);
 
@@ -152,6 +156,8 @@ export function Header() {
   };
 
   const showFlyout = (i: number | null) => {
+    // Moving from one open menu to another gets a quicker cross-fade than opening from closed.
+    setSwitching(flyout !== null && i !== null && i !== flyout);
     setFlyout(i);
     if (i !== null) setLastFlyout(i);
   };
@@ -177,6 +183,14 @@ export function Header() {
       window.removeEventListener("scroll", onScroll);
       clearTimers();
     };
+  }, []);
+
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => setFlyoutHeight(Math.ceil(entry.contentRect.height)));
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   // Desktop flyout: Escape closes it and returns focus to its toggle.
@@ -275,6 +289,10 @@ export function Header() {
                     data-section={(spy === item.href && !isCurrent(pathname, item)) || undefined}
                     onFocus={(e) => moveBar(e.currentTarget)}
                     onBlur={restBar}
+                    onClick={() => {
+                      clearTimers();
+                      setFlyout(null);
+                    }}
                   >
                     {item.label}
                   </Link>
@@ -339,12 +357,16 @@ export function Header() {
           ref={flyoutRef}
           className="flyout"
           data-open={flyout !== null}
+          data-switch={switching || undefined}
           aria-hidden={flyout === null}
           inert={flyout === null}
+          style={{ "--flyout-h": `${flyout !== null ? flyoutHeight : 0}px` } as React.CSSProperties}
         >
           <div className="flyout__clip">
-            <div className="container container--wide flyout__inner" key={lastFlyout ?? "none"}>
-              {flyoutItem?.menu && <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeAll} />}
+            <div ref={measureRef}>
+              <div className="container container--wide flyout__inner" key={lastFlyout ?? "none"}>
+                {flyoutItem?.menu && <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeAll} />}
+              </div>
             </div>
           </div>
         </div>

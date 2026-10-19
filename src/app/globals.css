@@ -766,29 +766,25 @@ main {
   color: var(--color-ink);
 }
 
-/* Desktop flyout: drops from the bar, height animated with grid rows. */
+/* Desktop flyout: drops from the bar; its height follows the menu shown, so switching glides. */
 .flyout {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  display: grid;
-  grid-template-rows: 0fr;
   background: var(--color-bg);
   border-bottom: 1px solid transparent;
-  transition:
-    grid-template-rows 420ms cubic-bezier(0.32, 0.72, 0, 1),
-    border-color 300ms var(--ease);
+  transition: border-color 300ms var(--ease);
 }
 
 .flyout[data-open="true"] {
-  grid-template-rows: 1fr;
   border-bottom-color: var(--color-line);
 }
 
 .flyout__clip {
-  min-height: 0;
+  height: var(--flyout-h, 0px);
   overflow: hidden;
+  transition: height 440ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .flyout__inner {
@@ -827,6 +823,20 @@ main {
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .flyout[data-open="true"][data-switch] .menu__primary li,
+  .flyout[data-open="true"][data-switch] .menu__group {
+    animation-duration: 260ms;
+    animation-delay: calc(var(--i, 0) * 14ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flyout__clip {
+    transition: none;
+  }
+}
+
 @keyframes menu-item-in {
   from {
     opacity: 0;
@@ -853,6 +863,12 @@ main {
   opacity: 1;
   visibility: visible;
   transition: opacity 320ms var(--ease);
+}
+
+/* No grey or blue flash when menu items are tapped. */
+.site-header,
+.mobile-menu {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Mobile menu: full screen, large links cascading in, submenus sliding over. */
