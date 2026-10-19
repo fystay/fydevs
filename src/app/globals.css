@@ -1583,9 +1583,12 @@ main {
    Editorial compositions
    ========================================================================== */
 
-/* Split hero: a large typographic statement with a short aside. */
+/*
+ * Homepage hero: an oversized editorial headline, then the supporting copy and
+ * calls to action, leading straight into the featured project below.
+ */
 .hero-ed {
-  padding-block: clamp(3rem, 1.5rem + 6vw, 7rem) clamp(2.5rem, 1rem + 4vw, 4.5rem);
+  padding-block: clamp(2rem, 1rem + 4vw, 5.5rem) clamp(2rem, 1rem + 3vw, 3.5rem);
 }
 
 .hero-ed__grid {
@@ -1595,6 +1598,8 @@ main {
 
 .hero-ed h1 {
   max-width: 11ch;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
 .hero-ed__aside {
@@ -1604,25 +1609,88 @@ main {
 }
 
 .hero-ed__aside .lede {
-  font-size: clamp(1.125rem, 1rem + 0.35vw, 1.25rem);
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  color: #53534f;
 }
 
-@media (min-width: 64rem) {
-  .hero-ed__grid {
-    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-    gap: var(--space-9);
-    align-items: end;
+.hero-ed .btn-row {
+  gap: var(--space-3);
+}
+
+/* Editorial accents: the italic phrase in the brand's muted rust, and a short rule above the services. */
+.hero-ed h1 .serif-em {
+  color: var(--color-accent);
+}
+
+.hero-ed .hero-meta {
+  position: relative;
+  padding-top: var(--space-5);
+}
+
+.hero-ed .hero-meta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 2px;
+  background: var(--color-accent);
+}
+
+/* Phones: tighter rhythm so the featured project follows the actions without a long gap. */
+@media (max-width: 47.99rem) {
+  .hero-ed .hero-meta {
+    margin-bottom: var(--space-5);
+  }
+  .hero-ed__grid,
+  .hero-ed__aside {
+    gap: var(--space-5);
+  }
+  .hero-ed {
+    padding-bottom: var(--space-6);
   }
 }
 
-/* Showcase stage: real project screenshots composed on a warm surface. */
+/* Desktop: the headline spans the width on two lines; copy left, actions right beneath it. */
+@media (min-width: 64rem) {
+  .hero-ed__grid {
+    gap: clamp(2.5rem, 1rem + 2.5vw, 3.5rem);
+  }
+  .hero-ed h1 {
+    max-width: none;
+    font-size: clamp(4.5rem, 1.2rem + 5.4vw, 7.25rem);
+    letter-spacing: -0.05em;
+  }
+  .hero-ed h1 .serif-em {
+    display: block;
+    letter-spacing: -0.035em;
+  }
+  .hero-ed__aside {
+    grid-template-columns: minmax(0, 36rem) auto;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--space-4) var(--space-8);
+  }
+  .hero-ed__aside .lede {
+    grid-row: span 2;
+    align-self: start;
+  }
+  .hero-ed__aside .btn-row,
+  .hero-ed__aside .hero-note {
+    justify-self: end;
+  }
+}
+
+/*
+ * Featured project: the real site presented as an object on the page, in a quiet
+ * warm surround with a fine border, the browser lifted on a soft natural shadow.
+ */
 .stage {
   position: relative;
+  border: 1px solid #d2cec3;
   border-radius: var(--radius-lg);
-  background:
-    radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.55), transparent 60%),
-    var(--color-surface-sunken);
-  padding: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
+  background: #eae7de;
+  padding: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
   overflow: hidden;
 }
 
@@ -1631,20 +1699,70 @@ main {
   width: 100%;
 }
 
+.stage .stage__browser {
+  border: 1px solid #d2cec3;
+  border-radius: clamp(0.625rem, 0.4rem + 0.6vw, 0.875rem);
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgb(32 33 36 / 0.06),
+    0 10px 24px -14px rgb(32 33 36 / 0.22),
+    0 40px 80px -40px rgb(32 33 36 / 0.32);
+}
+
+.stage .stage__bar {
+  height: clamp(1.6rem, 1.3rem + 0.8vw, 2.25rem);
+  padding-inline: clamp(0.6rem, 0.4rem + 0.6vw, 1rem);
+  background: #f7f5ef;
+  border-bottom-color: #d2cec3;
+}
+
+.stage .stage__dots i {
+  width: clamp(6px, 4px + 0.25vw, 9px);
+  height: clamp(6px, 4px + 0.25vw, 9px);
+  background: #d2cec3;
+}
+
+.stage .stage__url {
+  max-width: 22rem;
+  border: 1px solid #e2ded3;
+  background: #ffffff;
+  color: #53534f;
+}
+
 .stage__phone {
   display: none;
   position: absolute;
 }
 
+/*
+ * Desktop: the site is presented like a printed page turned slightly towards the
+ * reader. The existing cursor drift is kept by composing it after the turn.
+ */
+@media (min-width: 64rem) {
+  .stage.showcase__stage {
+    perspective: 2400px;
+  }
+  .stage .showcase__layer--back {
+    transform-origin: 0% 50%;
+    transform: rotateY(9deg) rotateX(2deg) translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0);
+  }
+}
+
+@media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
+  .stage .showcase__layer--back {
+    transform: rotateY(9deg) rotateX(2deg);
+  }
+}
+
 @media (min-width: 48rem) {
   .stage__browser {
-    width: 79%;
+    width: 82%;
   }
   .stage__phone {
     display: block;
-    width: 16%;
-    right: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
-    bottom: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
+    width: 14%;
+    right: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
+    bottom: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
   }
 }
 

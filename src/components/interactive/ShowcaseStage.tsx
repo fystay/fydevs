@@ -87,13 +87,13 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
         onPointerCancel={() => (swipe.current = null)}
       >
         <figure className={`${devices.browser} stage__browser showcase__layer showcase__layer--back`}>
-          <div className={devices.bar} aria-hidden="true">
-            <span className={devices.dots}>
+          <div className={`${devices.bar} stage__bar`} aria-hidden="true">
+            <span className={`${devices.dots} stage__dots`}>
               <i />
               <i />
               <i />
             </span>
-            <span className={devices.url}>{current.host}</span>
+            <span className={`${devices.url} stage__url`}>{current.host}</span>
           </div>
           <div className="showcase__frames">
             {items.map((p, i) => (
