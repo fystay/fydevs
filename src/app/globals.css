@@ -1719,47 +1719,65 @@ main {
   text-underline-offset: 0.3em;
 }
 
-/* The desk photo. Phones: full bleed beneath the copy, cropped to the laptop and desk. */
-.hero-ed__visual {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  max-height: 34rem;
-  width: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+/*
+ * The desk photo sits behind the copy, starting just below the service switcher. Its top
+ * is a plain sunlit wall, so the headline and buttons sit on the wall and the desk,
+ * mug and laptop show beneath them. The panel takes the wall's colour and the photo
+ * fades into it, so there is no visible edge.
+ */
+.hero-ed {
+  --hx-wall: #dfcfbc;
+  --hx-wall-lit: #ede3d5; /* behind the headline: keeps the accent at 3.1:1 */
+  --hx-photo-top: calc(var(--svc-top) + 2.75rem);
 }
 
+.hero-ed__visual {
+  position: absolute;
+  z-index: 0;
+  inset: var(--hx-photo-top) 0 0 0;
+  background: linear-gradient(to bottom, var(--hx-wall-lit) 30%, var(--hx-wall) 75%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 94%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 94%, transparent);
+}
+
+/* Phones: the whole photo, anchored to the bottom; the copy sits on its wall. */
 .hero-ed__photo {
   position: absolute;
-  inset: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 62% 78%;
+  height: auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
 }
 
-@media (max-width: 63.99rem) {
-  .hero-ed {
-    display: flex;
-    flex-direction: column;
-  }
-  .hero-ed__visual {
-    order: 2;
-    margin-top: calc(var(--space-6) * -1);
-  }
+/* Room below the copy for the desk: about two-thirds of the photo's height. */
+.hero-ed__copy {
+  padding-bottom: calc(100vw * 1.05);
 }
 
-@media (min-width: 48rem) and (max-width: 63.99rem) {
-  .hero-ed__visual {
-    aspect-ratio: 16 / 13;
-    max-height: none;
-  }
+.hero-ed .btn--secondary {
+  border-color: rgb(28 28 28 / 0.18);
+  background: rgb(255 255 255 / 0.32);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* Tablets: a desk-height crop of the photo rather than the whole tall image. */
+@media (min-width: 40rem) and (max-width: 63.99rem) {
   .hero-ed__photo {
-    object-position: 70% 70%;
+    height: 62vw;
+    object-fit: cover;
+    object-position: 60% 82%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 25%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 25%);
+  }
+  .hero-ed__copy {
+    padding-bottom: 54vw;
   }
 }
 
-/* Desktop: copy on the left; the photo fills the right and fades into the cream. */
+/* Desktop: the photo fills the right and runs under the copy, fading into the wall. */
 @media (min-width: 64rem) {
   .hero-ed {
     min-height: clamp(38rem, calc(100svh - var(--header-h)), 54rem);
@@ -1770,7 +1788,7 @@ main {
     width: 100%;
   }
   .hero-ed__copy {
-    max-width: min(42%, 36rem);
+    max-width: min(44%, 37rem);
     gap: var(--space-4);
     padding-block: var(--svc-top) var(--space-7);
   }
@@ -1778,24 +1796,20 @@ main {
     font-size: clamp(3.5rem, 0.6rem + 4.4vw, 6rem);
   }
   .hero-ed__visual {
-    position: absolute;
-    inset: 0 0 0 auto;
-    width: 62%;
-    max-height: none;
-    aspect-ratio: auto;
-    max-width: 72rem;
-    /* Fade in from the copy side, and softly out at the bottom into the next section. */
-    -webkit-mask-image:
-      linear-gradient(to right, transparent 0, #000 24%),
-      linear-gradient(to bottom, #000 86%, transparent);
-    -webkit-mask-composite: source-in;
-    mask-image:
-      linear-gradient(to right, transparent 0, #000 24%),
-      linear-gradient(to bottom, #000 86%, transparent);
-    mask-composite: intersect;
+    background: linear-gradient(to right, var(--hx-wall-lit) 30%, var(--hx-wall) 70%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 88%, transparent);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 88%, transparent);
   }
   .hero-ed__photo {
-    object-position: 70% 55%;
+    top: 0;
+    left: auto;
+    right: 0;
+    width: min(74%, 64rem); /* no wider than the photo itself, so it stays sharp */
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 58%;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40%);
+    mask-image: linear-gradient(to right, transparent 0, #000 40%);
   }
 }
 
