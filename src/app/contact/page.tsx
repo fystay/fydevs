@@ -18,7 +18,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Start a project"
         title="Tell us what you need."
-        lede="Three short steps and a quick review: your project, budget and timing, and how to reach you. It takes about a minute."
+        lede="A few quick choices and a sentence about your goals. It takes about a minute."
       />
       <section className="section--tight" style={{ paddingTop: 0 }}>
         <div className="container container--wide">

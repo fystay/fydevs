@@ -3537,19 +3537,216 @@ ol.steps li::after {
   }
 }
 
-.onboard-head {
-  display: grid;
-  gap: var(--space-1);
+.onboard {
+  gap: var(--space-6);
 }
 
-.onboard-head__count {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+.onboard-pane {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.onboard fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.onboard-title {
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.onboard-title:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .onboard-pane,
+  .onboard-reveal {
+    animation: onboard-in 420ms var(--ease) both;
+  }
+}
+
+@keyframes onboard-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Selection cards: one tap says what the project is. */
+.option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11.5rem), 1fr));
+  gap: var(--space-3);
+}
+
+.option-card {
+  position: relative;
+  display: grid;
+}
+
+.option-card input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option-card__body {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem 1.05rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 1.125rem;
+  background: var(--color-surface-raised);
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.option-card__icon {
+  margin-bottom: 0.45rem;
+  color: var(--color-ink-2);
+}
+
+.option-card__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.option-card__note {
+  font-size: var(--text-xs);
+  line-height: 1.4;
   color: var(--color-ink-3);
 }
 
-.onboard-head h2:focus {
-  outline: none;
+/* A small tick in the corner of the chosen card. */
+.option-card__body::after {
+  content: "";
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none'%3E%3Cpath d='m2.5 6.25 2.25 2.25L9.5 3.75' stroke='%23f7f5ef' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 12px no-repeat,
+    var(--color-ink);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--duration-fast) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+@media (hover: hover) {
+  .option-card:hover .option-card__body {
+    border-color: var(--color-ink-3);
+    transform: translateY(-1px);
+  }
+}
+
+.option-card input:checked + .option-card__body {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 1px var(--color-ink);
+}
+
+.option-card input:checked + .option-card__body .option-card__icon {
+  color: var(--color-accent);
+}
+
+.option-card input:checked + .option-card__body::after {
+  opacity: 1;
+  transform: none;
+}
+
+.option-card input:focus-visible + .option-card__body {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+/* Phones: compact rows, so all six options fit without a long scroll. */
+@media (max-width: 39.99rem) {
+  .option-cards {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .option-card__body {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.85rem;
+    align-items: center;
+    padding: 0.75rem 3rem 0.75rem 0.95rem;
+    border-radius: 1rem;
+  }
+  .option-card__icon {
+    grid-row: span 2;
+    margin: 0;
+  }
+  .option-card__body::after {
+    top: 50%;
+    margin-top: -0.625rem;
+  }
+}
+
+.onboard-reveal {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Example goals the visitor can tap to add. */
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.examples__label {
+  margin-right: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-ink-3);
+}
+
+.example {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: var(--text-xs);
+  color: var(--color-ink-2);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.example::before {
+  content: "+ ";
+  color: var(--color-ink-3);
+}
+
+.example:hover:not(:disabled) {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.example:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .onboard-nav {
@@ -3638,11 +3835,42 @@ ol.steps li::after {
   outline: none;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .onboard-done {
+    animation: onboard-in 420ms var(--ease) both;
+  }
+  .onboard-done__mark {
+    animation: onboard-pop 500ms 120ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+}
+
+@keyframes onboard-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+.onboard-ref {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  justify-self: start;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+}
+
+.onboard-ref span {
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
 .onboard-done__mark {
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   background: var(--color-success);
   color: #fff;

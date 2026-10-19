@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   BUDGETS,
   LIMITS,
@@ -23,31 +23,91 @@ const isTopic = (value: unknown): value is Topic =>
 type Fields = {
   name: string;
   email: string;
-  topic: Topic;
+  topic: Topic | "";
+  /** Current website, asked only for redesigns and hosting; sent as part of the message. */
+  site: string;
   budget: Budget | "";
   timeline: Timeline | "";
   message: string;
+  /** Honeypot. */
   website: string;
 };
 
 type FieldKey = keyof FieldErrors;
 
 const STEPS: { title: string; short: string; fields: FieldKey[] }[] = [
-  { title: "Your project", short: "Project", fields: ["topic", "message"] },
-  { title: "Budget and timing", short: "Budget", fields: ["budget", "timeline"] },
-  { title: "Your details", short: "Details", fields: ["name", "email"] },
-  { title: "Review and send", short: "Review", fields: [] },
+  { title: "What can we help with?", short: "Project", fields: ["topic", "message"] },
+  { title: "What budget and timing do you have in mind?", short: "Budget", fields: ["budget", "timeline"] },
+  { title: "Where should we reply?", short: "Details", fields: ["name", "email"] },
+  { title: "Ready to send?", short: "Review", fields: [] },
 ];
 const REVIEW = STEPS.length - 1;
+const SITE_LIMIT = 200;
 
-/** A prompt for the goals question that fits what the visitor needs. */
-const GOAL_HINTS: Record<Topic, string> = {
-  website: "Who are your customers, and what should the website help them do? For example: more local enquiries.",
-  redesign: "What isn't working with your current site? Include its address if you can.",
-  bespoke: "What should the software do, who will use it, and what do you use today?",
-  "booking-software": "How do bookings work today, and what would you like the software to handle?",
-  care: "Which site needs looking after, and where is it hosted now?",
-  other: "Tell us what you have in mind.",
+const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+/** What each option means, a line icon, and example goals visitors can tap to add. */
+const OPTIONS: Record<Topic, { note: string; icon: ReactNode; examples: string[]; askSite?: boolean }> = {
+  website: {
+    note: "A bespoke site for your business",
+    icon: (
+      <>
+        <rect x="3" y="4.5" width="18" height="15" rx="2.5" {...stroke} />
+        <path d="M3 9h18" {...stroke} />
+      </>
+    ),
+    examples: ["More enquiries from local customers", "Take bookings online", "Look as good as we are"],
+  },
+  redesign: {
+    note: "Refresh or rebuild an existing site",
+    icon: (
+      <>
+        <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" {...stroke} />
+        <path d="M19.5 4.5v3.75h-3.75" {...stroke} />
+      </>
+    ),
+    examples: ["It's slow on phones", "It's hard to update", "It looks dated"],
+    askSite: true,
+  },
+  bespoke: {
+    note: "Platforms, portals and web apps",
+    icon: (
+      <>
+        <rect x="3.75" y="3.75" width="6.75" height="6.75" rx="1.5" {...stroke} />
+        <rect x="13.5" y="3.75" width="6.75" height="6.75" rx="1.5" {...stroke} />
+        <rect x="3.75" y="13.5" width="6.75" height="6.75" rx="1.5" {...stroke} />
+        <path d="M16.9 13.5v6.75M13.5 16.9h6.75" {...stroke} />
+      </>
+    ),
+    examples: ["Replace our spreadsheets", "Give customers their own portal", "Automate a manual process"],
+  },
+  "booking-software": {
+    note: "See the booking system in action",
+    icon: (
+      <>
+        <rect x="3.75" y="5.25" width="16.5" height="15" rx="2.5" {...stroke} />
+        <path d="M3.75 9.75h16.5M8.25 3v4.5M15.75 3v4.5M9 15l2 2 4-4" {...stroke} />
+      </>
+    ),
+    examples: ["Let customers book online", "Manage drivers and jobs in one place", "Send confirmations automatically"],
+  },
+  care: {
+    note: "Look after a site you already have",
+    icon: <path d="M12 3.75 4.5 6.75v5.25c0 4.1 3.1 7.4 7.5 8.25 4.4-.85 7.5-4.15 7.5-8.25V6.75L12 3.75Z" {...stroke} />,
+    examples: ["Keep it secure and up to date", "Small changes each month", "Move to better hosting"],
+    askSite: true,
+  },
+  other: {
+    note: "Tell us what you have in mind",
+    icon: (
+      <>
+        <circle cx="6" cy="12" r="1.25" fill="currentColor" />
+        <circle cx="12" cy="12" r="1.25" fill="currentColor" />
+        <circle cx="18" cy="12" r="1.25" fill="currentColor" />
+      </>
+    ),
+    examples: [],
+  },
 };
 
 /*
@@ -57,7 +117,7 @@ const GOAL_HINTS: Record<Topic, string> = {
 const DRAFT_KEY = "fydevs-enquiry-draft";
 const SENT_KEY = "fydevs-enquiry-sent";
 
-type Draft = Pick<Fields, "topic" | "budget" | "timeline" | "message">;
+type Draft = Pick<Fields, "topic" | "site" | "budget" | "timeline" | "message">;
 
 function readSession<T>(key: string): T | null {
   try {
@@ -83,7 +143,8 @@ function initialFields(topicParam: string | null): Fields {
     name: "",
     email: "",
     // A ?topic= link reflects what the visitor just chose, so it wins over an older draft.
-    topic: isTopic(topicParam) ? topicParam : isTopic(draft.topic) ? draft.topic : "website",
+    topic: isTopic(topicParam) ? topicParam : isTopic(draft.topic) ? draft.topic : "",
+    site: typeof draft.site === "string" ? draft.site.slice(0, SITE_LIMIT) : "",
     budget: typeof draft.budget === "string" && draft.budget in BUDGETS ? (draft.budget as Budget) : "",
     timeline: typeof draft.timeline === "string" && draft.timeline in TIMELINES ? (draft.timeline as Timeline) : "",
     message: typeof draft.message === "string" ? draft.message.slice(0, LIMITS.message) : "",
@@ -91,10 +152,13 @@ function initialFields(topicParam: string | null): Fields {
   };
 }
 
+/** The message as sent: the current website (when asked for) ahead of the visitor's goals. */
+const composeMessage = (f: Fields) =>
+  f.topic && OPTIONS[f.topic].askSite && f.site.trim() ? `Current website: ${f.site.trim()}\n\n${f.message}` : f.message;
+
 function ChipGroup<K extends string>({
   name,
   legend,
-  hint,
   options,
   value,
   onChange,
@@ -102,21 +166,14 @@ function ChipGroup<K extends string>({
 }: {
   name: string;
   legend: string;
-  hint?: string;
   options: Record<K, string>;
   value: K | "";
   onChange: (v: K) => void;
   error?: string;
 }) {
-  const describedBy = [hint && `contact-${name}-hint`, error && `contact-${name}-error`].filter(Boolean).join(" ");
   return (
-    <fieldset className="field chips" aria-describedby={describedBy || undefined}>
+    <fieldset className="field chips" aria-describedby={error ? `contact-${name}-error` : undefined}>
       <legend>{legend}</legend>
-      {hint && (
-        <p id={`contact-${name}-hint`} className="field-hint">
-          {hint}
-        </p>
-      )}
       <div className="chips__options">
         {(Object.keys(options) as K[]).map((key) => (
           <label key={key} className="chip">
@@ -143,7 +200,7 @@ function ChipGroup<K extends string>({
 
 /**
  * The enquiry journey: three short steps and a review, then a confirmation with
- * a reference and next steps. Validation matches the server, which has the final say.
+ * a reference. Validation matches the server, which has the final say.
  */
 export function ContactForm() {
   const params = useSearchParams();
@@ -158,8 +215,8 @@ export function ContactForm() {
   const moved = useRef(false);
 
   useEffect(() => {
-    const { topic, budget, timeline, message } = fields;
-    writeSession(DRAFT_KEY, { topic, budget, timeline, message });
+    const { topic, site, budget, timeline, message } = fields;
+    writeSession(DRAFT_KEY, { topic, site, budget, timeline, message });
   }, [fields]);
 
   // Move focus to the new step's heading, but not on first load.
@@ -172,6 +229,9 @@ export function ContactForm() {
     if (errors[key as FieldKey]) setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
+  const addExample = (text: string) =>
+    set("message", fields.message.trim() ? `${fields.message.trim()}\n${text}.` : `${text}.`);
+
   const goTo = (next: number) => {
     moved.current = true;
     setStep(next);
@@ -179,10 +239,16 @@ export function ContactForm() {
   };
 
   const errorsFor = (from: number, to: number) => {
-    const check = validateEnquiry(fields, { detailsRequired: true });
-    if (check.ok) return {};
     const keys = STEPS.slice(from, to + 1).flatMap((s) => s.fields);
-    return Object.fromEntries(Object.entries(check.errors).filter(([k]) => keys.includes(k as FieldKey))) as FieldErrors;
+    const check = validateEnquiry({ ...fields, message: composeMessage(fields) }, { detailsRequired: true });
+    const found: FieldErrors = check.ok ? {} : { ...check.errors };
+    // The server files anything unrecognised under "Something else"; here we ask for a clear choice.
+    if (!fields.topic) found.topic = "Choose the option closest to what you need.";
+    // Goals are judged on what the visitor wrote, not the website line added in front.
+    if (fields.message.trim().length < 10 && !found.message) {
+      found.message = "Please tell us a little about your goals (at least 10 characters).";
+    }
+    return Object.fromEntries(Object.entries(found).filter(([k]) => keys.includes(k as FieldKey))) as FieldErrors;
   };
 
   const focusFirstError = (found: FieldErrors, form: HTMLFormElement) => {
@@ -207,7 +273,18 @@ export function ContactForm() {
       setErrors(all);
       return goTo(STEPS.findIndex((s) => s.fields.some((k) => all[k])));
     }
-    const result = await submit({ kind: "contact", ...fields, startedAt });
+    const { name, email, topic, budget, timeline, website } = fields;
+    const result = await submit({
+      kind: "contact",
+      name,
+      email,
+      topic,
+      budget,
+      timeline,
+      website,
+      message: composeMessage(fields),
+      startedAt,
+    });
     if (result?.status === "success") {
       writeSession(DRAFT_KEY, null);
       writeSession(SENT_KEY, { reference: result.reference });
@@ -222,44 +299,37 @@ export function ContactForm() {
   const startAnother = () => {
     writeSession(SENT_KEY, null);
     setPrevious(null);
-    setFields((f) => ({ ...f, budget: "", timeline: "", message: "" }));
+    setFields((f) => ({ ...f, topic: "", site: "", budget: "", timeline: "", message: "" }));
     setErrors({});
     setStep(0);
     setFurthest(0);
     reset();
   };
 
+  const firstName = fields.name.trim().split(/\s+/)[0];
+
   // Confirmation after sending.
   if (state.status === "success") {
     return (
       <div className="onboard-done" role="status">
         <p className="onboard-done__mark" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
             <path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </p>
-        <h2 ref={headingRef} tabIndex={-1} className="h3">
-          Thank you. Your enquiry has been sent.
+        <h2 ref={headingRef} tabIndex={-1} className="onboard-title">
+          {firstName ? `Thanks, ${firstName}.` : "Thank you."} Your enquiry is with us.
         </h2>
         <p className="muted">
-          We&apos;ll reply to <strong>{fields.email}</strong>.
-          {state.reference && (
-            <>
-              {" "}
-              Your reference is <strong className="mono">{state.reference}</strong>; quote it if you get in touch about
-              this enquiry.
-            </>
-          )}
+          We&apos;ll read it properly and reply to <strong>{fields.email}</strong> with questions, advice or a suggested
+          next step. There&apos;s nothing to pay unless you approve a written quote.
         </p>
-        <p>
-          Next, we&apos;ll review it and reply by email with questions, advice or a suggested next step. If it&apos;s a
-          good fit, we&apos;ll arrange a short discovery call, then send you a written scope and fixed price to approve.
-          There&apos;s nothing to pay until you do.
-        </p>
-        <p className="muted small">
-          Need to add something? Reply to our email when it arrives, or send another enquiry and mention your
-          reference.
-        </p>
+        {state.reference && (
+          <p className="onboard-ref">
+            <span>Your reference</span>
+            <strong className="mono">{state.reference}</strong>
+          </p>
+        )}
         <div className="btn-row">
           <Link href="/work" className="btn btn--secondary">
             See our work
@@ -276,15 +346,14 @@ export function ContactForm() {
   if (previous && state.status === "idle") {
     return (
       <div className="onboard-done" role="status">
-        <h2 className="h3">You&apos;ve already sent us an enquiry.</h2>
-        <p className="muted">
-          {previous.reference ? (
-            <>
-              Your reference is <strong className="mono">{previous.reference}</strong>.{" "}
-            </>
-          ) : null}
-          We&apos;ll reply by email. If there&apos;s something new, you can send another.
-        </p>
+        <h2 className="onboard-title">Your enquiry is with us.</h2>
+        <p className="muted">We&apos;ll reply by email. If there&apos;s something new, you can send another.</p>
+        {previous.reference && (
+          <p className="onboard-ref">
+            <span>Your reference</span>
+            <strong className="mono">{previous.reference}</strong>
+          </p>
+        )}
         <div className="btn-row">
           <button type="button" className="btn btn--primary" onClick={startAnother}>
             Send another enquiry
@@ -295,13 +364,14 @@ export function ContactForm() {
   }
 
   const allErrors = { ...(state.status === "error" ? state.fields : {}), ...errors };
-  const describe = (key: FieldKey, hint?: boolean) =>
-    [hint && `contact-${key}-hint`, allErrors[key] && `contact-${key}-error`].filter(Boolean).join(" ") || undefined;
+  const describe = (key: FieldKey) => (allErrors[key] ? `contact-${key}-error` : undefined);
   const sending = state.status === "submitting";
+  const option = fields.topic ? OPTIONS[fields.topic] : null;
 
   const review: [string, string, number][] = [
-    ["What you need", TOPICS[fields.topic], 0],
-    ["Your goals", fields.message, 0],
+    ["Project", fields.topic ? TOPICS[fields.topic] : "", 0],
+    ...(option?.askSite ? ([["Current website", fields.site.trim(), 0]] as [string, string, number][]) : []),
+    ["Goals", fields.message.trim(), 0],
     ["Budget", fields.budget ? BUDGETS[fields.budget] : "", 1],
     ["Timeline", fields.timeline ? TIMELINES[fields.timeline] : "", 1],
     ["Name", fields.name, 2],
@@ -309,17 +379,17 @@ export function ContactForm() {
   ];
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate aria-labelledby="onboard-step-title">
+    <form className="form onboard" onSubmit={onSubmit} noValidate aria-labelledby="onboard-step-title">
       <ol role="list" className="onboard-steps" aria-label="Progress">
         {STEPS.map((s, i) => (
-          <li key={s.title} aria-current={i === step ? "step" : undefined} data-done={i < step || undefined}>
+          <li key={s.short} aria-current={i === step ? "step" : undefined} data-done={i < step || undefined}>
             {i <= furthest && i !== step && !sending ? (
               <button type="button" onClick={() => goTo(i)}>
                 <span className="onboard-steps__num" aria-hidden="true">
                   {i + 1}
                 </span>
                 <span>{s.short}</span>
-                <span className="visually-hidden">, step {i + 1}: go back to {s.title.toLowerCase()}</span>
+                <span className="visually-hidden">: go back to step {i + 1}</span>
               </button>
             ) : (
               <span>
@@ -333,155 +403,204 @@ export function ContactForm() {
         ))}
       </ol>
 
-      <div className="onboard-head">
-        <p className="onboard-head__count">
-          Step {step + 1} of {STEPS.length}
-        </p>
-        <h2 id="onboard-step-title" ref={headingRef} tabIndex={-1} className="h3">
+      <div className="onboard-pane" key={step}>
+        <h2 id="onboard-step-title" ref={headingRef} tabIndex={-1} className="onboard-title">
+          <span className="visually-hidden">
+            Step {step + 1} of {STEPS.length}:{" "}
+          </span>
           {STEPS[step].title}
         </h2>
-      </div>
 
-      {step === 0 && (
-        <>
-          <div className="field">
-            <label htmlFor="contact-topic">What do you need?</label>
-            <select
-              id="contact-topic"
-              className="select"
-              value={fields.topic}
-              onChange={(e) => set("topic", e.target.value as Topic)}
-            >
-              {(Object.keys(TOPICS) as Topic[]).map((t) => (
-                <option key={t} value={t}>
-                  {TOPICS[t]}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="field">
-            <label htmlFor="contact-message">What are your goals?</label>
-            <p id="contact-message-hint" className="field-hint">
-              A few sentences is plenty. This is how we work out whether, and how, we can help.
-            </p>
-            <textarea
-              id="contact-message"
-              className="textarea"
-              rows={5}
-              required
-              maxLength={LIMITS.message}
-              placeholder={GOAL_HINTS[fields.topic]}
-              value={fields.message}
-              onChange={(e) => set("message", e.target.value)}
-              aria-invalid={allErrors.message ? true : undefined}
-              aria-describedby={describe("message", true)}
-            />
-            {allErrors.message && (
-              <p id="contact-message-error" className="field-error">
-                {allErrors.message}
-              </p>
-            )}
-          </div>
-        </>
-      )}
-
-      {step === 1 && (
-        <>
-          <ChipGroup
-            name="budget"
-            legend="Budget"
-            hint="A rough range helps us suggest the right approach. “Not sure yet” is fine."
-            options={BUDGETS}
-            value={fields.budget}
-            onChange={(v) => set("budget", v)}
-            error={allErrors.budget}
-          />
-          <ChipGroup
-            name="timeline"
-            legend="Timeline"
-            hint="When would you like this to be live?"
-            options={TIMELINES}
-            value={fields.timeline}
-            onChange={(v) => set("timeline", v)}
-            error={allErrors.timeline}
-          />
-        </>
-      )}
-
-      {step === 2 && (
-        <>
-          <p className="field-hint">We only use these to reply to you.</p>
-          <div className="form-row">
-            <div className="field">
-              <label htmlFor="contact-name">Your name</label>
-              <input
-                id="contact-name"
-                className="input"
-                autoComplete="name"
-                required
-                maxLength={LIMITS.name}
-                value={fields.name}
-                onChange={(e) => set("name", e.target.value)}
-                aria-invalid={allErrors.name ? true : undefined}
-                aria-describedby={describe("name")}
-              />
-              {allErrors.name && (
-                <p id="contact-name-error" className="field-error">
-                  {allErrors.name}
-                </p>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="contact-email">Email</label>
-              <input
-                id="contact-email"
-                className="input"
-                type="email"
-                autoComplete="email"
-                inputMode="email"
-                required
-                maxLength={LIMITS.email}
-                value={fields.email}
-                onChange={(e) => set("email", e.target.value)}
-                aria-invalid={allErrors.email ? true : undefined}
-                aria-describedby={describe("email")}
-              />
-              {allErrors.email && (
-                <p id="contact-email-error" className="field-error">
-                  {allErrors.email}
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      {step === REVIEW && (
-        <>
-          <p className="field-hint">Check everything looks right. You can change anything before sending.</p>
-          <dl className="review-list">
-            {review.map(([label, value, target]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value || <span className="muted">Not given</span>}</dd>
-                <button
-                  type="button"
-                  className="review-list__edit"
-                  onClick={() => goTo(target)}
-                  disabled={sending}
-                  aria-label={`Change ${label.toLowerCase()}`}
-                >
-                  Change
-                </button>
+        {step === 0 && (
+          <>
+            <fieldset className="field" aria-describedby={describe("topic")}>
+              <legend className="visually-hidden">Project type</legend>
+              <div className="option-cards">
+                {(Object.keys(TOPICS) as Topic[]).map((t, i) => (
+                  <label key={t} className="option-card">
+                    <input
+                      type="radio"
+                      name="contact-topic"
+                      id={i === 0 ? "contact-topic" : undefined}
+                      value={t}
+                      checked={fields.topic === t}
+                      onChange={() => set("topic", t)}
+                    />
+                    <span className="option-card__body">
+                      <svg className="option-card__icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                        {OPTIONS[t].icon}
+                      </svg>
+                      <span className="option-card__title">{TOPICS[t]}</span>
+                      <span className="option-card__note">{OPTIONS[t].note}</span>
+                    </span>
+                  </label>
+                ))}
               </div>
-            ))}
-          </dl>
-          <p className="fine">
-            We use your details only to reply to you. See our <Link href="/privacy">privacy notice</Link>.
-          </p>
-        </>
-      )}
+              {allErrors.topic && (
+                <p id="contact-topic-error" className="field-error">
+                  {allErrors.topic}
+                </p>
+              )}
+            </fieldset>
+
+            {option && (
+              <div className="onboard-reveal">
+                {option.askSite && (
+                  <div className="field">
+                    <label htmlFor="contact-site">
+                      Your current website <span className="optional">(optional)</span>
+                    </label>
+                    <input
+                      id="contact-site"
+                      className="input"
+                      inputMode="url"
+                      autoComplete="url"
+                      placeholder="example.co.uk"
+                      maxLength={SITE_LIMIT}
+                      value={fields.site}
+                      onChange={(e) => set("site", e.target.value)}
+                    />
+                  </div>
+                )}
+
+                <div className="field">
+                  <label htmlFor="contact-message">What would you like it to achieve?</label>
+                  <textarea
+                    id="contact-message"
+                    className="textarea"
+                    rows={4}
+                    required
+                    maxLength={LIMITS.message}
+                    placeholder="A sentence or two is plenty."
+                    value={fields.message}
+                    onChange={(e) => set("message", e.target.value)}
+                    aria-invalid={allErrors.message ? true : undefined}
+                    aria-describedby={[option.examples.length ? "contact-examples" : "", describe("message") ?? ""]
+                      .filter(Boolean)
+                      .join(" ") || undefined}
+                  />
+                  {option.examples.length > 0 && (
+                    <div className="examples" id="contact-examples">
+                      <span className="examples__label">Quick add</span>
+                      {option.examples.map((ex) => (
+                        <button
+                          key={ex}
+                          type="button"
+                          className="example"
+                          onClick={() => addExample(ex)}
+                          disabled={fields.message.includes(ex)}
+                        >
+                          {ex}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {allErrors.message && (
+                    <p id="contact-message-error" className="field-error">
+                      {allErrors.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {step === 1 && (
+          <>
+            <ChipGroup
+              name="budget"
+              legend="Budget"
+              options={BUDGETS}
+              value={fields.budget}
+              onChange={(v) => set("budget", v)}
+              error={allErrors.budget}
+            />
+            <ChipGroup
+              name="timeline"
+              legend="Timeline"
+              options={TIMELINES}
+              value={fields.timeline}
+              onChange={(v) => set("timeline", v)}
+              error={allErrors.timeline}
+            />
+            <p className="field-hint">A rough idea is fine. It helps us suggest the right approach.</p>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <div className="form-row">
+              <div className="field">
+                <label htmlFor="contact-name">Your name</label>
+                <input
+                  id="contact-name"
+                  className="input"
+                  autoComplete="name"
+                  required
+                  maxLength={LIMITS.name}
+                  value={fields.name}
+                  onChange={(e) => set("name", e.target.value)}
+                  aria-invalid={allErrors.name ? true : undefined}
+                  aria-describedby={describe("name")}
+                />
+                {allErrors.name && (
+                  <p id="contact-name-error" className="field-error">
+                    {allErrors.name}
+                  </p>
+                )}
+              </div>
+              <div className="field">
+                <label htmlFor="contact-email">Email</label>
+                <input
+                  id="contact-email"
+                  className="input"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  required
+                  maxLength={LIMITS.email}
+                  value={fields.email}
+                  onChange={(e) => set("email", e.target.value)}
+                  aria-invalid={allErrors.email ? true : undefined}
+                  aria-describedby={describe("email")}
+                />
+                {allErrors.email && (
+                  <p id="contact-email-error" className="field-error">
+                    {allErrors.email}
+                  </p>
+                )}
+              </div>
+            </div>
+            <p className="field-hint">We only use these to reply to you.</p>
+          </>
+        )}
+
+        {step === REVIEW && (
+          <>
+            <dl className="review-list">
+              {review.map(([label, value, target]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value || <span className="muted">Not given</span>}</dd>
+                  <button
+                    type="button"
+                    className="review-list__edit"
+                    onClick={() => goTo(target)}
+                    disabled={sending}
+                    aria-label={`Change ${label.toLowerCase()}`}
+                  >
+                    Change
+                  </button>
+                </div>
+              ))}
+            </dl>
+            <p className="fine">
+              We use your details only to reply to you. See our <Link href="/privacy">privacy notice</Link>.
+            </p>
+          </>
+        )}
+      </div>
 
       <div className="hp-field" aria-hidden="true">
         <label htmlFor="contact-website">Leave this field empty</label>
