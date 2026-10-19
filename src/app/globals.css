@@ -70,7 +70,7 @@
   --width-prose: 38rem;
   --width-measure: 34rem; /* comfortable line length for supporting copy */
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
-  --logo-h: 1.75rem; /* header logo height; the bar grows with it */
+  --logo-h: 2.75rem; /* header logo height; the bar grows with it */
   --header-h: max(4rem, calc(var(--logo-h) + 1.75rem));
 
   /* Shape & depth */
