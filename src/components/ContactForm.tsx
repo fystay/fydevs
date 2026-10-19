@@ -14,6 +14,7 @@ import {
   type Timeline,
   type Topic,
 } from "@/lib/enquiry";
+import { PACKAGES, formatGBP } from "@/lib/pricing";
 import { ArrowLeft, ArrowRight } from "./Icons";
 import { useEnquirySubmit } from "./useEnquirySubmit";
 
@@ -156,36 +157,51 @@ function initialFields(topicParam: string | null): Fields {
 const composeMessage = (f: Fields) =>
   f.topic && OPTIONS[f.topic].askSite && f.site.trim() ? `Current website: ${f.site.trim()}\n\n${f.message}` : f.message;
 
-function ChipGroup<K extends string>({
+type Choice<K extends string> = { value: K; title: string; note: string; icon?: ReactNode };
+
+/** A group of selection cards (radio buttons underneath). */
+function OptionCards<K extends string>({
   name,
   legend,
-  options,
+  showLegend,
+  choices,
   value,
   onChange,
   error,
+  compact,
 }: {
   name: string;
   legend: string;
-  options: Record<K, string>;
+  showLegend?: boolean;
+  choices: Choice<K>[];
   value: K | "";
   onChange: (v: K) => void;
   error?: string;
+  compact?: boolean;
 }) {
   return (
-    <fieldset className="field chips" aria-describedby={error ? `contact-${name}-error` : undefined}>
-      <legend>{legend}</legend>
-      <div className="chips__options">
-        {(Object.keys(options) as K[]).map((key) => (
-          <label key={key} className="chip">
+    <fieldset className="field" aria-describedby={error ? `contact-${name}-error` : undefined}>
+      <legend className={showLegend ? undefined : "visually-hidden"}>{legend}</legend>
+      <div className={`option-cards${compact ? " option-cards--compact" : ""}`}>
+        {choices.map((c, i) => (
+          <label key={c.value} className="option-card">
             <input
               type="radio"
               name={`contact-${name}`}
-              id={key === Object.keys(options)[0] ? `contact-${name}` : undefined}
-              value={key}
-              checked={value === key}
-              onChange={() => onChange(key)}
+              id={i === 0 ? `contact-${name}` : undefined}
+              value={c.value}
+              checked={value === c.value}
+              onChange={() => onChange(c.value)}
             />
-            <span>{options[key]}</span>
+            <span className="option-card__body">
+              {c.icon && (
+                <svg className="option-card__icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                  {c.icon}
+                </svg>
+              )}
+              <span className="option-card__title">{c.title}</span>
+              <span className="option-card__note">{c.note}</span>
+            </span>
           </label>
         ))}
       </div>
@@ -197,6 +213,39 @@ function ChipGroup<K extends string>({
     </fieldset>
   );
 }
+
+const TOPIC_CHOICES: Choice<Topic>[] = (Object.keys(TOPICS) as Topic[]).map((t) => ({
+  value: t,
+  title: TOPICS[t],
+  note: OPTIONS[t].note,
+  icon: OPTIONS[t].icon,
+}));
+
+// Budget notes point at the published starting prices, so they stay in step with lib/pricing.
+const BUDGET_NOTES: Record<Budget, string> = {
+  "under-2k": `Essential starts at ${formatGBP(PACKAGES.essential.from)}`,
+  "2k-5k": `Professional starts at ${formatGBP(PACKAGES.professional.from)}`,
+  "5k-10k": `Premium starts at ${formatGBP(PACKAGES.premium.from)}`,
+  "10k-plus": "Larger sites and software",
+  unsure: "We'll help you work it out",
+};
+const BUDGET_CHOICES: Choice<Budget>[] = (Object.keys(BUDGETS) as Budget[]).map((b) => ({
+  value: b,
+  title: BUDGETS[b],
+  note: BUDGET_NOTES[b],
+}));
+
+const TIMELINE_NOTES: Record<Timeline, string> = {
+  asap: "Ready to start now",
+  "1-3m": "In the next few months",
+  "3-6m": "Planning ahead",
+  flexible: "No fixed deadline",
+};
+const TIMELINE_CHOICES: Choice<Timeline>[] = (Object.keys(TIMELINES) as Timeline[]).map((t) => ({
+  value: t,
+  title: TIMELINES[t],
+  note: TIMELINE_NOTES[t],
+}));
 
 /**
  * The enquiry journey: three short steps and a review, then a confirmation with
@@ -413,35 +462,14 @@ export function ContactForm() {
 
         {step === 0 && (
           <>
-            <fieldset className="field" aria-describedby={describe("topic")}>
-              <legend className="visually-hidden">Project type</legend>
-              <div className="option-cards">
-                {(Object.keys(TOPICS) as Topic[]).map((t, i) => (
-                  <label key={t} className="option-card">
-                    <input
-                      type="radio"
-                      name="contact-topic"
-                      id={i === 0 ? "contact-topic" : undefined}
-                      value={t}
-                      checked={fields.topic === t}
-                      onChange={() => set("topic", t)}
-                    />
-                    <span className="option-card__body">
-                      <svg className="option-card__icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-                        {OPTIONS[t].icon}
-                      </svg>
-                      <span className="option-card__title">{TOPICS[t]}</span>
-                      <span className="option-card__note">{OPTIONS[t].note}</span>
-                    </span>
-                  </label>
-                ))}
-              </div>
-              {allErrors.topic && (
-                <p id="contact-topic-error" className="field-error">
-                  {allErrors.topic}
-                </p>
-              )}
-            </fieldset>
+            <OptionCards
+              name="topic"
+              legend="Project type"
+              choices={TOPIC_CHOICES}
+              value={fields.topic}
+              onChange={(v) => set("topic", v)}
+              error={allErrors.topic}
+            />
 
             {option && (
               <div className="onboard-reveal">
@@ -508,18 +536,22 @@ export function ContactForm() {
 
         {step === 1 && (
           <>
-            <ChipGroup
+            <OptionCards
               name="budget"
               legend="Budget"
-              options={BUDGETS}
+              showLegend
+              compact
+              choices={BUDGET_CHOICES}
               value={fields.budget}
               onChange={(v) => set("budget", v)}
               error={allErrors.budget}
             />
-            <ChipGroup
+            <OptionCards
               name="timeline"
               legend="Timeline"
-              options={TIMELINES}
+              showLegend
+              compact
+              choices={TIMELINE_CHOICES}
               value={fields.timeline}
               onChange={(v) => set("timeline", v)}
               error={allErrors.timeline}
