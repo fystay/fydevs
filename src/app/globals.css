@@ -1548,44 +1548,29 @@ main {
   background:
     radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / 0.55), transparent 60%),
     var(--color-surface-sunken);
-  padding: clamp(1.25rem, 0.5rem + 4vw, 4.5rem) clamp(1rem, 0.5rem + 3vw, 4.5rem) clamp(4rem, 2rem + 8vw, 9rem);
+  padding: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
   overflow: hidden;
 }
 
+/* The website is the subject: full width on small screens, never covered by the phone. */
 .stage__browser {
-  width: 88%;
+  width: 100%;
 }
 
 .stage__phone {
-  position: absolute;
-  width: 30%;
-}
-
-.stage__phone--a {
-  right: 4%;
-  bottom: -3%;
-}
-
-.stage__phone--b {
   display: none;
+  position: absolute;
 }
 
 @media (min-width: 48rem) {
   .stage__browser {
-    width: 78%;
+    width: 79%;
   }
   .stage__phone {
-    width: 18%;
-  }
-  .stage__phone--a {
-    right: 16%;
-    bottom: -3%;
-  }
-  .stage__phone--b {
     display: block;
-    right: 3%;
-    bottom: 10%;
     width: 16%;
+    right: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
+    bottom: clamp(0.75rem, 0.25rem + 2.5vw, 3rem);
   }
 }
 
@@ -1654,24 +1639,36 @@ main {
 }
 
 .work-row__media {
+  --pad: clamp(0.75rem, 0.25rem + 2vw, 2rem);
   position: relative;
-  padding: clamp(1rem, 0.5rem + 2.5vw, 2.5rem) clamp(1rem, 0.5rem + 2.5vw, 2.5rem) clamp(2.5rem, 1rem + 4vw, 4rem);
+  padding: var(--pad);
   border-radius: var(--radius-lg);
   background: var(--color-surface-sunken);
   overflow: hidden;
 }
 
+/* The website stays fully visible: the phone sits beside it, never on top. */
 .work-row__media > :first-child {
-  width: 86%;
+  width: 100%;
   transition: transform var(--duration-slow) var(--ease);
 }
 
 .work-row__phone {
-  position: absolute;
-  right: 5%;
-  bottom: -14%;
-  width: 22%;
+  display: none;
   transition: transform var(--duration-slow) var(--ease);
+}
+
+@media (min-width: 48rem) {
+  .work-row__media > :first-child {
+    width: 78%;
+  }
+  .work-row__phone {
+    display: block;
+    position: absolute;
+    right: var(--pad);
+    bottom: var(--pad);
+    width: 19%;
+  }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -2522,6 +2519,7 @@ main {
 
 .showcase__meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-4);
   font-family: var(--font-mono);
@@ -2530,7 +2528,14 @@ main {
 }
 
 .showcase__caption {
-  min-width: 12rem;
+  flex: 1 1 100%;
+}
+
+@media (min-width: 40rem) {
+  .showcase__caption {
+    flex: 0 1 auto;
+    min-width: 12rem;
+  }
 }
 
 .showcase__link {

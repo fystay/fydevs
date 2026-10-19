@@ -39,7 +39,7 @@ export default function WorkPage() {
                       src={p.page}
                       host={p.host}
                       alt={`The ${p.name} website, full page`}
-                      sizes="(min-width: 80rem) 680px, (min-width: 64rem) 55vw, 90vw"
+                      sizes="(min-width: 80rem) 760px, (min-width: 64rem) 60vw, 100vw"
                     />
                     <PhoneFrame
                       className="work-row__phone"

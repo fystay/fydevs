@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/projects";
 import devices from "../Devices.module.css";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "desktop" | "mobile">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile">;
 
 const INTERVAL = 6000;
 
@@ -102,14 +102,14 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                 src={p.desktop}
                 alt={i === index ? `The ${p.name} website on desktop` : ""}
                 aria-hidden={i !== index}
-                sizes="(min-width: 80rem) 960px, 88vw"
+                sizes="(min-width: 80rem) 1000px, 100vw"
                 preload={i === 0}
                 className={`showcase__img${i === index ? " is-active" : ""}`}
               />
             ))}
           </div>
         </figure>
-        <figure className={`${devices.phone} stage__phone stage__phone--a showcase__layer showcase__layer--front`}>
+        <figure className={`${devices.phone} stage__phone showcase__layer showcase__layer--front`}>
           <div className="showcase__frames">
             {items.map((p, i) => (
               <Image
@@ -117,7 +117,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                 src={p.mobile}
                 alt={i === index ? `The ${p.name} website on a phone` : ""}
                 aria-hidden={i !== index}
-                sizes="(min-width: 48rem) 230px, 30vw"
+                sizes="220px"
                 className={`${devices.screen} showcase__img${i === index ? " is-active" : ""}`}
               />
             ))}
@@ -155,6 +155,15 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
           <Link href={`/work#${current.slug}`} className="showcase__link">
             View project
           </Link>
+          <a
+            href={current.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="showcase__link"
+            aria-label={`View the ${current.name} website live (opens in a new tab)`}
+          >
+            View live ↗
+          </a>
           {!reduced && (
             <button
               type="button"
