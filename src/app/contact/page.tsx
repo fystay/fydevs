@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import { PageHero } from "@/components/Blocks";
 import { ContactForm } from "@/components/ContactForm";
 import { ArrowRight } from "@/components/Icons";
@@ -12,7 +11,12 @@ export const metadata = pageMetadata(
   "Tell FY Devs about your website or software project: what you need, your budget, your goals and your timeline.",
 );
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { topic } = await searchParams;
   return (
     <>
       <PageHero
@@ -24,11 +28,9 @@ export default function ContactPage() {
         <div className="container container--wide">
           <div className="contact-grid">
             <div className="card card--raised">
-              <Suspense fallback={<p className="muted">Loading form…</p>}>
-                <ContactForm />
-              </Suspense>
+              <ContactForm topic={Array.isArray(topic) ? topic[0] : topic} />
             </div>
-            <aside className="stack" style={{ "--stack": "var(--space-7)" } as React.CSSProperties}>
+            <div className="stack" style={{ "--stack": "var(--space-7)" } as React.CSSProperties}>
               <div>
                 <h2 className="h3">What happens next</h2>
                 <ol role="list" className="next-steps mt-5">
@@ -55,7 +57,7 @@ export default function ContactPage() {
                   </Link>
                 </p>
               </div>
-            </aside>
+            </div>
           </div>
         </div>
       </section>

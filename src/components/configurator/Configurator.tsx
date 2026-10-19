@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { EMPTY_DETAILS, describeAnswers, formatBrief, type BriefDetails } from "@/lib/brief";
 import { LIMITS, validateEnquiry, type FieldErrors } from "@/lib/enquiry";
@@ -91,14 +90,17 @@ function store(saved: Saved | null) {
   }
 }
 
-/** Initial answers: saved progress, then any choices carried over from the homepage estimate. */
-function initialState(params: URLSearchParams): Saved {
-  const saved = loadSaved() ?? { answers: DEFAULT_ANSWERS, details: EMPTY_DETAILS };
+/** Choices carried over in the link, e.g. ?pages=6-12 from a pricing card or ?care=care from a plan. */
+export type ConfiguratorParams = { type?: string; pages?: string; care?: string };
+
+/** Initial answers: saved progress (in the browser only), then any choices carried over in the link. */
+function initialState(params: ConfiguratorParams, withSaved: boolean): Saved {
+  const saved = (withSaved ? loadSaved() : null) ?? { answers: DEFAULT_ANSWERS, details: EMPTY_DETAILS };
   const merged = parseAnswers({
     ...saved.answers,
-    ...(params.get("type") && { projectType: params.get("type") }),
-    ...(params.get("pages") && { pageBand: params.get("pages") }),
-    ...(params.get("care") && { carePlan: params.get("care") }),
+    ...(params.type && { projectType: params.type }),
+    ...(params.pages && { pageBand: params.pages }),
+    ...(params.care && { carePlan: params.care }),
   });
   return { answers: merged ?? saved.answers, details: saved.details };
 }
@@ -106,17 +108,18 @@ function initialState(params: URLSearchParams): Saved {
 const noopSubscribe = () => () => {};
 
 /**
- * Saved progress lives in localStorage, which the server can't see, so the
- * configurator renders only after hydration to avoid a mismatch.
+ * Saved progress lives in localStorage, which the server can't see. The server
+ * renders the first step with the link's choices, so the page arrives at its
+ * final size; once hydrated, it remounts with any saved progress. Both start on
+ * the same step, so nothing moves.
  */
-export function Configurator({ fallback }: { fallback: ReactNode }) {
+export function Configurator({ params }: { params: ConfiguratorParams }) {
   const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
-  return hydrated ? <ConfiguratorInner /> : fallback;
+  return <ConfiguratorInner key={hydrated ? "browser" : "server"} params={params} inBrowser={hydrated} />;
 }
 
-function ConfiguratorInner() {
-  const params = useSearchParams();
-  const [init] = useState(() => initialState(params));
+function ConfiguratorInner({ params, inBrowser }: { params: ConfiguratorParams; inBrowser: boolean }) {
+  const [init] = useState(() => initialState(params, inBrowser));
   const [answers, setAnswers] = useState<Answers>(init.answers);
   const [details, setDetails] = useState<BriefDetails>(init.details);
   const [stepIndex, setStepIndex] = useState(0);
@@ -133,10 +136,12 @@ function ConfiguratorInner() {
   const result = useMemo(() => estimate(answers), [answers]);
   const step = STEPS[stepIndex];
 
-  // Save progress locally; clear it once the brief has been sent.
+  // Save progress locally; clear it once the brief has been sent. The server-rendered
+  // pass never writes, or it would replace saved progress with the defaults.
   useEffect(() => {
+    if (!inBrowser) return;
     store(state.status === "success" ? null : { answers, details });
-  }, [answers, details, state.status]);
+  }, [answers, details, state.status, inBrowser]);
 
   // Move focus to the new step's heading so keyboard and screen-reader users keep their place.
   useEffect(() => {

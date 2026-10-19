@@ -181,7 +181,7 @@ export default function WebsitesPage() {
             These costs depend on choices you make and the services you use. We&apos;ll always tell you about them
             up front.
           </p>
-          <div className="table-wrap mt-5">
+          <div className="table-wrap mt-5" role="region" aria-label="Costs not included in any plan" tabIndex={0}>
             <table className="table">
               <thead>
                 <tr>

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
@@ -10,6 +11,11 @@ import { WorkCarousel } from "@/components/interactive/WorkCarousel";
 import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 import { carePlanCards } from "@/lib/plans";
 import { projectBySlug, projects } from "@/lib/projects";
+import { siteUrl } from "@/lib/site";
+
+
+// Title, description and share image come from the root layout; only the canonical URL is added here.
+export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
@@ -319,7 +325,7 @@ export default function HomePage() {
               Six clear stages, with nothing to pay until you&apos;ve approved a written scope and price.
             </p>
           </div>
-          <ol role="list" className="steps">
+          <ol role="list" className="steps" aria-label="Our process, step by step" tabIndex={0}>
             {process.map(([title, body], i) => (
               <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
                 <h3>{title}</h3>

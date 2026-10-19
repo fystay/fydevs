@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import {
   BUDGETS,
   LIMITS,
@@ -138,8 +137,8 @@ function writeSession(key: string, value: unknown) {
   }
 }
 
-function initialFields(topicParam: string | null): Fields {
-  const draft = readSession<Partial<Draft>>(DRAFT_KEY) ?? {};
+function initialFields(topicParam: string | undefined, inBrowser: boolean): Fields {
+  const draft = (inBrowser ? readSession<Partial<Draft>>(DRAFT_KEY) : null) ?? {};
   return {
     name: "",
     email: "",
@@ -251,22 +250,34 @@ const TIMELINE_CHOICES: Choice<Timeline>[] = (Object.keys(TIMELINES) as Timeline
  * The enquiry journey: three short steps and a review, then a confirmation with
  * a reference. Validation matches the server, which has the final say.
  */
-export function ContactForm() {
-  const params = useSearchParams();
-  const [fields, setFields] = useState<Fields>(() => initialFields(params.get("topic")));
+const noopSubscribe = () => () => {};
+
+/**
+ * The server renders the form from the link (?topic=), so the page arrives at its
+ * final size. Once hydrated it remounts with anything kept in this tab's session.
+ */
+export function ContactForm({ topic }: { topic?: string }) {
+  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  return <EnquiryForm key={hydrated ? "browser" : "server"} topicParam={topic} inBrowser={hydrated} />;
+}
+
+function EnquiryForm({ topicParam, inBrowser }: { topicParam?: string; inBrowser: boolean }) {
+  const [fields, setFields] = useState<Fields>(() => initialFields(topicParam, inBrowser));
   const [step, setStep] = useState(0);
   const [furthest, setFurthest] = useState(0);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [startedAt] = useState(() => Date.now());
-  const [previous, setPrevious] = useState(() => readSession<{ reference?: string }>(SENT_KEY));
+  const [previous, setPrevious] = useState(() => (inBrowser ? readSession<{ reference?: string }>(SENT_KEY) : null));
   const { state, submit, reset } = useEnquirySubmit();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
 
+  // The server-rendered pass never writes, or it would replace the saved draft.
   useEffect(() => {
+    if (!inBrowser) return;
     const { topic, site, budget, timeline, message } = fields;
     writeSession(DRAFT_KEY, { topic, site, budget, timeline, message });
-  }, [fields]);
+  }, [fields, inBrowser]);
 
   // Move focus to the new step's heading, but not on first load.
   useEffect(() => {

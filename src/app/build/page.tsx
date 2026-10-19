@@ -1,6 +1,5 @@
-import { Suspense } from "react";
 import { PageHero } from "@/components/Blocks";
-import { Configurator } from "@/components/configurator/Configurator";
+import { Configurator, type ConfiguratorParams } from "@/components/configurator/Configurator";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -9,9 +8,15 @@ export const metadata = pageMetadata(
   "Configure your website in a few steps and see an indicative price immediately, with inclusions, exclusions and ongoing costs set out clearly.",
 );
 
-const loading = <p className="muted">Loading the configurator…</p>;
+const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
-export default function BuildPage() {
+export default async function BuildPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
+  const params: ConfiguratorParams = { type: first(query.type), pages: first(query.pages), care: first(query.care) };
   return (
     <>
       <PageHero
@@ -21,9 +26,7 @@ export default function BuildPage() {
       />
       <section className="section--tight" style={{ paddingTop: 0 }}>
         <div className="container container--wide">
-          <Suspense fallback={loading}>
-            <Configurator fallback={loading} />
-          </Suspense>
+          <Configurator params={params} />
         </div>
       </section>
     </>
