@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { primaryNav, type NavLink, type NavMenu } from "@/lib/site";
-import { ArrowRight } from "./Icons";
+import { ArrowUpRight } from "./Icons";
 import { Logo } from "./Logo";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -234,7 +234,8 @@ export function Header() {
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
             <Link href="/contact?topic=website" className="btn btn--primary btn--sm">
-              Start a Project
+              Start a project
+              <ArrowUpRight size={12} />
             </Link>
           </div>
 
@@ -302,8 +303,8 @@ export function Header() {
             ))}
           </ul>
           <Link href="/contact?topic=website" className="btn btn--primary mm-cta" onClick={closeAll} style={{ "--i": primaryNav.length } as React.CSSProperties}>
-            Start a Project
-            <ArrowRight />
+            Start a project
+            <ArrowUpRight />
           </Link>
         </nav>
 

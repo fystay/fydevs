@@ -1,17 +1,26 @@
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
-import { ArrowRight } from "@/components/Icons";
+import { HeroArt, TrustIcon } from "@/components/HeroArt";
+import { ArrowRight, ArrowUpRight } from "@/components/Icons";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
-import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
+import { HeroShowcase } from "@/components/interactive/HeroShowcase";
 import { Tilt } from "@/components/interactive/Tilt";
 import { WorkCarousel } from "@/components/interactive/WorkCarousel";
 import { CARE_PLANS, PACKAGES, formatGBP, type CarePlan, type PackageId } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
+import evexecBooking from "../../public/work/evexec-booking.webp";
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
+
+// Only claims anyone can verify from the work itself or our published pages.
+const trust: [string, string, "live" | "price" | "focus"][] = [
+  ["Real projects", "Live sites and software you can visit today.", "live"],
+  ["Clear pricing", "Published starting prices and a written scope.", "price"],
+  ["Business focused", "Designed around enquiries, bookings and time saved.", "focus"],
+];
 
 const webBenefits = [
   ["Designed for your customers", "A bespoke design built around your brand and the people you sell to, never a reskinned template."],
@@ -43,42 +52,60 @@ const planOrder: CarePlan[] = ["hosting", "care", "carePlus"];
 export default function HomePage() {
   return (
     <>
-      {/* Hero: what we build, and why it matters */}
-      <section className="hero-ed">
-        <div className="container container--wide">
-          <ul role="list" className="hero-meta rise">
-            <li>Web design</li>
-            <li>SaaS development</li>
-            <li>Booking software</li>
-          </ul>
-          <div className="hero-ed__grid">
-            <h1 className="display rise">
-              Websites and software <span className="serif-em">that grow your business.</span>
+      {/* Hero: what we build, with real work alongside */}
+      <section className="hx" aria-labelledby="hero-title">
+        <HeroArt />
+        <div className="container container--wide hx__grid">
+          <div className="hx__copy">
+            <p className="hx__eyebrow rise">
+              <span>Modern websites</span>
+              <span>Scalable SaaS</span>
+              <span>Booking software</span>
+            </p>
+            <h1 id="hero-title" className="hx__title rise" style={{ "--i": 1 } as React.CSSProperties}>
+              Websites and software that <span className="serif-em">move you forward.</span>
             </h1>
-            <div className="hero-ed__aside rise" style={{ "--i": 1 } as React.CSSProperties}>
-              <p className="lede">
-                We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
-                software that saves your team time. Published prices, no templates, and real work you can visit.
-              </p>
-              <div className="btn-row">
-                <Link href="/contact?topic=website" className="btn btn--primary">
-                  Start a Project
-                  <ArrowRight />
-                </Link>
-                <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-                  Build My SaaS
-                </Link>
-              </div>
-              <p className="hero-note">
-                Or <Link href="/build">get an instant website estimate</Link> in two minutes.
-              </p>
+            <p className="hx__lede rise" style={{ "--i": 2 } as React.CSSProperties}>
+              We design and build high-performing websites, SaaS platforms and booking software that help modern
+              businesses grow.
+            </p>
+            <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
+              <Link href="/contact?topic=website" className="btn btn--primary">
+                Start a project
+                <ArrowUpRight />
+              </Link>
+              <Link href="/work" className="btn btn--secondary">
+                Explore our work
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section aria-label="Recent work" className="container container--wide rise" style={{ "--i": 2 } as React.CSSProperties}>
-        <ShowcaseStage items={projects} />
+          <div className="hx__show rise" style={{ "--i": 2 } as React.CSSProperties}>
+            <HeroShowcase
+              items={projects}
+              software={{
+                name: evexec.name,
+                category: "Booking software",
+                url: evexec.url,
+                host: evexec.host,
+                image: evexecBooking,
+                alt: "The EV Exec online booking flow, step one: choose your journey",
+              }}
+            />
+          </div>
+
+          <ul role="list" className="hx__trust rise" style={{ "--i": 4 } as React.CSSProperties}>
+            {trust.map(([title, body, icon]) => (
+              <li key={title}>
+                <TrustIcon name={icon} />
+                <div>
+                  <strong>{title}</strong>
+                  <span>{body}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       {/* Proof: facts anyone can check */}

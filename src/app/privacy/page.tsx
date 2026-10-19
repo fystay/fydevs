@@ -47,6 +47,11 @@ export default function PrivacyPage() {
               configurator saves your answers in your own browser&apos;s local storage so you don&apos;t lose progress;
               this stays on your device and is removed when you send your brief or clear your browser data.
             </p>
+            <p>
+              On the homepage you can choose &ldquo;Try it live&rdquo; to load a client&apos;s website inside a preview
+              window. Nothing is loaded from that site until you choose to, and once loaded it is governed by that
+              site&apos;s own privacy and cookie policy.
+            </p>
 
             <h2>How long we keep it</h2>
             <p>
