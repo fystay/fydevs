@@ -51,7 +51,6 @@ const plans: PlanCard[] = [
     includes: PACKAGES[id].includes,
     href: `/build?pages=${packagePages[id]}`,
     cta: "Start a Project",
-    variant: id === "professional" ? "featured" : undefined,
   })),
   {
     id: "saas",
@@ -280,7 +279,7 @@ export default function HomePage() {
         </div>
 
         <div data-reveal>
-          <PlanSwiper plans={plans} />
+          <PlanSwiper plans={plans} initial="professional" />
         </div>
 
         <div className="container container--wide">

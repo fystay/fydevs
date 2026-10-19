@@ -3190,6 +3190,7 @@ ol.steps li::after {
   user-select: none;
   transition:
     transform var(--duration) var(--ease),
+    background-color var(--duration) var(--ease),
     border-color var(--duration) var(--ease),
     box-shadow var(--duration) var(--ease);
 }
@@ -3280,9 +3281,67 @@ ol.steps li::after {
   color: var(--color-ink);
 }
 
-.plan--featured {
+/* The selected plan (Professional until the visitor picks another). */
+.plan.is-selected {
   border-color: var(--color-ink);
   background: var(--color-surface-raised);
+}
+
+.plan--inverse.is-selected {
+  border-color: var(--color-accent);
+  background: var(--color-inverse-bg);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.plan__select {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.plan__select:focus-visible {
+  outline-offset: -3px;
+}
+
+.plan.is-selected .plan__select {
+  cursor: default;
+}
+
+.plan__cta {
+  position: relative;
+  z-index: 2;
+}
+
+.plan__tag {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-inverse-ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.plan.is-selected .plan__tag {
+  opacity: 1;
+  transform: none;
+}
+
+.plan--inverse .plan__tag {
+  background: var(--color-accent);
 }
 
 .plan__name {

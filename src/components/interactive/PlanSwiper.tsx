@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight } from "../Icons";
 import { useDragScroll } from "./useDragScroll";
 
@@ -14,7 +15,7 @@ export type PlanCard = {
   includes?: readonly string[];
   href: string;
   cta: string;
-  variant?: "featured" | "inverse";
+  variant?: "inverse";
 };
 
 const canSpotlight = () =>
@@ -22,11 +23,14 @@ const canSpotlight = () =>
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * Pricing as a swipeable row of cards. A soft spotlight and accent edge follow
- * the cursor across each card; inert on touch and with reduced motion.
+ * Pricing as a swipeable row of cards. Clicking or focusing a card selects it,
+ * so it's always clear which option you're looking at; its call to action
+ * becomes the primary one. A soft spotlight and accent edge follow the cursor
+ * across each card; inert on touch and with reduced motion.
  */
-export function PlanSwiper({ plans }: { plans: PlanCard[] }) {
+export function PlanSwiper({ plans, initial }: { plans: PlanCard[]; initial?: string }) {
   const { trackRef, active, atStart, atEnd, step, trackProps } = useDragScroll<HTMLUListElement>();
+  const [selected, setSelected] = useState(initial ?? plans[0]?.id);
 
   const onMove = (e: React.PointerEvent) => {
     trackProps.onPointerMove(e);
@@ -48,31 +52,51 @@ export function PlanSwiper({ plans }: { plans: PlanCard[] }) {
         {...trackProps}
         onPointerMove={onMove}
       >
-        {plans.map((plan, i) => (
-          <li key={plan.id} className="carousel__item" aria-label={`${i + 1} of ${plans.length}: ${plan.name}`}>
-            <article className={`plan${plan.variant ? ` plan--${plan.variant}` : ""}`}>
-              <h3 className="plan__name">{plan.name}</h3>
-              <p className="plan__summary">{plan.summary}</p>
-              <p className="plan__price">
-                {plan.from && <span>from</span>} {plan.price}
-              </p>
-              {plan.includes && (
-                <ul role="list" className="checks">
-                  {plan.includes.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              )}
-              <Link
-                href={plan.href}
-                draggable={false}
-                className={`btn ${plan.variant ? "btn--primary" : "btn--secondary"} plan__cta`}
+        {plans.map((plan, i) => {
+          const isSelected = plan.id === selected;
+          return (
+            <li key={plan.id} className="carousel__item" aria-label={`${i + 1} of ${plans.length}: ${plan.name}`}>
+              <article
+                className={`plan${plan.variant ? ` plan--${plan.variant}` : ""}${isSelected ? " is-selected" : ""}`}
+                onFocusCapture={(e) => {
+                  // Keyboard focus selects; a mouse press only selects on click, so dragging doesn't.
+                  if ((e.target as HTMLElement).matches(":focus-visible")) setSelected(plan.id);
+                }}
               >
-                {plan.cta}
-              </Link>
-            </article>
-          </li>
-        ))}
+                {/* Covers the card, so a click anywhere on it selects the option. */}
+                <button
+                  type="button"
+                  className="plan__select"
+                  aria-pressed={isSelected}
+                  aria-label={`Select ${plan.name}`}
+                  onClick={() => setSelected(plan.id)}
+                />
+                <p className="plan__tag" aria-hidden={!isSelected}>
+                  Selected
+                </p>
+                <h3 className="plan__name">{plan.name}</h3>
+                <p className="plan__summary">{plan.summary}</p>
+                <p className="plan__price">
+                  {plan.from && <span>from</span>} {plan.price}
+                </p>
+                {plan.includes && (
+                  <ul role="list" className="checks">
+                    {plan.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+                <Link
+                  href={plan.href}
+                  draggable={false}
+                  className={`btn ${isSelected ? "btn--primary" : "btn--secondary"} plan__cta`}
+                >
+                  {plan.cta}
+                </Link>
+              </article>
+            </li>
+          );
+        })}
       </ul>
 
       <div className="container container--wide carousel__controls">
