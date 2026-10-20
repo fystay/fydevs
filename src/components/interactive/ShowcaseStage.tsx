@@ -4,24 +4,54 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/projects";
-import devices from "../Devices.module.css";
 import { ZoomSettledContext } from "./LaptopZoom";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop">;
 
 const INTERVAL = 6000;
 
 /**
- * The homepage showcase: real project screenshots that cross-fade between projects.
+ * The laptop's keyboard deck, seen from just above: key rows narrow towards the
+ * hinge, with a trackpad below. Drawn once; purely decorative.
+ */
+const KEY_ROWS = [14, 14, 13, 12, 11].map((count, row) => {
+  const y = 8 + row * 12;
+  const inset = 88 - row * 7; // rows widen towards the front edge
+  const width = 1000 - inset * 2;
+  const gap = 4;
+  const key = (width - gap * (count - 1)) / count;
+  return Array.from({ length: count }, (_, i) => ({ x: inset + i * (key + gap), y, w: key }));
+});
+
+function KeyboardDeck() {
+  return (
+    <svg className="laptop__base" viewBox="0 0 1000 128" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="deck" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#b9b6b1" />
+          <stop offset="1" stopColor="#d6d3ce" />
+        </linearGradient>
+      </defs>
+      <path d="M58 0H942L1000 112H0Z" fill="url(#deck)" />
+      <path d="M0 112H1000V118Q1000 126 988 126H12Q0 126 0 118Z" fill="#9c9893" />
+      <path d="M440 112H560V115Q560 118 556 118H444Q440 118 440 115Z" fill="#86827d" />
+      {KEY_ROWS.flat().map((k) => (
+        <rect key={`${k.x}-${k.y}`} x={k.x} y={k.y} width={k.w} height={9.5} rx={1.8} fill="#2b2a28" />
+      ))}
+      <rect x="410" y="71" width="180" height="34" rx="4" fill="#c9c6c1" stroke="#aeaaa5" strokeWidth="1" />
+    </svg>
+  );
+}
+
+/**
+ * The homepage showcase: our real projects on a laptop, cross-fading between them.
  * Tabs, swipe (touch) and an autoplay that pauses on hover, focus, or on request.
- * The layers drift slightly with the cursor on devices with a fine pointer.
  */
 export function ShowcaseStage({ items }: { items: Item[] }) {
   const [index, setIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
-  const stageRef = useRef<HTMLDivElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
 
   const go = useCallback((i: number) => setIndex((i + items.length) % items.length), [items.length]);
@@ -44,14 +74,6 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
     return () => window.clearTimeout(t);
   }, [playing, index, go]);
 
-  const onPointerMove = (e: React.PointerEvent) => {
-    const el = stageRef.current;
-    if (!el || e.pointerType !== "mouse" || reduced) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--px", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
-    el.style.setProperty("--py", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
-  };
-
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") swipe.current = { x: e.clientX, y: e.clientY };
   };
@@ -70,62 +92,35 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
     <div
       className="showcase"
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => {
-        setHovered(false);
-        stageRef.current?.style.setProperty("--px", "0");
-        stageRef.current?.style.setProperty("--py", "0");
-      }}
+      onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setHovered(true)}
       onBlurCapture={() => setHovered(false)}
     >
       <div
-        ref={stageRef}
-        className="stage showcase__stage"
+        className="laptop showcase__stage"
         role="group"
         aria-roledescription="carousel"
         aria-label="Recent work"
-        onPointerMove={onPointerMove}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => (swipe.current = null)}
       >
-        <figure className={`${devices.browser} stage__browser showcase__layer showcase__layer--back`}>
-          <div className={`${devices.bar} stage__bar`} aria-hidden="true">
-            <span className={`${devices.dots} stage__dots`}>
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className={`${devices.url} stage__url`}>{current.host}</span>
-          </div>
-          <div className="showcase__frames">
+        <div className="laptop__screen">
+          <div className="laptop__display showcase__frames">
             {items.map((p, i) => (
               <Image
                 key={p.slug}
                 src={p.desktop}
-                alt={i === index ? `The ${p.name} website on desktop` : ""}
+                alt={i === index ? `The ${p.name} website on a laptop` : ""}
                 aria-hidden={i !== index}
-                sizes="(min-width: 80rem) 1000px, 100vw"
+                sizes="(min-width: 64rem) 900px, 100vw"
                 preload={i === 0}
                 className={`showcase__img${i === index ? " is-active" : ""}`}
               />
             ))}
           </div>
-        </figure>
-        <figure className={`${devices.phone} stage__phone showcase__layer showcase__layer--front`}>
-          <div className="showcase__frames">
-            {items.map((p, i) => (
-              <Image
-                key={p.slug}
-                src={p.mobile}
-                alt={i === index ? `The ${p.name} website on a phone` : ""}
-                aria-hidden={i !== index}
-                sizes="220px"
-                className={`${devices.screen} showcase__img${i === index ? " is-active" : ""}`}
-              />
-            ))}
-          </div>
-        </figure>
+        </div>
+        <KeyboardDeck />
       </div>
 
       <div className="showcase__bar">
