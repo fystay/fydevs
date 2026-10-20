@@ -5839,14 +5839,14 @@ main .proof__list {
    Wider screens: the app on the left, choices and features on the right. */
 .studio {
   display: grid;
-  grid-template-areas: "controls" "stage" "features";
+  grid-template-areas: "controls" "stage" "order" "features";
   gap: var(--space-6);
 }
 
 @media (min-width: 56rem) {
   .studio {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas: "stage controls" "stage features";
+    grid-template-areas: "stage controls" "stage order" "stage features";
     align-items: center;
     column-gap: var(--space-7);
   }
@@ -5906,7 +5906,8 @@ main .proof__list {
   min-width: 0;
 }
 
-.studio__group legend {
+.studio__group legend,
+.studio__legend {
   margin-bottom: var(--space-3);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -6013,6 +6014,111 @@ main .proof__list {
 .studio__more {
   margin-top: var(--space-7);
   text-align: center;
+}
+
+/* Name it: the business name appears in the app's header as it's typed. */
+.studio__legend {
+  display: block;
+}
+
+.studio__name {
+  width: 100%;
+  max-width: 22rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+}
+
+.studio__name:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.st-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The order: like the summary at the end of a car configurator. */
+.studio__order {
+  grid-area: order;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.studio__order-title {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  line-height: 1.15;
+}
+
+.studio__plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.studio__plan {
+  position: relative;
+  display: block;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  cursor: pointer;
+  transition:
+    border-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+}
+
+.studio__plan input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.studio__plan b {
+  display: block;
+  margin-bottom: 2px;
+  font-size: var(--text-base);
+  color: var(--color-ink);
+}
+
+.studio__plan:has(input:checked) {
+  border-color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+
+.studio__plan:has(input:focus-visible) {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.studio__order-btn {
+  justify-content: center;
+}
+
+.studio__order-note {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
 }
 
 .studio__features {

@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ArrowRight } from "../Icons";
 
 /*
  * "Make it yours": a booking app the visitor restyles live, like a car configurator.
@@ -239,11 +241,27 @@ function Screen({ business }: { business: Business }) {
   );
 }
 
+// Two ways to pay for the finished app; prices are confirmed on the call, not shown here.
+const PLANS = {
+  own: { label: "Own it", line: "Pay once. It's yours.", brief: "own it outright" },
+  subscribe: { label: "Subscribe", line: "Pay monthly. We keep it running.", brief: "pay monthly" },
+} as const;
+type Plan = keyof typeof PLANS;
+
 export function BookingStudio() {
   const [business, setBusiness] = useState<Business>("barber");
   const [colour, setColour] = useState<(typeof COLOURS)[number]>(COLOURS[0]);
   const [style, setStyle] = useState<Style>("executive");
+  const [name, setName] = useState("");
+  const [plan, setPlan] = useState<Plan>("own");
   const row = useRef<HTMLDivElement>(null);
+  const shown = name.trim() || "Your Business";
+
+  // Everything chosen here travels to the enquiry form, so starting is one tap.
+  const brief =
+    `${name.trim() ? `${name.trim()}: a` : "A"} ${BUSINESSES[business].toLowerCase()} booking app in ` +
+    `${colour.label}, ${STYLES[style]} look. I'd like to ${PLANS[plan].brief}.`;
+  const orderHref = `/contact?topic=booking-software&brief=${encodeURIComponent(brief)}`;
 
   // On phones the business row swipes: start it with the picked business in view.
   useEffect(() => {
@@ -267,8 +285,8 @@ export function BookingStudio() {
                 <span className="st-status__icons" />
               </div>
               <div className="st-head">
-                <span className="st-logo">Y</span>
-                <span>Your Business</span>
+                <span className="st-logo">{shown.charAt(0).toUpperCase()}</span>
+                <span className="st-name">{shown}</span>
                 <span className="st-menu" />
               </div>
               <div className="st-body" key={business}>
@@ -291,6 +309,21 @@ export function BookingStudio() {
       </figure>
 
       <div className="studio__controls">
+        <div className="studio__group">
+          <label htmlFor="studio-name" className="studio__legend">
+            Your business name
+          </label>
+          <input
+            id="studio-name"
+            className="studio__name"
+            type="text"
+            maxLength={24}
+            autoComplete="organization"
+            placeholder="Your Business"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
         <fieldset className="studio__group">
           <legend>Business</legend>
           <div className="studio__chips studio__chips--swipe" ref={row}>
@@ -329,6 +362,31 @@ export function BookingStudio() {
           </div>
         </fieldset>
       </div>
+
+      {/* The order: the app they just made, how they'd like to pay, and one button. */}
+      <div className="studio__order">
+        <p className="studio__order-title">
+          Your <span className="serif-em">{name.trim() || BUSINESSES[business]}</span> app
+        </p>
+        <fieldset className="studio__plans">
+          <legend className="visually-hidden">How would you like to pay?</legend>
+          {(Object.keys(PLANS) as Plan[]).map((p) => (
+            <label key={p} className="studio__plan">
+              <input type="radio" name="studio-plan" value={p} checked={plan === p} onChange={() => setPlan(p)} />
+              <span>
+                <b>{PLANS[p].label}</b>
+                {PLANS[p].line}
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        <Link href={orderHref} className="btn btn--primary studio__order-btn">
+          Make it mine
+          <ArrowRight />
+        </Link>
+        <p className="studio__order-note">No payment now. We confirm your price on a short call.</p>
+      </div>
+
       <ul role="list" className="studio__features">
         {FEATURES.map(([title, body, d]) => (
           <li key={title}>
