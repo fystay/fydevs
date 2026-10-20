@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /*
  * "Make it yours": a booking app the visitor restyles live, like a car configurator.
@@ -11,8 +11,11 @@ import { useState } from "react";
 
 const BUSINESSES = {
   transfers: "Airport transfers",
-  barber: "Barber",
   coach: "PT & coaching",
+  massage: "Massage therapy",
+  barber: "Barber",
+  garage: "Auto garage",
+  tattoo: "Tattoo studio",
 } as const;
 type Business = keyof typeof BUSINESSES;
 
@@ -44,6 +47,47 @@ const FEATURES = [
   ],
 ] as const;
 
+const WEEK = ["Mon 12", "Tue 13", "Wed 14", "Thu 15", "Fri 16"];
+
+/** The week strip, with one day picked. */
+function Days({ on }: { on: number }) {
+  return (
+    <div className="st-days">
+      {WEEK.map((d, i) => (
+        <span key={d} className={i === on ? "is-on" : undefined}>
+          {d.split(" ")[0]}
+          <b>{d.split(" ")[1]}</b>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/** Times for the picked day: one chosen, one already taken. */
+function Slots({ times, on, off }: { times: string[]; on: number; off: number }) {
+  return (
+    <div className="st-slots">
+      {times.map((t, i) => (
+        <span key={t} className={i === on ? "is-on" : i === off ? "is-off" : undefined}>
+          {t}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/** A list of services with prices, the first one picked. */
+function Services({ items }: { items: string[][] }) {
+  return items.map(([name, time, price], i) => (
+    <div key={name} className={`st-line st-line--box${i === 0 ? " is-on" : ""}`}>
+      <span>
+        <b>{name}</b> <small>{time}</small>
+      </span>
+      <b>{price}</b>
+    </div>
+  ));
+}
+
 function Screen({ business }: { business: Business }) {
   if (business === "transfers")
     return (
@@ -74,72 +118,123 @@ function Screen({ business }: { business: Business }) {
       <>
         <p className="st-kicker">Choose a service</p>
         <h4>Book a cut</h4>
-        {[
-          ["Skin fade", "30 min", "£18"],
-          ["Cut & beard", "45 min", "£25"],
-          ["Beard trim", "15 min", "£10"],
-        ].map(([name, time, price], i) => (
-          <div key={name} className={`st-line st-line--box${i === 0 ? " is-on" : ""}`}>
-            <span>
-              <b>{name}</b> <small>{time}</small>
-            </span>
-            <b>{price}</b>
-          </div>
-        ))}
-        <div className="st-days">
-          {["Mon 12", "Tue 13", "Wed 14", "Thu 15", "Fri 16"].map((d, i) => (
-            <span key={d} className={i === 2 ? "is-on" : undefined}>
-              {d.split(" ")[0]}
-              <b>{d.split(" ")[1]}</b>
-            </span>
-          ))}
-        </div>
-        <div className="st-slots">
-          {["09:30", "10:15", "11:00", "13:30", "14:15", "16:00"].map((t, i) => (
-            <span key={t} className={i === 2 ? "is-on" : i === 1 ? "is-off" : undefined}>
-              {t}
-            </span>
-          ))}
-        </div>
+        <Services
+          items={[
+            ["Skin fade", "30 min", "£18"],
+            ["Cut & beard", "45 min", "£25"],
+            ["Beard trim", "15 min", "£10"],
+          ]}
+        />
+        <Days on={2} />
+        <Slots times={["09:30", "10:15", "11:00", "13:30", "14:15", "16:00"]} on={2} off={1} />
         <span className="st-btn">Book 11:00 · £18</span>
+      </>
+    );
+  if (business === "coach")
+    return (
+      <>
+        <p className="st-kicker">Train with me</p>
+        <h4>Book a session</h4>
+        <div className="st-seg st-seg--3">
+          <span>1:1 PT</span>
+          <span className="is-on">Boxing</span>
+          <span>Group</span>
+        </div>
+        <div className="st-line st-line--box is-on">
+          <span>
+            <b>Pad work</b> <small>45 min</small>
+          </span>
+          <b>£30</b>
+        </div>
+        <Days on={0} />
+        <Slots times={["06:30", "07:15", "12:00", "17:30", "18:15", "19:00"]} on={4} off={3} />
+        <div className="st-pay">
+          <span>Card</span>
+          <span>Apple Pay</span>
+          <span>Google Pay</span>
+        </div>
+        <span className="st-btn">Pay £30 securely</span>
+      </>
+    );
+  if (business === "massage")
+    return (
+      <>
+        <p className="st-kicker">Choose a treatment</p>
+        <h4>Book a massage</h4>
+        <Services
+          items={[
+            ["Deep tissue", "60 min", "£55"],
+            ["Hot stones", "75 min", "£65"],
+            ["Thai massage", "90 min", "£70"],
+          ]}
+        />
+        <div className="st-seg st-seg--3">
+          <span className="is-on">Any therapist</span>
+          <span>Mai</span>
+          <span>Lina</span>
+        </div>
+        <Days on={3} />
+        <Slots times={["10:00", "11:30", "13:00", "14:30", "16:00", "17:30"]} on={3} off={0} />
+        <span className="st-btn">Book 14:30 · £55</span>
+      </>
+    );
+  if (business === "garage")
+    return (
+      <>
+        <p className="st-kicker">Book a service</p>
+        <h4>Book your car in</h4>
+        <div className="st-vehicle">
+          <span className="st-plate">AB12 CDE</span>
+          <span>
+            <b>Ford Focus</b>
+            <small>1.0 EcoBoost · Petrol</small>
+          </span>
+        </div>
+        <Services
+          items={[
+            ["MOT", "45 min", "£54.85"],
+            ["Interim service", "2 hrs", "£129"],
+            ["Full service", "3 hrs", "£189"],
+          ]}
+        />
+        <Days on={1} />
+        <p className="st-kicker st-kicker--gap">Drop-off</p>
+        <Slots times={["08:00", "08:30", "09:00"]} on={1} off={0} />
+        <span className="st-btn">Book MOT · Tue 08:30</span>
       </>
     );
   return (
     <>
-      <p className="st-kicker">Train with me</p>
-      <h4>Book a session</h4>
+      <p className="st-kicker">Consultation &amp; deposit</p>
+      <h4>Book your tattoo</h4>
+      <p className="st-kicker st-kicker--gap">Size</p>
       <div className="st-seg st-seg--3">
-        <span>1:1 PT</span>
-        <span className="is-on">Boxing</span>
-        <span>Group</span>
+        <span>Small</span>
+        <span className="is-on">Medium</span>
+        <span>Large</span>
       </div>
-      <div className="st-line st-line--box is-on">
+      <p className="st-kicker st-kicker--gap">Artist</p>
+      <div className="st-artists">
+        {[
+          ["J", "Jade"],
+          ["M", "Marco"],
+          ["S", "Sam"],
+        ].map(([initial, name], i) => (
+          <span key={name} className={i === 0 ? "is-on" : undefined}>
+            <i>{initial}</i>
+            {name}
+          </span>
+        ))}
+      </div>
+      <div className="st-upload">＋ Add reference images</div>
+      <Days on={4} />
+      <div className="st-line">
         <span>
-          <b>Pad work</b> <small>45 min</small>
+          Deposit <small>rest on the day</small>
         </span>
-        <b>£30</b>
+        <b>£50</b>
       </div>
-      <div className="st-days">
-        {["Mon 12", "Tue 13", "Wed 14", "Thu 15", "Fri 16"].map((d, i) => (
-          <span key={d} className={i === 0 ? "is-on" : undefined}>
-            {d.split(" ")[0]}
-            <b>{d.split(" ")[1]}</b>
-          </span>
-        ))}
-      </div>
-      <div className="st-slots">
-        {["06:30", "07:15", "12:00", "17:30", "18:15", "19:00"].map((t, i) => (
-          <span key={t} className={i === 4 ? "is-on" : i === 3 ? "is-off" : undefined}>
-            {t}
-          </span>
-        ))}
-      </div>
-      <div className="st-pay">
-        <span>Card</span>
-        <span>Apple Pay</span>
-        <span>Google Pay</span>
-      </div>
-      <span className="st-btn">Pay £30 securely</span>
+      <span className="st-btn">Pay £50 deposit</span>
     </>
   );
 }
@@ -148,6 +243,14 @@ export function BookingStudio() {
   const [business, setBusiness] = useState<Business>("barber");
   const [colour, setColour] = useState<(typeof COLOURS)[number]>(COLOURS[0]);
   const [style, setStyle] = useState<Style>("executive");
+  const row = useRef<HTMLDivElement>(null);
+
+  // On phones the business row swipes: start it with the picked business in view.
+  useEffect(() => {
+    const el = row.current;
+    const picked = el?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (el && picked && el.scrollWidth > el.clientWidth) el.scrollLeft = picked.offsetLeft - el.offsetLeft - 16;
+  }, []);
 
   return (
     <div className="studio" data-cta-hide>
@@ -190,7 +293,7 @@ export function BookingStudio() {
       <div className="studio__controls">
         <fieldset className="studio__group">
           <legend>Business</legend>
-          <div className="studio__chips">
+          <div className="studio__chips studio__chips--swipe" ref={row}>
             {(Object.keys(BUSINESSES) as Business[]).map((b) => (
               <button key={b} type="button" aria-pressed={business === b} onClick={() => setBusiness(b)}>
                 {BUSINESSES[b]}

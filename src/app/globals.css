@@ -6010,6 +6010,22 @@ main .proof__list {
     padding-inline: 0.8rem;
     font-size: var(--text-xs);
   }
+  /* Six businesses won't fit across a phone: the row swipes, running to the screen's edge. */
+  .studio__chips--swipe {
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .studio__chips--swipe::-webkit-scrollbar {
+    display: none;
+  }
+  .studio__chips--swipe button {
+    scroll-snap-align: start;
+  }
 }
 
 .studio__chips button[aria-pressed="true"] {
@@ -6324,6 +6340,89 @@ main .proof__list {
   flex: 1;
   padding: 0.5em 0;
   font-size: 0.72em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.st-kicker--gap {
+  margin: 0.9em 0 0.45em;
+}
+
+/* Garage: the car, found by its number plate (always the yellow rear plate). */
+.st-vehicle {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  margin-bottom: 0.7em;
+}
+
+.st-vehicle small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82em;
+}
+
+.st-plate {
+  flex: none;
+  padding: 0.45em 0.7em;
+  border: 2px solid #111;
+  border-radius: 0.3em;
+  background: #f7d117;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 1.05em;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+/* Tattoo studio: pick an artist, attach reference images. */
+.st-artists {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4em;
+}
+
+.st-artists span {
+  display: grid;
+  justify-items: center;
+  gap: 0.3em;
+  padding: 0.55em 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.st-artists i {
+  display: grid;
+  place-items: center;
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.st-artists .is-on {
+  border-color: var(--a);
+  box-shadow: inset 0 0 0 1px var(--a);
+}
+
+.st-artists .is-on i {
+  background: var(--a);
+  color: var(--on-a);
+}
+
+.st-upload {
+  margin-top: 0.7em;
+  padding: 0.9em;
+  border: 1.5px dashed var(--muted);
+  border-radius: var(--r);
+  color: var(--muted);
+  font-size: 0.85em;
   font-weight: 600;
   text-align: center;
 }
