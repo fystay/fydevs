@@ -3165,7 +3165,7 @@ main {
   }
 }
 
-/* The project's two links as pills; on phones they share the row's width. */
+/* The project's two links as pills, at their natural width. */
 .showcase__link {
   display: inline-flex;
   justify-content: center;
@@ -3196,9 +3196,6 @@ main {
 @media (max-width: 39.99rem) {
   .showcase__meta {
     gap: var(--space-3);
-  }
-  .showcase__link {
-    flex: 1;
   }
 }
 
