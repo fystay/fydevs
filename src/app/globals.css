@@ -5565,3 +5565,49 @@ main .proof__list {
   text-transform: uppercase;
   color: var(--color-ink-3);
 }
+
+/* Phones: the estimate is a slim link under Start a Project; from tablets up it is the second button. */
+.hero-estimate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-self: start;
+  width: max-content;
+  min-height: 2.75rem;
+  border-bottom: 1px solid rgb(28 28 28 / 0.3);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: border-color var(--duration) var(--ease);
+}
+
+.hero-estimate span {
+  color: var(--color-ink-3);
+}
+
+.hero-estimate:hover {
+  border-bottom-color: var(--color-ink);
+}
+
+/* Small phones: the laptop in the photo starts sooner, so the link drops its time. */
+@media (max-width: 24.4rem) {
+  .hero-estimate__time {
+    display: none;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .hero-ed .hero-estimate-btn,
+  .hero-ed .hero-note {
+    display: none;
+  }
+}
+
+@media (min-width: 40rem) {
+  .hero-estimate {
+    display: none;
+  }
+}

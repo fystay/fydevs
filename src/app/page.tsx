@@ -77,7 +77,7 @@ export default function HomePage() {
                     Start a Project
                     <ArrowRight />
                   </Link>
-                  <Link href="/build" className="btn btn--secondary">
+                  <Link href="/build" className="btn btn--secondary hero-estimate-btn">
                     <Stopwatch />
                     Instant estimate
                   </Link>
@@ -85,6 +85,12 @@ export default function HomePage() {
                 <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
                   Indicative price · about 2 minutes
                 </p>
+                {/* Phones: a slim link in place of the second button, so it stays clear of the laptop in the photo. */}
+                <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
+                  <Stopwatch size={14} />
+                  Instant estimate <span className="hero-estimate__time">· 2 min</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
           </section>
