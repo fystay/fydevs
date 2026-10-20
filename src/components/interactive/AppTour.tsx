@@ -12,7 +12,7 @@ import opToday from "../../../public/work/app/op-today.webp";
 type Screen = { src: StaticImageData; title: string; caption: string; alt: string };
 
 /** Real screens from the live system; customer and driver details are replaced with examples. */
-const APPS: Record<"operator" | "driver", { label: string; screens: Screen[] }> = {
+export const APPS: Record<"operator" | "driver", { label: string; screens: Screen[] }> = {
   operator: {
     label: "Operator app",
     screens: [

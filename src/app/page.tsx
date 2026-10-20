@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
+import { PhoneFan } from "@/components/interactive/PhoneFan";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import workspace from "../../public/hero/fydevs-workspace.webp";
-import drJob from "../../public/work/app/dr-job.webp";
-import opBookings from "../../public/work/app/op-bookings.webp";
-import opToday from "../../public/work/app/op-today.webp";
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
 export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
@@ -160,21 +158,8 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="container container--wide tile__visual trio">
-          {[
-            [opToday, "The operator app's Today screen"],
-            [opBookings, "The operator app's bookings list"],
-            [drJob, "The driver app on a job, with flight details and directions"],
-          ].map(([src, alt], i) => (
-            <span key={i} className="app-phone" data-reveal style={{ "--d": i + 1 } as React.CSSProperties}>
-              <Image
-                src={src as StaticImageData}
-                alt={alt as string}
-                sizes="(min-width: 64rem) 260px, 30vw"
-                placeholder="blur"
-              />
-            </span>
-          ))}
+        <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+          <PhoneFan />
         </div>
       </section>
 
