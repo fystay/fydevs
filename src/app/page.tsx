@@ -28,12 +28,16 @@ const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
 
-// Four steps, a few words each: the detail lives on the service pages.
+// Four steps, a few words and a line icon each: the detail lives on the service pages.
 const steps = [
-  ["Enquire", "Tell us what you need."],
-  ["Scope", "A fixed price, in writing."],
-  ["Build", "Designed and built with you."],
-  ["Launch", "Live, handed over, supported."],
+  ["Enquire", "Tell us what you need.", "M4 6h16v12H4zM4 7l8 6 8-6"],
+  ["Scope", "A fixed price, in writing.", "M7 3h7l4 4v14H7zM14 3v4h4M10 12h5M10 16h5"],
+  ["Build", "Designed and built with you.", "M4 5h16v11H4zM9 20h6M12 16v4M8 9l-2 2 2 2M16 9l2 2-2 2"],
+  [
+    "Launch",
+    "Live, handed over, supported.",
+    "M12 3c3 2 4.5 5 4.5 9L12 16l-4.5-4c0-4 1.5-7 4.5-9zM9.5 15.5 7 20l3.5-1.5M14.5 15.5 17 20l-3.5-1.5M12 9.5h.01",
+  ],
 ];
 
 export default function HomePage() {
@@ -232,9 +236,12 @@ export default function HomePage() {
           <p className="tile__line">Nothing to pay until you approve the scope.</p>
         </div>
         <div className="container container--wide">
-          <ol role="list" className="four-steps">
-            {steps.map(([title, body], i) => (
+          <ol role="list" className="four-steps" tabIndex={0} aria-label="How a project runs">
+            {steps.map(([title, body, icon], i) => (
               <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d={icon} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 <span>{String(i + 1).padStart(2, "0")}</span>
                 <h3>{title}</h3>
                 <p>{body}</p>
@@ -242,11 +249,6 @@ export default function HomePage() {
             ))}
           </ol>
         </div>
-        <p className="container container--wide four-steps__more">
-          <Link href="/faq" className="arrow-link">
-            Questions? <ArrowRight />
-          </Link>
-        </p>
       </section>
 
       <CtaBand
@@ -255,7 +257,11 @@ export default function HomePage() {
             Your business <span className="serif-em">could be next.</span>
           </>
         }
-        body="Tell us what you need. Honest advice and a clear next step."
+        body={
+          <>
+            Tell us what you need. Honest advice and a clear next step. <Link href="/faq">Questions?</Link>
+          </>
+        }
       >
         <Link href="/contact?topic=website" className="btn btn--primary">
           Start a Project

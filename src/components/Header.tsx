@@ -14,8 +14,21 @@ const isCurrent = (pathname: string, item: NavItem) =>
 function Chevron({ dir = "down", size = 10 }: { dir?: "down" | "right" | "left"; size?: number }) {
   const rotate = { down: 0, right: -90, left: 90 }[dir];
   return (
-    <svg width={size} height={size} viewBox="0 0 10 10" aria-hidden="true" style={{ transform: `rotate(${rotate}deg)` }}>
-      <path d="M1.5 3.25 5 6.75l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 10 10"
+      aria-hidden="true"
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      <path
+        d="M1.5 3.25 5 6.75l3.5-3.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -42,7 +55,15 @@ function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: 
 }
 
 /** The contents of a menu: large primary links, then smaller groups. Shared by desktop and mobile. */
-function MenuContents({ menu, variant, onNavigate }: { menu: NavMenu; variant: "flyout" | "mobile"; onNavigate: OnNavigate }) {
+function MenuContents({
+  menu,
+  variant,
+  onNavigate,
+}: {
+  menu: NavMenu;
+  variant: "flyout" | "mobile";
+  onNavigate: OnNavigate;
+}) {
   let i = 0;
   return (
     <div className={`menu menu--${variant}`}>
@@ -116,7 +137,8 @@ export function Header() {
       frame = 0;
       const line = window.innerHeight * 0.35;
       let current = sections[0]?.dataset.nav ?? null;
-      for (const section of sections) if (section.getBoundingClientRect().top <= line) current = section.dataset.nav ?? null;
+      for (const section of sections)
+        if (section.getBoundingClientRect().top <= line) current = section.dataset.nav ?? null;
       setSpy(current);
     };
     const onScroll = () => {
@@ -307,52 +329,56 @@ export function Header() {
                 restBar();
               }}
             >
-              {primaryNav.map((item, i) => (
-                <li
-                  key={item.href}
-                  className="nav-item"
-                  onMouseEnter={(e) => {
-                    hoverItem(item.menu ? i : null);
-                    moveBar(e.currentTarget.querySelector<HTMLElement>(".nav-link"));
-                  }}
-                >
-                  <Link
-                    href={item.href}
-                    className="nav-link"
-                    aria-current={isCurrent(pathname, item) ? "page" : undefined}
-                    data-active={flyout === i || undefined}
-                    data-section={(spy === item.href && !isCurrent(pathname, item)) || undefined}
-                    onFocus={(e) => moveBar(e.currentTarget)}
-                    onBlur={restBar}
-                    onClick={(e) => {
-                      clearTimers();
-                      closeIfSamePage(e);
+              {primaryNav.map((item, i) =>
+                item.mobileOnly ? null : (
+                  <li
+                    key={item.href}
+                    className="nav-item"
+                    onMouseEnter={(e) => {
+                      hoverItem(item.menu ? i : null);
+                      moveBar(e.currentTarget.querySelector<HTMLElement>(".nav-link"));
                     }}
-                    transitionTypes={NAV}
                   >
-                    {item.label}
-                  </Link>
-                  {item.menu && (
-                    <button
-                      type="button"
-                      className="nav-chevron"
-                      data-flyout-toggle={i}
-                      aria-expanded={flyout === i}
-                      aria-controls="nav-flyout"
-                      aria-label={`${item.label} menu`}
-                      onClick={() => {
+                    <Link
+                      href={item.href}
+                      className="nav-link"
+                      aria-current={isCurrent(pathname, item) ? "page" : undefined}
+                      data-active={flyout === i || undefined}
+                      data-section={(spy === item.href && !isCurrent(pathname, item)) || undefined}
+                      onFocus={(e) => moveBar(e.currentTarget)}
+                      onBlur={restBar}
+                      onClick={(e) => {
                         clearTimers();
-                        showFlyout(flyout === i ? null : i);
-                        if (flyout !== i) {
-                          window.requestAnimationFrame(() => flyoutRef.current?.querySelector<HTMLElement>("a")?.focus());
-                        }
+                        closeIfSamePage(e);
                       }}
+                      transitionTypes={NAV}
                     >
-                      <Chevron />
-                    </button>
-                  )}
-                </li>
-              ))}
+                      {item.label}
+                    </Link>
+                    {item.menu && (
+                      <button
+                        type="button"
+                        className="nav-chevron"
+                        data-flyout-toggle={i}
+                        aria-expanded={flyout === i}
+                        aria-controls="nav-flyout"
+                        aria-label={`${item.label} menu`}
+                        onClick={() => {
+                          clearTimers();
+                          showFlyout(flyout === i ? null : i);
+                          if (flyout !== i) {
+                            window.requestAnimationFrame(() =>
+                              flyoutRef.current?.querySelector<HTMLElement>("a")?.focus(),
+                            );
+                          }
+                        }}
+                      >
+                        <Chevron />
+                      </button>
+                    )}
+                  </li>
+                ),
+              )}
             </ul>
             <span
               className="nav-indicator"
@@ -363,7 +389,12 @@ export function Header() {
           </nav>
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
-            <Link href="/contact?topic=website" className="btn btn--primary btn--sm" onClick={closeIfSamePage} transitionTypes={NAV}>
+            <Link
+              href="/contact?topic=website"
+              className="btn btn--primary btn--sm"
+              onClick={closeIfSamePage}
+              transitionTypes={NAV}
+            >
               Start a Project
             </Link>
           </div>
@@ -406,7 +437,9 @@ export function Header() {
           <div className="flyout__clip">
             <div ref={measureRef}>
               <div className="container container--wide flyout__inner" key={lastFlyout ?? "none"}>
-                {flyoutItem?.menu && <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeIfSamePage} />}
+                {flyoutItem?.menu && (
+                  <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeIfSamePage} />
+                )}
               </div>
             </div>
           </div>

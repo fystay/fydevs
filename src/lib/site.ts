@@ -41,12 +41,15 @@ export type NavItem = NavLink & {
   menu?: NavMenu;
   /** Other paths that belong to this section, for the current-section indicator. */
   also?: string[];
+  /** Kept off the desktop bar so it stays uncrowded; the phone menu and the footer still list it. */
+  mobileOnly?: boolean;
 };
 
 export const primaryNav: NavItem[] = [
   {
     href: "/work",
     label: "Work",
+    mobileOnly: true,
     menu: {
       primary: [
         { href: "/work", label: "All work" },
@@ -139,7 +142,7 @@ export const primaryNav: NavItem[] = [
     },
   },
   { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "About", mobileOnly: true },
   { href: "/contact", label: "Contact" },
 ];
 

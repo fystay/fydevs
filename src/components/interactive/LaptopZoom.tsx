@@ -195,8 +195,9 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       copy.style.opacity = copyFade < 1 ? String(copyFade) : "";
       copy.style.pointerEvents = copyFade < 0.5 ? "none" : "";
 
-      // The project tabs arrive once the laptop has squared up, so their text is never slanted.
-      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.85, 0.99, p)));
+      // The project tabs and links arrive once the laptop has squared up, so their text is
+      // never slanted, and quickly, so they never sit half-faded like disabled buttons.
+      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.93, 0.99, p)));
       panel.style.setProperty("--glare", String(1 - smoothstep(0, 0.6, p)));
       panel.style.pointerEvents = p >= 1 ? "" : "none";
       const state = p >= 1 ? "done" : p > 0 ? "active" : "start";
