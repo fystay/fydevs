@@ -1926,9 +1926,23 @@ main {
 
 /* Everything but the display (bezel, keyboard, project tabs) arrives as the photo fades away. */
 .zoom.is-zoom .laptop__screen::before,
-.zoom.is-zoom .laptop__base,
-.zoom.is-zoom .showcase__bar {
+.zoom.is-zoom .laptop__base {
   opacity: var(--zoom-ui, 1);
+}
+
+.zoom.is-zoom .showcase__bar {
+  opacity: var(--zoom-tabs, 1);
+}
+
+/* Fades the photo's right edge into the page as the camera moves it left (width set by the script). */
+.zoom.is-zoom .zoom__veil {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, var(--color-bg) 6rem);
+  pointer-events: none;
 }
 
 /* At the end of the zoom this column is exactly the visible stage; the showcase sits centred in it. */

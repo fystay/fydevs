@@ -112,7 +112,8 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     const photo = heroEl?.querySelector<HTMLImageElement>(".hero-ed__photo");
     const copy = heroEl?.querySelector<HTMLElement>(".hero-ed__layout");
     const display = panel?.querySelector<HTMLElement>(".laptop__display");
-    if (!root || !stage || !panel || !heroEl || !photo || !copy || !display) return;
+    const veil = stage?.querySelector<HTMLElement>(".zoom__veil");
+    if (!root || !stage || !panel || !heroEl || !photo || !copy || !display || !veil) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let geo: Geometry | null = null;
@@ -168,12 +169,17 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       heroEl.style.transform = p > 0 ? `translate3d(${t[0] - s * c0[0]}px, ${t[1] - s * c0[1]}px, 0) scale3d(${s}, ${s}, 1)` : "";
       heroEl.style.opacity = handover > 0 ? String(1 - handover) : "";
       heroEl.style.visibility = handover >= 1 ? "hidden" : "";
+      // As the laptop comes to the centre the photo moves left; soften its right edge as it comes into view.
+      const exposed = stage.clientWidth - (t[0] + s * (stage.clientWidth - c0[0]));
+      veil.style.width = exposed > 0 && handover < 1 ? `${exposed + 96}px` : "";
       const copyFade = 1 - smoothstep(0, 0.22, p);
       copy.style.opacity = copyFade < 1 ? String(copyFade) : "";
       copy.style.pointerEvents = copyFade < 0.5 ? "none" : "";
 
       panel.style.transform = p >= 1 ? "" : `${rectToQuad(d.w, d.h, corners)} translate(${-d.x}px, ${-d.y}px)`;
       panel.style.setProperty("--zoom-ui", String(handover));
+      // The project tabs arrive only once the laptop has squared up, so their text is never slanted.
+      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.82, 0.99, p)));
       panel.style.setProperty("--glare", String(1 - turn));
       panel.style.pointerEvents = p >= 1 ? "" : "none";
       const state = p >= 1 ? "done" : p > 0 ? "active" : "start";
@@ -220,7 +226,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       panel.removeEventListener("focusin", onFocusIn);
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
-      for (const el of [heroEl, copy, panel]) el.removeAttribute("style");
+      for (const el of [heroEl, copy, panel, veil]) el.removeAttribute("style");
       delete root.dataset.zoom;
       setSettled(true);
     };
@@ -238,6 +244,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     <div ref={rootRef} className="zoom">
       <div ref={stageRef} className="zoom__stage">
         {hero}
+        <div className="zoom__veil" aria-hidden="true" />
         <div ref={panelRef} className="zoom__panel">
           <div className="zoom__column">
             <ZoomSettledContext.Provider value={settled}>{children}</ZoomSettledContext.Provider>
