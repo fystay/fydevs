@@ -1903,7 +1903,7 @@ main {
   }
 }
 
-/* The live portfolio, laid over the laptop screen in perspective, with the screen's bezel. */
+/* The live portfolio, laid exactly over the laptop screen in perspective (the photo supplies the bezel). */
 .zoom.is-zoom .zoom__panel {
   position: absolute;
   z-index: 2;
@@ -1911,9 +1911,7 @@ main {
   left: 0;
   opacity: 0;
   transform-origin: 0 0;
-  border-radius: calc(var(--bezel) * 0.5);
   background: var(--color-bg);
-  box-shadow: 0 0 0 var(--bezel) #151514;
   backface-visibility: hidden;
 }
 
@@ -1923,7 +1921,6 @@ main {
   position: absolute;
   inset: 0;
   z-index: 1;
-  border-radius: inherit;
   background:
     linear-gradient(118deg, rgb(255 255 255 / 0.24), rgb(255 255 255 / 0.05) 38%, transparent 56%),
     rgb(70 48 26 / 0.1);

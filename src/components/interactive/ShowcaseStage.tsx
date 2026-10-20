@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/projects";
 import devices from "../Devices.module.css";
+import { ZoomSettledContext } from "./LaptopZoom";
 
 type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile">;
 
@@ -33,7 +34,9 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const playing = !reduced && !userPaused && !hovered;
+  // Holds still while the hero zoom is carrying it onto the screen, so projects never cross-fade mid-move.
+  const zoomSettled = useContext(ZoomSettledContext);
+  const playing = !reduced && !userPaused && !hovered && zoomSettled;
 
   useEffect(() => {
     if (!playing) return;
