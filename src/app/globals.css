@@ -1785,8 +1785,9 @@ main {
   .hero-ed .svc {
     margin-bottom: var(--space-3);
   }
+  /* The two-line headline leaves room: spread the copy down the wall above the desk. */
   .hero-ed__copy {
-    gap: clamp(0.5rem, 1.2svh, 0.875rem);
+    gap: clamp(0.75rem, 2.4svh, 1.5rem);
     padding-bottom: calc(100vw * 0.64);
   }
   .hero-ed__title {
@@ -1794,7 +1795,7 @@ main {
     margin-bottom: 0;
   }
   .hero-ed .lede {
-    font-size: clamp(0.875rem, 1.85svh, 1rem);
+    font-size: clamp(0.9375rem, 2.05svh, 1.0625rem);
     line-height: 1.45;
   }
   .hero-ed .btn-row {
@@ -1857,6 +1858,11 @@ main {
   }
   .hero-ed__title {
     font-size: clamp(3.5rem, 6vw, 6.5rem);
+  }
+  /* The line in proportion to the large headline (the buttons grow with it, below). */
+  .hero-ed .lede {
+    max-width: 36rem;
+    font-size: clamp(1.1875rem, 0.8rem + 0.6vw, 1.4375rem);
   }
   .hero-ed__visual {
     background: linear-gradient(to right, var(--hx-wall-lit) 30%, var(--hx-wall) 70%);
@@ -6539,6 +6545,17 @@ main .proof__list {
   margin-top: clamp(3rem, 2rem + 4vw, 5rem);
 }
 
+/* A visual that isn't cut off by the tile's bottom edge needs room beneath it. */
+.tile__visual--pad {
+  padding-bottom: clamp(3rem, 2rem + 4vw, 5rem);
+}
+
+/* One quiet link in place of a row of buttons. */
+.tile__more {
+  margin-top: var(--space-5);
+  font-size: var(--text-sm);
+}
+
 /* Images settle into place as they arrive. */
 @media (prefers-reduced-motion: no-preference) {
   .tile [data-reveal] img {
@@ -6865,6 +6882,17 @@ main .proof__list {
     min-height: 3.25rem;
     padding-inline: 1.4rem;
     font-size: 1rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero-ed .btn-row {
+    gap: 0.75rem;
+  }
+  .hero-ed .btn {
+    min-height: 3.75rem;
+    padding-inline: 1.9rem;
+    font-size: 1.125rem;
   }
 }
 

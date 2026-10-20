@@ -4,8 +4,10 @@ import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
+import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
+import { jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
@@ -22,6 +24,7 @@ const LAPTOP_SCREEN: ScreenQuad = [
   [672, 1062],
 ];
 
+const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
 
@@ -98,7 +101,7 @@ export default function HomePage() {
       </p>
 
       {/*
-        Below the showcase, one product per screen: a name, a few words, two buttons and a
+        Below the showcase, one product per screen: a name, a few words, one link and a
         big visual. Detail and full pricing live on the service pages.
       */}
       <section id="web-design" data-nav="/websites" className="tile" aria-labelledby="web-title">
@@ -114,14 +117,11 @@ export default function HomePage() {
             </Link>
             .
           </p>
-          <div className="tile__ctas">
-            <Link href="/contact?topic=website" className="btn btn--primary">
-              Start a Project
+          <p className="tile__more">
+            <Link href="/pricing" className="arrow-link">
+              See prices <ArrowRight />
             </Link>
-            <Link href="/pricing" className="btn btn--secondary">
-              See prices
-            </Link>
-          </div>
+          </p>
         </div>
         <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
           <Link href="/work#boonma" className="duo" aria-label="Boonma, a website we designed and built">
@@ -132,6 +132,30 @@ export default function HomePage() {
               <Image src={boonma.mobile} alt="" sizes="(min-width: 64rem) 200px, 22vw" placeholder="blur" />
             </span>
           </Link>
+        </div>
+      </section>
+
+      {/* Booking software, shown working: a customer books, the office is pinged. */}
+      <section
+        id="booking"
+        data-nav="/booking-software"
+        className={`tile inverse ${jost.variable}`}
+        aria-labelledby="booking-title"
+      >
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Booking software</p>
+          <h2 id="booking-title" className="tile__title">
+            Booking apps, <span className="serif-em">for any business.</span>
+          </h2>
+          <p className="tile__line">Proven every day at {evexec.name}.</p>
+          <p className="tile__more">
+            <Link href="/booking-software" className="arrow-link">
+              See it work <ArrowRight />
+            </Link>
+          </p>
+        </div>
+        <div className="container container--wide tile__visual tile__visual--pad" data-reveal>
+          <BookingDemo />
         </div>
       </section>
 
@@ -189,15 +213,11 @@ export default function HomePage() {
             Your price, <span className="serif-em">before you commit.</span>
           </h2>
           <p className="tile__line">An instant estimate in two minutes.</p>
-          <div className="tile__ctas">
-            <Link href="/build" className="btn btn--primary">
-              Instant estimate
-              <ArrowRight />
+          <p className="tile__more">
+            <Link href="/build" className="arrow-link">
+              Instant estimate <ArrowRight />
             </Link>
-            <Link href="/pricing" className="btn btn--secondary">
-              See all prices
-            </Link>
-          </div>
+          </p>
           <div className="price-strip__notice">
             <PricingNotice compact />
           </div>

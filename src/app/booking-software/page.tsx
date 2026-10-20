@@ -1,4 +1,3 @@
-import { Archivo, Jost } from "next/font/google";
 import Link from "next/link";
 import { CtaBand } from "@/components/Blocks";
 import { ArrowRight } from "@/components/Icons";
@@ -6,12 +5,9 @@ import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { BookingStudio } from "@/components/interactive/BookingStudio";
 import { PhoneFan } from "@/components/interactive/PhoneFan";
+import { archivo, jost } from "@/lib/fonts";
 import { pageMetadata } from "@/lib/metadata";
 import { projectBySlug } from "@/lib/projects";
-
-// The typefaces of the booking flows shown on this page: EV Exec's, and Alex K Bells' for the bold look.
-const jost = Jost({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-jost", display: "swap" });
-const archivo = Archivo({ subsets: ["latin"], weight: ["600", "800"], variable: "--font-archivo", display: "swap" });
 
 export const metadata = pageMetadata(
   "/booking-software",
