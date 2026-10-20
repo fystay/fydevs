@@ -7096,69 +7096,6 @@ main .proof__list {
   color: var(--color-inverse-ink-2);
 }
 
-/* The four steps as a timeline: one continuous orange rule with a step on each stretch.
-   Phones swipe through them one card at a time, the next one peeking in; wider screens
-   show all four. */
-.four-steps {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 84%;
-  gap: 0;
-  margin: var(--space-8) calc(-1 * var(--gutter)) 0;
-  padding: 0 var(--gutter) clamp(4.5rem, 3rem + 6vw, 8rem);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--gutter);
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-  text-align: left;
-}
-
-.four-steps::-webkit-scrollbar {
-  display: none;
-}
-
-@media (min-width: 56rem) {
-  .four-steps {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin-inline: 0;
-    padding-inline: 0;
-    overflow: visible;
-  }
-}
-
-.four-steps li {
-  padding: var(--space-5) var(--space-5) 0 0;
-  border-top: 2px solid var(--home-orange);
-  scroll-snap-align: start;
-}
-
-.four-steps svg {
-  display: block;
-  margin-bottom: var(--space-4);
-  color: var(--color-ink-2);
-}
-
-.four-steps span {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-ink-3);
-}
-
-.four-steps h3 {
-  margin-top: var(--space-2);
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  font-weight: 500;
-}
-
-.four-steps p {
-  margin-top: var(--space-1);
-  color: var(--color-ink-2);
-  font-size: var(--text-sm);
-}
-
 /* Hero call to action: a weighted primary and a frosted second button that sits on the photo. */
 .hero-ed .btn-row {
   gap: 0.6rem;
@@ -7987,6 +7924,101 @@ main .proof__list {
   color: #fff;
   font-size: 0.8em;
   font-weight: 600;
+}
+
+/* The website version on the homepage: four steps, in the homepage's terracotta. */
+.bs--web {
+  --a: #b8481f;
+}
+
+@media (min-width: 56rem) {
+  .bs--web {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.bs--web .bs__stage[data-stage="enquire"] .bs__screen {
+  background: #f7f1e4;
+}
+
+.ws-url {
+  display: flex;
+  align-items: center;
+  height: 1.7em;
+  margin-bottom: 0.7em;
+  padding-inline: 0.7em;
+  border-radius: 0.85em;
+  background: #f1efeb;
+  color: #6b6760;
+  font-size: 0.7em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ws-url .bs-bar {
+  height: 0.8em;
+}
+
+.ws-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6em;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: 0.9em;
+}
+
+.ws-menu {
+  width: 1.1em;
+  height: 0.55em;
+  border-block: 2px solid currentColor;
+}
+
+.ws-photo {
+  position: relative;
+  height: 4.6em;
+  margin-bottom: 0.7em;
+  border-radius: 0.5em;
+  background: #e2e2e2;
+}
+
+.bs__stage:is([data-stage="build"], [data-stage="launch"]) .ws-photo {
+  background:
+    radial-gradient(circle at 70% 75%, #f2a65a 0 12%, transparent 30%),
+    linear-gradient(160deg, #5a3a28, #2a1d17 70%);
+}
+
+.ws-title {
+  display: block;
+  font-weight: 500;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: 1.3em;
+  line-height: 1.1;
+}
+
+/* Your feedback, pinned to the page while it's being built. */
+.ws-note {
+  position: absolute;
+  right: -0.3em;
+  top: -0.5em;
+  padding: 0.35em 0.6em;
+  background: #ffe38a;
+  box-shadow: 0 6px 12px -8px rgb(0 0 0 / 0.4);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: 0.75em;
+  font-style: italic;
+  rotate: 4deg;
+}
+
+.ws-btn {
+  display: inline-block;
+  margin-top: 0.7em;
+  padding: 0.5em 0.9em;
+  border-radius: 2em;
+  background: var(--a);
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: 700;
 }
 
 /* For bookings, the ready-made product. */

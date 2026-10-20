@@ -9,6 +9,7 @@ import { FamilyLine } from "@/components/interactive/FamilyLine";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { SheetToApp } from "@/components/interactive/SheetToApp";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
+import { WebStages } from "@/components/WebStages";
 import { jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
@@ -28,18 +29,6 @@ const LAPTOP_SCREEN: ScreenQuad = [
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
-
-// Four steps, a few words and a line icon each: the detail lives on the service pages.
-const steps = [
-  ["Enquire", "Tell us what you need.", "M4 6h16v12H4zM4 7l8 6 8-6"],
-  ["Scope", "A fixed price, in writing.", "M7 3h7l4 4v14H7zM14 3v4h4M10 12h5M10 16h5"],
-  ["Build", "Designed and built with you.", "M4 5h16v11H4zM9 20h6M12 16v4M8 9l-2 2 2 2M16 9l2 2-2 2"],
-  [
-    "Launch",
-    "Live, handed over, supported.",
-    "M12 3c3 2 4.5 5 4.5 9L12 16l-4.5-4c0-4 1.5-7 4.5-9zM9.5 15.5 7 20l3.5-1.5M14.5 15.5 17 20l-3.5-1.5M12 9.5h.01",
-  ],
-];
 
 export default function HomePage() {
   return (
@@ -213,24 +202,14 @@ export default function HomePage() {
 
       <section id="process" data-nav="/about" className="tile" aria-labelledby="process-title">
         <div className="container container--wide" data-reveal>
-          <h2 id="process-title" className="tile__title tile__title--sm">
+          <p className="tile__name">How it works</p>
+          <h2 id="process-title" className="tile__title">
             Four steps. <span className="serif-em">No surprises.</span>
           </h2>
           <p className="tile__line">Nothing to pay until you approve the scope.</p>
         </div>
-        <div className="container container--wide">
-          <ol role="list" className="four-steps" tabIndex={0} aria-label="How a project runs">
-            {steps.map(([title, body, icon], i) => (
-              <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d={icon} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </li>
-            ))}
-          </ol>
+        <div className="container container--wide apps-tile__body">
+          <WebStages />
         </div>
       </section>
 
