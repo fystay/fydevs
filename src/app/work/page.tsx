@@ -94,7 +94,7 @@ export default function WorkPage() {
                   </p>
                   {p.slug === "ev-exec" && (
                     <p className="small muted">
-                      We also developed the driver and operator software behind EV Exec.{" "}
+                      We also developed the driver and operator apps behind EV Exec.{" "}
                       <Link href="/booking-software">About the booking software</Link>.
                     </p>
                   )}
@@ -113,7 +113,7 @@ export default function WorkPage() {
           Start a Project
         </Link>
         <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-          Build My SaaS
+          Build My App
         </Link>
       </CtaBand>
     </>

@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 export const metadata = pageMetadata(
   "/about",
   "About",
-  "Why FY Devs exists: bespoke websites clients are proud of, honest pricing, and software that solves real problems.",
+  "Why FY Devs exists: bespoke websites clients are proud of, honest pricing, and apps that solve real problems.",
 );
 
 const beliefs = [
@@ -44,10 +44,10 @@ export default function AboutPage() {
                 Cheap templates, or agencies that take weeks to quote. <em>We think there&apos;s a better way.</em>
               </p>
               <p className="muted">
-                {site.name} combines bespoke web design with custom development and booking software. On the website
+                {site.name} combines bespoke web design with app development and booking software. On the website
                 side, that means considered design, careful engineering and prices you can see before you commit. On
-                the software side, it means tools built around real operations, like the driver and operator software
-                we developed for EV Exec, and FYStay, the holiday stays platform we run ourselves.
+                the app side, it means tools built around real operations, like the driver and operator apps we
+                developed for EV Exec, and FYStay, the holiday stays platform we run ourselves.
               </p>
               <p className="muted">
                 We&apos;re deliberately not competing in the template market. Every site we&apos;ve built looks and
@@ -99,7 +99,7 @@ export default function AboutPage() {
           Start a Project
         </Link>
         <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-          Build My SaaS
+          Build My App
         </Link>
       </CtaBand>
     </>

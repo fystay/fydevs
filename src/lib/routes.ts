@@ -4,7 +4,7 @@ export const publicRoutes = [
   "/websites",
   "/build",
   "/booking-software",
-  "/bespoke-systems",
+  "/app-development",
   "/work",
   "/about",
   "/contact",

@@ -9,6 +9,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The app development page used to live at /bespoke-systems.
+  async redirects() {
+    return [{ source: "/bespoke-systems", destination: "/app-development", permanent: true }];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -30,18 +30,18 @@ export const packagePlanCards: PlanCard[] = packageOrder.map((id) => ({
   cta: "Start a Project",
 }));
 
-/** SaaS and bespoke software, priced after scoping. */
-export const saasPlanCard: PlanCard = {
-  id: "saas",
-  name: "SaaS & bespoke software",
-  summary: "Booking systems, customer portals and web applications.",
+/** App development, priced after scoping. */
+export const appPlanCard: PlanCard = {
+  id: "apps",
+  name: "App development",
+  summary: "Web and mobile apps, customer portals and internal tools.",
   price: "Custom quote",
   includes: [
     "Discovery call and written scope",
     "Fixed price and payment schedule",
-    "Working software delivered in agreed stages",
+    "A working app delivered in agreed stages",
   ],
   href: "/contact?topic=bespoke",
-  cta: "Build My SaaS",
+  cta: "Build My App",
   variant: "inverse",
 };

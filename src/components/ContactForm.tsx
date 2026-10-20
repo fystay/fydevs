@@ -70,7 +70,7 @@ const OPTIONS: Record<Topic, { note: string; icon: ReactNode; examples: string[]
     askSite: true,
   },
   bespoke: {
-    note: "Platforms, portals and web apps",
+    note: "Web and mobile apps, portals and tools",
     icon: (
       <>
         <rect x="3.75" y="3.75" width="6.75" height="6.75" rx="1.5" {...stroke} />
@@ -79,7 +79,7 @@ const OPTIONS: Record<Topic, { note: string; icon: ReactNode; examples: string[]
         <path d="M16.9 13.5v6.75M13.5 16.9h6.75" {...stroke} />
       </>
     ),
-    examples: ["Replace our spreadsheets", "Give customers their own portal", "Automate a manual process"],
+    examples: ["Replace our spreadsheets", "Give customers their own app", "Automate a manual process"],
   },
   "booking-software": {
     note: "See the booking system in action",

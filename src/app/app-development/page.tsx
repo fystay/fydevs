@@ -9,15 +9,15 @@ const evexec = projectBySlug("ev-exec")!;
 const fystay = projectBySlug("fystay")!;
 
 export const metadata = pageMetadata(
-  "/bespoke-systems",
-  "SaaS & bespoke software",
-  "Custom booking platforms, integrations and web applications, scoped carefully and built around the way your business operates.",
+  "/app-development",
+  "App development",
+  "Bespoke web and mobile apps, customer portals, internal tools and integrations, scoped carefully and built around the way your business operates.",
 );
 
 const capabilities = [
   {
-    title: "Custom booking platforms",
-    body: "Booking and scheduling systems shaped around your services, pricing rules and the way your team allocates work.",
+    title: "Web and mobile apps",
+    body: "Apps your customers or your team use every day, on their phones and at their desks, shaped around the tasks they actually do.",
   },
   {
     title: "Integrations",
@@ -25,11 +25,11 @@ const capabilities = [
   },
   {
     title: "Internal tools",
-    body: "Focused web applications that replace spreadsheets, paper and workarounds with something your team actually wants to use.",
+    body: "Focused apps that replace spreadsheets, paper and workarounds with something your team actually wants to use.",
   },
   {
-    title: "Customer-facing applications",
-    body: "Portals and web apps for your customers, with accounts, permissions and data handled carefully.",
+    title: "Customer portals",
+    body: "Accounts where your customers book, pay, track and manage things themselves, with permissions and data handled carefully.",
   },
 ];
 
@@ -37,22 +37,22 @@ const steps = [
   ["Discovery", "We learn how your business works today, where the friction is and what success would look like."],
   ["Scope", "A written scope: what will be built, what won't, the assumptions, the price and the payment schedule."],
   ["Design", "Workflows and interfaces designed with the people who'll use them, before development starts."],
-  ["Build in stages", "Working software delivered in agreed stages, so you can see progress and give feedback early."],
+  ["Build in stages", "A working app delivered in agreed stages, so you can see progress and give feedback early."],
   ["Launch and support", "Careful roll-out, data migration where needed, and ongoing support on terms agreed in advance."],
 ];
 
-export default function BespokeSystemsPage() {
+export default function AppDevelopmentPage() {
   return (
     <>
       <PageHero
-        service="saas"
-        eyebrow="SaaS & bespoke software"
-        title={<>SaaS and software, <span className="serif-em">built around how you work.</span></>}
-        lede="When off-the-shelf tools don't fit, we design and build systems around how your business actually works, and agree the scope in writing before you commit."
+        service="apps"
+        eyebrow="App development"
+        title={<>Apps, <span className="serif-em">built around how you work.</span></>}
+        lede="When off-the-shelf tools don't fit, we design and build apps around how your business actually works, and agree the scope in writing before you commit."
       >
         <div className="btn-row">
           <Link href="/contact?topic=bespoke" className="btn btn--primary">
-            Build My SaaS
+            Build My App
             <ArrowRight />
           </Link>
         </div>
@@ -74,15 +74,15 @@ export default function BespokeSystemsPage() {
 
       <section id="examples" className="section inverse" aria-labelledby="examples-title">
         <div className="container container--wide">
-          <SectionHead eyebrow="From our work" title={<span id="examples-title">Systems we&apos;ve <span className="serif-em">already built.</span></span>} split>
-            <p>Two real examples of booking-led software, both designed and built by FY Devs.</p>
+          <SectionHead eyebrow="From our work" title={<span id="examples-title">Apps we&apos;ve <span className="serif-em">already built.</span></span>} split>
+            <p>Two real examples, both designed and built by FY Devs.</p>
           </SectionHead>
           <div className="grid-2" style={{ gap: "var(--space-7)" }}>
             {[
               {
                 p: evexec,
                 title: "Airport transfer booking",
-                body: "A three-step booking flow with returns, extra stops and flight details, customer accounts, plus driver and operator applications behind it.",
+                body: "A three-step booking flow with returns, extra stops and flight details, customer accounts, plus driver and operator apps behind it.",
                 href: "/booking-software",
                 link: "About the booking software",
               },
@@ -121,7 +121,7 @@ export default function BespokeSystemsPage() {
         <div className="container container--wide">
           <SectionHead eyebrow="Process" title={<>Scope first, <span className="serif-em">then build.</span></>} split>
             <p>
-              Bespoke work is never priced from a form. We confirm scope, assumptions, exclusions and the final price
+              App work is never priced from a form. We confirm scope, assumptions, exclusions and the final price
               before asking for any commitment.
             </p>
           </SectionHead>
@@ -154,7 +154,7 @@ export default function BespokeSystemsPage() {
         body="A short description of what you do and what isn't working is enough to start."
       >
         <Link href="/contact?topic=bespoke" className="btn btn--primary">
-          Build My SaaS
+          Build My App
         </Link>
       </CtaBand>
     </>

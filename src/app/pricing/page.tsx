@@ -3,12 +3,12 @@ import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Bloc
 import { ArrowRight } from "@/components/Icons";
 import { PlanSwiper } from "@/components/interactive/PlanSwiper";
 import { pageMetadata } from "@/lib/metadata";
-import { carePlanCards, packagePlanCards, saasPlanCard } from "@/lib/plans";
+import { appPlanCard, carePlanCards, packagePlanCards } from "@/lib/plans";
 
 export const metadata = pageMetadata(
   "/pricing",
   "Pricing",
-  "Starting prices for FY Devs websites, SaaS and bespoke software, and optional hosting and care plans.",
+  "Starting prices for FY Devs websites and app development, and optional hosting and care plans.",
 );
 
 /** Every price in one place; the homepage links here rather than showing the cards. */
@@ -37,10 +37,10 @@ export default function PricingPage() {
 
       <section id="packages" className="section--tight" style={{ paddingTop: 0 }} aria-labelledby="packages-title">
         <h2 id="packages-title" className="visually-hidden">
-          Websites and software
+          Websites and apps
         </h2>
         <div data-reveal>
-          <PlanSwiper plans={[...packagePlanCards, saasPlanCard]} initial="professional" label="Starting prices" />
+          <PlanSwiper plans={[...packagePlanCards, appPlanCard]} initial="professional" label="Starting prices" />
         </div>
         <div className="container container--wide mt-6" style={{ display: "grid", gap: "var(--space-5)" }}>
           <PricingNotice />

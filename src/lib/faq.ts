@@ -25,8 +25,8 @@ export const faqs: { q: string; a: string }[] = [
     a: "Every package includes handover support: 30 days for Essential and Professional, 60 for Premium. After that you can host the site yourself, or choose a Hosting, Care or Care Plus plan for hosting, updates, small changes and support.",
   },
   {
-    q: "Can you build a SaaS product or web application?",
-    a: "Yes. Software is scoped individually: a conversation about how your business works, then a written scope, price and payment schedule for you to approve. We developed the driver and operator software for EV Exec, and we run our own platform, FYStay.",
+    q: "Can you build an app for my business?",
+    a: "Yes. Apps are scoped individually: a conversation about how your business works, then a written scope, price and payment schedule for you to approve. We developed the driver and operator apps for EV Exec, and we run our own platform, FYStay.",
   },
   {
     q: "Can you add features to my site later?",

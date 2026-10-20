@@ -6,9 +6,9 @@
 export const site = {
   name: "FY Devs",
   shortName: "FYDevs",
-  tagline: "Bespoke websites and practical booking software.",
+  tagline: "Bespoke websites, apps and booking software.",
   description:
-    "FY Devs designs and builds bespoke websites and booking software for businesses that want considered design, clear pricing and technology that fits how they work.",
+    "FY Devs designs and builds bespoke websites, apps and booking software for businesses that want considered design, clear pricing and technology that fits how they work.",
   locale: "en_GB",
   themeColor: "#F2ECE2",
 } as const;
@@ -119,18 +119,18 @@ export const primaryNav: NavItem[] = [
     },
   },
   {
-    href: "/bespoke-systems",
-    label: "SaaS & software",
+    href: "/app-development",
+    label: "App development",
     menu: {
       primary: [
-        { href: "/bespoke-systems", label: "SaaS & bespoke software" },
-        { href: "/contact?topic=bespoke", label: "Build My SaaS" },
+        { href: "/app-development", label: "App development" },
+        { href: "/contact?topic=bespoke", label: "Build My App" },
       ],
       groups: [
         {
           title: "From our work",
           links: [
-            { href: "/bespoke-systems#examples", label: "Examples" },
+            { href: "/app-development#examples", label: "Examples" },
             { href: "/work#ev-exec", label: "EV Exec booking" },
             { href: "/work#fystay", label: "FYStay platform" },
           ],
@@ -154,9 +154,9 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     ],
   },
   {
-    title: "Software",
+    title: "Apps & software",
     links: [
-      { href: "/bespoke-systems", label: "SaaS & bespoke software" },
+      { href: "/app-development", label: "App development" },
       { href: "/booking-software", label: "Booking software" },
       { href: "/work", label: "Case studies" },
     ],

@@ -131,8 +131,8 @@ export default function BookingSoftwarePage() {
                 systems, a tailored platform may serve you better.
               </p>
               <div className="path-card__foot">
-                <Link href="/bespoke-systems" className="arrow-link">
-                  Bespoke systems <ArrowRight />
+                <Link href="/app-development" className="arrow-link">
+                  App development <ArrowRight />
                 </Link>
               </div>
             </div>

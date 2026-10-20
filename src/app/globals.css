@@ -4786,7 +4786,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --svc-hint: #d45b32;
 }
 
-.svc__link[data-service="saas"] {
+.svc__link[data-service="apps"] {
   --svc-hint: #56624a;
 }
 
@@ -4809,7 +4809,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --svc-accent: #d45b32;
 }
 
-.svc[data-current="saas"] {
+.svc[data-current="apps"] {
   --svc-accent: #56624a;
 }
 
@@ -4839,7 +4839,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
 }
 
 /* Each service page takes its own accent across the site's markers, links and states. */
-:root:has(.svc[data-current="saas"]) {
+:root:has(.svc[data-current="apps"]) {
   --color-accent: #56624a; /* olive (5.5:1 on the background) */
   --color-accent-soft: #e2e5d9;
 }
@@ -4849,7 +4849,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --color-accent-soft: #d9e4e3;
 }
 
-.page-hero:has(.svc[data-current="saas"]) {
+.page-hero:has(.svc[data-current="apps"]) {
   background: linear-gradient(to bottom, #e8eade, var(--color-bg));
 }
 
@@ -4965,8 +4965,8 @@ main .h2 {
   font-size: clamp(2.25rem, 1.5rem + 2.6vw, 3.75rem);
 }
 
-/* On the SaaS and booking pages the italic picks up that service's accent. */
-:root:has(.svc[data-current="saas"]) {
+/* On the app and booking pages the italic picks up that service's accent. */
+:root:has(.svc[data-current="apps"]) {
   --home-orange: #56624a;
 }
 
@@ -5233,8 +5233,8 @@ main .proof__list {
   color: var(--color-inverse-ink-2);
 }
 
-/* On dark bands the SaaS and booking accents need to be lighter to stay readable (≥ 3:1). */
-:root:has(.svc[data-current="saas"]) .inverse :is(.h1, .h2) .serif-em {
+/* On dark bands the app and booking accents need to be lighter to stay readable (≥ 3:1). */
+:root:has(.svc[data-current="apps"]) .inverse :is(.h1, .h2) .serif-em {
   color: #a9b596;
 }
 

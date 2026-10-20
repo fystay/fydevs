@@ -61,7 +61,7 @@ export default function HomePage() {
                 <ServiceSwitcher current="web" />
                 <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
                   Websites <br />
-                  and software{" "}
+                  and apps{" "}
                   <span className="serif-em">
                     that grow <br />
                     your business.
@@ -164,18 +164,18 @@ export default function HomePage() {
       </section>
 
       <div className="tiles-2">
-        <section id="saas" data-nav="/bespoke-systems" className="tile tile--card" aria-labelledby="saas-title">
+        <section id="apps" data-nav="/app-development" className="tile tile--card" aria-labelledby="apps-title">
           <div data-reveal>
-            <p className="tile__name">SaaS &amp; bespoke</p>
-            <h2 id="saas-title" className="tile__title tile__title--sm">
+            <p className="tile__name">App development</p>
+            <h2 id="apps-title" className="tile__title tile__title--sm">
               Built around <span className="serif-em">how you work.</span>
             </h2>
-            <p className="tile__line">Platforms, portals and web apps.</p>
+            <p className="tile__line">Web and mobile apps, portals and tools.</p>
             <div className="tile__ctas">
               <Link href="/contact?topic=bespoke" className="btn btn--primary">
-                Build My SaaS
+                Build My App
               </Link>
-              <Link href="/bespoke-systems" className="btn btn--secondary">
+              <Link href="/app-development" className="btn btn--secondary">
                 Learn more
               </Link>
             </div>
