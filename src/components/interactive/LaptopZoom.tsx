@@ -88,6 +88,7 @@ type Geometry = {
   W: number;
   H: number;
   d: Box; // the showcase display's box
+  slack: number; // empty stage below the landed showcase, which the next section scrolls up into
 };
 
 /** The scroll in two acts: dive into the screen, then turn to face the viewer while pulling back. */
@@ -222,7 +223,8 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     const copy = heroEl?.querySelector<HTMLElement>(".hero-ed__layout");
     const display = panel?.querySelector<HTMLElement>(".laptop__display");
     const veil = stage?.querySelector<HTMLElement>(".zoom__veil");
-    if (!root || !stage || !panel || !heroEl || !photo || !copy || !display || !veil) return;
+    const showcase = panel?.querySelector<HTMLElement>(".showcase");
+    if (!root || !stage || !panel || !heroEl || !photo || !copy || !display || !veil || !showcase) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let geo: Geometry | null = null;
@@ -246,7 +248,11 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       const P = Math.max(W, H) * 3;
       const start = fitPose(place(q0, c0, sDive, centre), d.w, d.h, P, centre);
       const end: Pose = { rx: 0, ry: 0, rz: 0, k: 1, tx: d.x + d.w / 2, ty: d.y + d.h / 2 };
-      geo = { q0, c0, sDive, start, end, P, W, H, d };
+      // The landed showcase rarely fills the stage; the next section rises into the space below it.
+      const sc = layoutBox(showcase, panel);
+      const slack = Math.max(0, Math.round(H - (sc.y + sc.h) - 8));
+      root.style.setProperty("--zoom-slack", `${slack}px`);
+      geo = { q0, c0, sDive, start, end, P, W, H, d, slack };
       progress = -1;
     };
 
@@ -256,8 +262,10 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       const run = root.offsetHeight - stage.offsetHeight;
       const top = parseFloat(getComputedStyle(stage).top) || 0;
       const travelled = top - root.getBoundingClientRect().top;
+      // The zoom finishes before the pin releases; the rest of the run brings the next section up.
+      const zoomRun = run - geo.slack;
       // A couple of pixels' tolerance absorbs sub-pixel header heights.
-      const p = run > 0 && travelled > 2 ? clamp(travelled / run) : 0;
+      const p = zoomRun > 0 && travelled > 2 ? clamp(travelled / zoomRun) : 0;
       if (p === progress) return;
       progress = p;
 
@@ -299,6 +307,8 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
 
       panel.style.transform = p >= 1 ? "" : `${rectToQuad(d.w, d.h, quad)} translate(${-d.x}px, ${-d.y}px)`;
       // The bezel and keyboard arrive only once the screen has nearly turned to face you; then the tabs.
+      // The bezel lies in the screen's plane, so it can turn with it; it replaces the photo's as the desk fades.
+      panel.style.setProperty("--zoom-bezel", String(smoothstep(DIVE_END * 0.55, DIVE_END, p)));
       panel.style.setProperty("--zoom-ui", String(smoothstep(0.78, 0.95, p)));
       panel.style.setProperty("--zoom-tabs", String(smoothstep(0.88, 0.99, p)));
       panel.style.setProperty("--glare", String(1 - smoothstep(0, DIVE_END, p)));
@@ -323,7 +333,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     // Tabbing into the showcase before the zoom has finished jumps to its end, so focus is never hidden.
     const onFocusIn = () => {
       if (progress >= 1) return;
-      const run = root.offsetHeight - stage.offsetHeight;
+      const run = root.offsetHeight - stage.offsetHeight - (geo?.slack ?? 0);
       const top = parseFloat(getComputedStyle(stage).top) || 0;
       window.scrollTo({ top: root.getBoundingClientRect().top + window.scrollY - top + run, behavior: "instant" });
     };
@@ -348,6 +358,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
       for (const el of [heroEl, copy, panel, veil]) el.removeAttribute("style");
+      root.style.removeProperty("--zoom-slack");
       delete root.dataset.zoom;
       setSettled(true);
     };

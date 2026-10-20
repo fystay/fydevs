@@ -1925,9 +1925,25 @@ main {
 }
 
 /* Everything but the display (bezel, keyboard, project tabs) arrives as the photo fades away. */
-.zoom.is-zoom .laptop__screen::before,
+.zoom.is-zoom .laptop__screen::before {
+  opacity: var(--zoom-bezel, 1);
+}
+
 .zoom.is-zoom .laptop__base {
   opacity: var(--zoom-ui, 1);
+}
+
+/*
+ * The next section rises into the empty stage below the landed showcase while the laptop
+ * holds still, so there's no gap when the pin releases (the script measures the space).
+ */
+.zoom.is-zoom {
+  margin-bottom: calc(var(--zoom-slack, 0px) * -1);
+}
+
+.zoom.is-zoom + * {
+  position: relative;
+  z-index: 1;
 }
 
 .zoom.is-zoom .showcase__bar {
