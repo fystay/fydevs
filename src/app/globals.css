@@ -70,7 +70,7 @@
   --width-prose: 38rem;
   --width-measure: 34rem; /* comfortable line length for supporting copy */
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
-  --svc-top: clamp(1.75rem, 1rem + 2.5vw, 3.5rem); /* space between the header and the service switcher */
+  --svc-top: clamp(0.25rem, 0rem + 1vw, 1.25rem); /* space between the header and the service switcher */
   --logo-h: 2.75rem; /* header logo height; the bar grows with it */
   --header-h: max(4rem, calc(var(--logo-h) + 1.75rem));
 
@@ -4715,7 +4715,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
 .svc__link {
   position: relative;
   display: inline-block;
-  padding: 1.1rem 0 0.6rem;
+  padding: 0.85rem 0 0.6rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
