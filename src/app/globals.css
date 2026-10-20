@@ -5611,3 +5611,29 @@ main .proof__list {
     display: none;
   }
 }
+
+/* A price in a tile's line links to the full pricing. */
+.tile__price {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgb(28 28 28 / 0.3);
+  text-underline-offset: 0.2em;
+}
+
+.tile__price:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The hero's estimate link answers a press the way the buttons do. */
+.hero-estimate > span[aria-hidden] {
+  transition: transform var(--duration) var(--ease);
+}
+
+.hero-estimate:hover > span[aria-hidden],
+.hero-estimate:active > span[aria-hidden] {
+  transform: translateX(3px);
+}
+
+.hero-estimate:active {
+  opacity: 0.75;
+}

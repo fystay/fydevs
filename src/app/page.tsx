@@ -116,7 +116,13 @@ export default function HomePage() {
           <h2 id="web-title" className="tile__title">
             Built to win <span className="serif-em">customers.</span>
           </h2>
-          <p className="tile__line">Bespoke design, fast on every phone. From {formatGBP(PACKAGES.essential.from)}.</p>
+          <p className="tile__line">
+            Bespoke design, fast on every phone.{" "}
+            <Link href="/pricing" className="tile__price">
+              From {formatGBP(PACKAGES.essential.from)}
+            </Link>
+            .
+          </p>
           <div className="tile__ctas">
             <Link href="/contact?topic=website" className="btn btn--primary">
               Start a Project
@@ -277,8 +283,9 @@ export default function HomePage() {
         <Link href="/contact?topic=website" className="btn btn--primary">
           Start a Project
         </Link>
-        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-          Build My SaaS
+        <Link href="/build" className="btn btn--secondary">
+          <Stopwatch />
+          Instant estimate
         </Link>
       </CtaBand>
     </>

@@ -10,9 +10,9 @@ const HIDDEN_ON = ["/contact", "/build"];
 
 /**
  * Phones and tablets: once the visitor has scrolled past the opening screen, a slim bar
- * slides up with the two next steps. It steps aside while anything that already offers
- * them is on screen (the hero zoom and showcase, any button, call-to-action bands, the
- * footer), so it never doubles up or covers a button.
+ * slides up with the two next steps. It steps aside over sections that already offer them
+ * (the hero zoom and showcase, call-to-action bands, the footer) and whenever another
+ * button reaches the strip along the bottom it would cover.
  */
 export function StickyCta() {
   const pathname = usePathname();
@@ -29,21 +29,24 @@ export function StickyCta() {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
-    const io = new IntersectionObserver((entries) => {
+    const track = (entries: IntersectionObserverEntry[]) => {
       for (const e of entries) {
         if (e.isIntersecting) blockers.add(e.target);
         else blockers.delete(e.target);
       }
       schedule();
-    });
-    // Any other call-to-action button on screen already offers the next step.
-    document
-      .querySelectorAll(".zoom, .cta-band, .site-footer, [data-cta-hide], main .btn")
-      .forEach((el) => io.observe(el));
+    };
+    // Sections that already are the next step: anywhere on screen.
+    const sections = new IntersectionObserver(track);
+    document.querySelectorAll(".zoom, .cta-band, .site-footer, [data-cta-hide]").forEach((el) => sections.observe(el));
+    // Other buttons only matter in the strip the bar covers, along the bottom of the screen.
+    const buttons = new IntersectionObserver(track, { rootMargin: "-82% 0px 0px 0px" });
+    document.querySelectorAll("main .btn").forEach((el) => buttons.observe(el));
     window.addEventListener("scroll", schedule, { passive: true });
     schedule();
     return () => {
-      io.disconnect();
+      sections.disconnect();
+      buttons.disconnect();
       window.removeEventListener("scroll", schedule);
       if (frame) cancelAnimationFrame(frame);
       setShow(false);
