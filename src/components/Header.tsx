@@ -38,7 +38,17 @@ const NAV = ["nav-menu"];
 
 type OnNavigate = (e: React.MouseEvent<HTMLAnchorElement>) => void;
 
-function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: string; onNavigate?: OnNavigate }) {
+function MenuLink({
+  link,
+  className,
+  current,
+  onNavigate,
+}: {
+  link: NavLink;
+  className?: string;
+  current?: boolean;
+  onNavigate?: OnNavigate;
+}) {
   if (link.external) {
     return (
       <a href={link.href} className={className} target="_blank" rel="noopener noreferrer" onClick={onNavigate}>
@@ -48,7 +58,13 @@ function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: 
     );
   }
   return (
-    <Link href={link.href} className={className} onClick={onNavigate} transitionTypes={NAV}>
+    <Link
+      href={link.href}
+      className={className}
+      aria-current={current ? "page" : undefined}
+      onClick={onNavigate}
+      transitionTypes={NAV}
+    >
       {link.label}
     </Link>
   );
@@ -58,11 +74,15 @@ function MenuLink({ link, className, onNavigate }: { link: NavLink; className?: 
 function MenuContents({
   menu,
   variant,
+  current,
   onNavigate,
 }: {
   menu: NavMenu;
   variant: "flyout" | "mobile";
-  onNavigate: OnNavigate;
+  /** The link to underline: the one last pressed, or the page you're on. */
+  current: NavLink | null;
+  /** The click handler for each link (it's told which link was pressed). */
+  onNavigate: (link: NavLink) => OnNavigate;
 }) {
   let i = 0;
   return (
@@ -70,7 +90,7 @@ function MenuContents({
       <ul role="list" className="menu__primary">
         {menu.primary.map((link) => (
           <li key={link.label} style={{ "--i": i++ } as React.CSSProperties}>
-            <MenuLink link={link} onNavigate={onNavigate} />
+            <MenuLink link={link} current={link === current} onNavigate={onNavigate(link)} />
           </li>
         ))}
       </ul>
@@ -80,7 +100,7 @@ function MenuContents({
           <ul role="list">
             {group.links.map((link) => (
               <li key={link.label}>
-                <MenuLink link={link} onNavigate={onNavigate} />
+                <MenuLink link={link} current={link === current} onNavigate={onNavigate(link)} />
               </li>
             ))}
           </ul>
@@ -90,14 +110,30 @@ function MenuContents({
   );
 }
 
+/**
+ * The link in a menu to underline: the one last pressed, while you're still on its page;
+ * otherwise the first link to the page you're on (several can share a page).
+ */
+function currentLink(menu: NavMenu, pathname: string, picked: NavLink | null): NavLink | null {
+  const links = [...menu.primary, ...menu.groups.flatMap((g) => g.links)];
+  if (picked && picked.href.split("#")[0] === pathname) {
+    const match = links.find((l) => l.href === picked.href && l.label === picked.label);
+    if (match) return match;
+  }
+  return links.find((l) => l.href === pathname) ?? null;
+}
+
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false); // mobile menu
   const [sub, setSub] = useState<number | null>(null); // mobile submenu
   const [lastSub, setLastSub] = useState<number | null>(null);
+  // The option whose sub-menu you just came Back from: it keeps the line while the menu is open.
+  const [backFrom, setBackFrom] = useState<number | null>(null);
   const [flyout, setFlyout] = useState<number | null>(null); // desktop flyout
   const [lastFlyout, setLastFlyout] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [picked, setPicked] = useState<NavLink | null>(null); // the menu link last pressed
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const flyoutRef = useRef<HTMLDivElement>(null);
@@ -197,6 +233,11 @@ export function Header() {
     },
     [closeAll],
   );
+
+  const pickAndNavigate = (link: NavLink) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setPicked(link);
+    closeIfSamePage(e);
+  };
 
   const clearTimers = () => {
     if (openTimer.current) window.clearTimeout(openTimer.current);
@@ -408,6 +449,7 @@ export function Header() {
             onClick={() => {
               setOpen((v) => !v);
               setSub(null);
+              setBackFrom(null);
             }}
           >
             <span className="visually-hidden">{open ? "Close menu" : "Open menu"}</span>
@@ -438,7 +480,12 @@ export function Header() {
             <div ref={measureRef}>
               <div className="container container--wide flyout__inner" key={lastFlyout ?? "none"}>
                 {flyoutItem?.menu && (
-                  <MenuContents menu={flyoutItem.menu} variant="flyout" onNavigate={closeIfSamePage} />
+                  <MenuContents
+                    menu={flyoutItem.menu}
+                    variant="flyout"
+                    current={currentLink(flyoutItem.menu, pathname, picked)}
+                    onNavigate={pickAndNavigate}
+                  />
                 )}
               </div>
             </div>
@@ -464,7 +511,12 @@ export function Header() {
         data-sub={sub !== null}
         style={{ viewTransitionName: "mobile-menu" }}
       >
-        <nav aria-label="Main mobile" className="mm-pane mm-pane--root" inert={sub !== null}>
+        <nav
+          aria-label="Main mobile"
+          className="mm-pane mm-pane--root"
+          inert={sub !== null}
+          data-back={backFrom !== null || undefined}
+        >
           <ul role="list">
             {primaryNav.map((item, i) => (
               <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
@@ -474,7 +526,9 @@ export function Header() {
                     className="mm-link"
                     onClick={() => openSub(i)}
                     aria-label={`${item.label}: more`}
-                    data-current={isCurrent(pathname, item) || spy === item.href || undefined}
+                    data-current={
+                      (backFrom === null ? isCurrent(pathname, item) || spy === item.href : backFrom === i) || undefined
+                    }
                   >
                     {item.label}
                     <Chevron dir="right" size={14} />
@@ -509,11 +563,23 @@ export function Header() {
         <div className="mm-pane mm-pane--sub" inert={sub === null} aria-hidden={sub === null}>
           {subItem?.menu && (
             <div key={lastSub}>
-              <button type="button" className="mm-back" onClick={() => setSub(null)}>
+              <button
+                type="button"
+                className="mm-back"
+                onClick={() => {
+                  setBackFrom(sub);
+                  setSub(null);
+                }}
+              >
                 <Chevron dir="left" size={14} />
                 <span>Back</span>
               </button>
-              <MenuContents menu={subItem.menu} variant="mobile" onNavigate={closeIfSamePage} />
+              <MenuContents
+                menu={subItem.menu}
+                variant="mobile"
+                current={currentLink(subItem.menu, pathname, picked)}
+                onNavigate={pickAndNavigate}
+              />
             </div>
           )}
         </div>
