@@ -5,6 +5,7 @@ import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
+import { FamilyLine } from "@/components/interactive/FamilyLine";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { jost } from "@/lib/fonts";
@@ -99,10 +100,8 @@ export default function HomePage() {
         </section>
       </LaptopZoom>
 
-      {/* One quiet, true line under the showcase. */}
-      <p className="container container--wide family-line">
-        Every site here runs a family business. <em>Ours.</em>
-      </p>
+      {/* One true line, full screen after the showcase, typed out as it arrives. */}
+      <FamilyLine />
 
       {/*
         Below the showcase, one product per screen: a name, a few words, one link and a
