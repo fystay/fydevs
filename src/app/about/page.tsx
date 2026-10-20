@@ -32,7 +32,7 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow={`About ${site.name}`}
-        title="A small studio with exacting standards."
+        title={<>A small studio with <span className="serif-em">exacting standards.</span></>}
         lede={`${site.name} builds digital work businesses are proud to show their customers, and makes buying it straightforward.`}
       />
 
@@ -65,7 +65,7 @@ export default function AboutPage() {
 
       <section className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Principles" title="What guides the work." />
+          <SectionHead eyebrow="Principles" title={<>What <span className="serif-em">guides the work.</span></>} />
           <ol role="list" className="ruled-list">
             {beliefs.map(([title, body], i) => (
               <li key={title}>
@@ -80,7 +80,7 @@ export default function AboutPage() {
 
       <section className="section inverse">
         <div className="container container--wide">
-          <SectionHead eyebrow="Engineering standards" title="The parts you don't see." split>
+          <SectionHead eyebrow="Engineering standards" title={<>The parts <span className="serif-em">you don&apos;t see.</span></>} split>
             <p>Every project, large or small, is built to the same baseline.</p>
           </SectionHead>
           <div className="grid-2" style={{ rowGap: "var(--space-7)" }}>
@@ -94,7 +94,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <CtaBand title="Let's build something you're proud of.">
+      <CtaBand title={<>Let&apos;s build something <span className="serif-em">you&apos;re proud of.</span></>}>
         <Link href="/contact?topic=website" className="btn btn--primary">
           Start a Project
         </Link>

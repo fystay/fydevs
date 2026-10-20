@@ -29,7 +29,7 @@ export default function BookingSoftwarePage() {
       <PageHero
         service="booking"
         eyebrow="Booking software"
-        title="Booking software, proven on the road."
+        title={<>Booking software, <span className="serif-em">proven on the road.</span></>}
         lede={`Driver and operator applications developed for ${evexec.name}, an executive airport transfer business on the Fylde Coast. If you run a taxi or transfer firm, we'd like to show you how they work.`}
       >
         <div className="btn-row">
@@ -124,7 +124,7 @@ export default function BookingSoftwarePage() {
 
       <section id="fit" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Product or bespoke?" title="Two routes, depending on how you work." />
+          <SectionHead eyebrow="Product or bespoke?" title={<>Two routes, <span className="serif-em">depending on how you work.</span></>} />
           <div className="grid-2">
             <div className="card stack" style={{ "--stack": "var(--space-4)" } as React.CSSProperties}>
               <p className="eyebrow">The product</p>
@@ -158,7 +158,7 @@ export default function BookingSoftwarePage() {
 
       <section id="demo" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="The demo" title="What we'll cover together." split>
+          <SectionHead eyebrow="The demo" title={<>What we&apos;ll <span className="serif-em">cover together.</span></>} split>
             <p>
               We&apos;d rather show you the software working than list features on a page. There&apos;s no obligation,
               and we&apos;ll tell you plainly if it isn&apos;t the right fit.
@@ -177,7 +177,7 @@ export default function BookingSoftwarePage() {
       </section>
 
       <CtaBand
-        title="See it working."
+        title={<>See it <span className="serif-em">working.</span></>}
         body="Tell us a little about your operation and we'll arrange a demo at a time that suits you."
       >
         <Link href="/contact?topic=booking-software" className="btn btn--primary">

@@ -100,6 +100,7 @@ export function CtaBand({
             {title}
           </h2>
           {body && <p className="lede">{body}</p>}
+          <p className="reply-note">We reply within one working day, Monday to Friday.</p>
         </div>
         <div className="btn-row">{children}</div>
       </div>

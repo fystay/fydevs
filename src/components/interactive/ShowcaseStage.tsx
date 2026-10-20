@@ -7,7 +7,7 @@ import type { Project } from "@/lib/projects";
 import { ZoomSettledContext } from "./LaptopZoom";
 import { LivePreview } from "./LivePreview";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile" | "walkthrough">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile" | "walkthrough" | "logo">;
 
 /**
  * The laptop's base, drawn from directly above: keyboard and trackpad on a brushed
@@ -247,7 +247,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
               className="showcase__tab"
               onClick={() => go(i)}
             >
-              <span className="showcase__tab-num">{String(i + 1).padStart(2, "0")}</span>
+              <Image src={p.logo} alt="" width={28} height={28} sizes="28px" className="showcase__tab-logo" />
               <span className="showcase__tab-name">{p.name}</span>
               <span className="showcase__progress" aria-hidden="true">
                 {/* Filled by the clip as it plays. */}

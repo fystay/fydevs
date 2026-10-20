@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PageHero } from "@/components/Blocks";
 import { PhoneFrame } from "@/components/Devices";
@@ -18,7 +19,7 @@ export default function WorkPage() {
     <>
       <PageHero
         eyebrow="Our work"
-        title="Case studies."
+        title={<>Case <span className="serif-em">studies.</span></>}
         lede="Four live projects: three client websites and our own platform. For each one, the challenge, how we approached it and exactly what we built, with real desktop and mobile screenshots."
       />
 
@@ -54,7 +55,8 @@ export default function WorkPage() {
                     <span>{p.sector}</span>
                     <span>{p.location}</span>
                   </p>
-                  <h2 id={`${p.slug}-title`} className="h2">
+                  <h2 id={`${p.slug}-title`} className="h2 work-row__title">
+                    <Image src={p.logo} alt="" width={44} height={44} sizes="44px" className="work-row__logo" />
                     {p.name}
                   </h2>
                   <div>
@@ -104,7 +106,7 @@ export default function WorkPage() {
       </section>
 
       <CtaBand
-        title="Your business could be next."
+        title={<>Your business <span className="serif-em">could be next.</span></>}
         body="Tell us what you need. We reply with honest advice, a clear price and a plan."
       >
         <Link href="/contact?topic=website" className="btn btn--primary">

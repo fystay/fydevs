@@ -3,6 +3,7 @@ import { Geist_Mono, Inter, Newsreader, Playfair_Display } from "next/font/googl
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Reveal } from "@/components/interactive/Reveal";
+import { StickyCta } from "@/components/StickyCta";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </main>
         <Footer />
         <Reveal />
+        <StickyCta />
       </body>
     </html>
   );

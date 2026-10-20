@@ -298,6 +298,15 @@ export default function HomePage() {
         </div>
 
         <div className="container container--wide">
+          <div className="estimate-prompt" data-reveal>
+            <p>
+              <strong>What would yours cost?</strong> Answer a few quick questions for an instant estimate.
+            </p>
+            <Link href="/build" className="btn btn--primary">
+              Get my estimate
+              <ArrowRight />
+            </Link>
+          </div>
           <div className="mt-6">
             <PricingNotice />
           </div>
@@ -362,7 +371,7 @@ export default function HomePage() {
       </section>
 
       <CtaBand
-        title="Ready to start?"
+        title={<>Ready to <span className="serif-em">start?</span></>}
         body="Tell us your goals, budget and timeline. We'll reply with honest advice and a clear next step."
       >
         <Link href="/contact?topic=website" className="btn btn--primary">

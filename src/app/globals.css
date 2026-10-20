@@ -3059,9 +3059,38 @@ main {
   color: var(--color-ink);
 }
 
-.showcase__tab-num {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
+/* Each project's own logo, as a small app-style tile. */
+.showcase__tab-logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 0.3rem;
+  border-radius: 0.45rem;
+  box-shadow: 0 1px 3px rgb(32 33 36 / 0.18);
+  opacity: 0.7;
+  filter: grayscale(0.6);
+  transition:
+    opacity var(--duration) var(--ease),
+    filter var(--duration) var(--ease);
+}
+
+.showcase__tab:hover .showcase__tab-logo,
+.showcase__tab[aria-pressed="true"] .showcase__tab-logo {
+  opacity: 1;
+  filter: none;
+}
+
+.work-row__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.work-row__logo {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 1px 3px rgb(32 33 36 / 0.18);
 }
 
 .showcase__tab-name {
@@ -4866,11 +4895,11 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
 }
 
 /* ==========================================================================
-   Homepage palette: the hero's burnt orange, sage, beige and soft black,
-   with Playfair Display headings, carried down the whole page.
+   Site palette: the hero's burnt orange, sage, beige and soft black, with
+   Playfair Display headings, on every page.
    ========================================================================== */
 
-:root:has(.hero-ed) {
+:root {
   --color-bg: #f3ebdd;
   --color-surface: #f7f1e6;
   --color-surface-raised: #fbf7ef;
@@ -4886,64 +4915,167 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --home-sage-wash: #e3e5d9;
 }
 
-main:has(.hero-ed) :is(.h1, .h2) {
+main :is(.h1, .h2) {
   font-family: var(--font-playfair), var(--font-serif);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.04;
 }
 
-main:has(.hero-ed) .h2 {
+main .h2 {
   font-size: clamp(2.25rem, 1.5rem + 2.6vw, 3.75rem);
 }
 
-main:has(.hero-ed) :is(.h1, .h2) .serif-em {
+/* On the SaaS and booking pages the italic picks up that service's accent. */
+:root:has(.svc[data-current="saas"]) {
+  --home-orange: #56624a;
+}
+
+:root:has(.svc[data-current="booking"]) {
+  --home-orange: #2f5d62;
+}
+
+main :is(.h1, .h2) .serif-em {
   font-family: inherit;
   font-weight: 400;
   letter-spacing: -0.02em;
   color: var(--home-orange);
 }
 
-main:has(.hero-ed) :is(.steps h3, .ongoing .h3, .proof__list strong, .plan__name, .plan__price) {
+main :is(.steps h3, .ongoing .h3, .proof__list strong, .plan__name, .plan__price) {
   font-family: var(--font-playfair), var(--font-serif);
   font-weight: 500;
   letter-spacing: -0.015em;
 }
 
-main:has(.hero-ed) :is(.steps h3, .ongoing .h3) {
+main :is(.steps h3, .ongoing .h3) {
   font-size: 1.375rem;
 }
 
 /* Sage: the quiet secondary, on the rules between benefits and through the process. */
-main:has(.hero-ed) .benefits li {
+main .benefits li {
   border-top-color: var(--home-sage);
 }
 
-main:has(.hero-ed) #process {
+main #process {
   background: var(--home-sage-wash);
 }
 
-main:has(.hero-ed) #process ol.steps li {
+main #process ol.steps li {
   border-color: #d2d7c6;
   background: #eceee5;
 }
 
-main:has(.hero-ed) #process ol.steps li::before {
+main #process ol.steps li::before {
   color: var(--home-sage-deep);
 }
 
-main:has(.hero-ed) #process ol.steps li::after {
+main #process ol.steps li::after {
   background: var(--home-sage-deep);
 }
 
 @media (hover: hover) {
-  main:has(.hero-ed) #process ol.steps li:hover {
+  main #process ol.steps li:hover {
     background: #f4f5ef;
     border-color: var(--home-sage);
   }
 }
 
 /* The proof strip's figures sit on an orange rule, like the hero's switcher line. */
-main:has(.hero-ed) .proof__list {
+main .proof__list {
   border-top: 2px solid var(--home-orange);
+}
+
+/* ==========================================================================
+   Sticky call to action (components/StickyCta): phones and tablets only
+   ========================================================================== */
+
+.sticky-cta {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  display: flex;
+  gap: var(--space-2);
+  width: min(calc(100% - 1.5rem), 26rem);
+  padding: 0.4rem;
+  border: 1px solid rgb(28 28 28 / 0.08);
+  border-radius: var(--radius-pill);
+  background: rgb(250 246 239 / 0.92);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  box-shadow: 0 12px 32px -14px rgb(32 33 36 / 0.35);
+  opacity: 0;
+  transform: translate(-50%, calc(100% + 1.5rem));
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms ease;
+}
+
+.sticky-cta[data-show="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.sticky-cta .btn {
+  flex: 1;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+}
+
+.sticky-cta .btn--primary {
+  flex: 1.4;
+}
+
+.sticky-cta .btn--secondary {
+  background: transparent;
+}
+
+/* The full menu (with its own Start a Project button) shows from 68rem. */
+@media (min-width: 68rem) {
+  .sticky-cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta {
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Pricing: a prompt to the instant estimate, the quickest way to a real number. */
+.estimate-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-5);
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+}
+
+.estimate-prompt p {
+  max-width: 34rem;
+  color: var(--color-ink-2);
+}
+
+.estimate-prompt strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+/* Reply-time promise under the closing call to action. */
+.reply-note {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-inverse-ink-2);
 }

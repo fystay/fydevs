@@ -47,7 +47,7 @@ export default function BespokeSystemsPage() {
       <PageHero
         service="saas"
         eyebrow="SaaS & bespoke software"
-        title="SaaS and software, built around how you work."
+        title={<>SaaS and software, <span className="serif-em">built around how you work.</span></>}
         lede="When off-the-shelf tools don't fit, we design and build systems around how your business actually works, and agree the scope in writing before you commit."
       >
         <div className="btn-row">
@@ -60,7 +60,7 @@ export default function BespokeSystemsPage() {
 
       <section className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Capabilities" title="What we build." />
+          <SectionHead eyebrow="Capabilities" title={<>What <span className="serif-em">we build.</span></>} />
           <div className="grid-2" style={{ rowGap: "var(--space-7)" }}>
             {capabilities.map((c) => (
               <div key={c.title} className="feature">
@@ -74,7 +74,7 @@ export default function BespokeSystemsPage() {
 
       <section id="examples" className="section inverse" aria-labelledby="examples-title">
         <div className="container container--wide">
-          <SectionHead eyebrow="From our work" title={<span id="examples-title">Systems we&apos;ve already built.</span>} split>
+          <SectionHead eyebrow="From our work" title={<span id="examples-title">Systems we&apos;ve <span className="serif-em">already built.</span></span>} split>
             <p>Two real examples of booking-led software, both designed and built by FY Devs.</p>
           </SectionHead>
           <div className="grid-2" style={{ gap: "var(--space-7)" }}>
@@ -119,7 +119,7 @@ export default function BespokeSystemsPage() {
 
       <section className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Process" title="Scope first, then build." split>
+          <SectionHead eyebrow="Process" title={<>Scope first, <span className="serif-em">then build.</span></>} split>
             <p>
               Bespoke work is never priced from a form. We confirm scope, assumptions, exclusions and the final price
               before asking for any commitment.
@@ -150,7 +150,7 @@ export default function BespokeSystemsPage() {
       </section>
 
       <CtaBand
-        title="Tell us how your business runs."
+        title={<>Tell us how your <span className="serif-em">business runs.</span></>}
         body="A short description of what you do and what isn't working is enough to start."
       >
         <Link href="/contact?topic=bespoke" className="btn btn--primary">

@@ -21,7 +21,7 @@ export default async function ContactPage({
     <>
       <PageHero
         eyebrow="Start a project"
-        title="Tell us what you need."
+        title={<>Tell us <span className="serif-em">what you need.</span></>}
         lede="A few quick choices and a sentence about your goals. It takes about a minute."
       />
       <section className="section--tight" style={{ paddingTop: 0 }}>

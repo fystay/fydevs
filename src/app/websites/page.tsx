@@ -57,7 +57,7 @@ export default function WebsitesPage() {
     <>
       <PageHero
         eyebrow="Websites"
-        title="Bespoke websites, priced in the open."
+        title={<>Bespoke websites, <span className="serif-em">priced in the open.</span></>}
         lede="We design and build websites that reflect the quality of your business, and we tell you what they cost before you've had to ask."
       >
         <div className="btn-row">
@@ -73,7 +73,7 @@ export default function WebsitesPage() {
 
       <section className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="What we do" title="Everything a serious website needs." split>
+          <SectionHead eyebrow="What we do" title={<>Everything a serious <span className="serif-em">website needs.</span></>} split>
             <p>
               Every project includes design and development. The rest depends on what your business needs, and the
               configurator only asks about what&apos;s relevant.
@@ -92,7 +92,7 @@ export default function WebsitesPage() {
 
       <section className="section section--ruled" aria-labelledby="examples-title">
         <div className="container container--wide">
-          <SectionHead eyebrow="Recent websites" title={<span id="examples-title">Three clients, three identities.</span>} split>
+          <SectionHead eyebrow="Recent websites" title={<span id="examples-title">Three clients, <span className="serif-em">three identities.</span></span>} split>
             <p>
               The same standards underneath, and a completely different face on top. Each design starts from the
               business and the people it serves.
@@ -123,7 +123,7 @@ export default function WebsitesPage() {
 
       <section id="packages" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Packages" title="Defined deliverables, clear limits." split>
+          <SectionHead eyebrow="Packages" title={<>Defined deliverables, <span className="serif-em">clear limits.</span></>} split>
             <p>
               Packages are starting points. The configurator recommends one based on your answers and adds any extras
               you choose, so you can see exactly where the price comes from.
@@ -163,7 +163,7 @@ export default function WebsitesPage() {
 
       <section id="care" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Hosting & care" title="Ongoing costs, kept separate." split>
+          <SectionHead eyebrow="Hosting & care" title={<>Ongoing costs, <span className="serif-em">kept separate.</span></>} split>
             <p>
               One-off build fees and monthly plans are always priced separately. Plans are optional: you can host the
               site yourself after handover.
@@ -206,7 +206,7 @@ export default function WebsitesPage() {
       </section>
 
       <CtaBand
-        title="See what your website would cost."
+        title={<>See what your website <span className="serif-em">would cost.</span></>}
         body="Nine short steps, an instant indicative estimate, and a summary you can send us when you're ready."
       >
         <Link href="/contact?topic=website" className="btn btn--primary">

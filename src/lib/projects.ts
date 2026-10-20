@@ -11,6 +11,10 @@ import evexecPage from "../../public/work/evexec-page.webp";
 import fystayDesktop from "../../public/work/fystay-desktop.webp";
 import fystayMobile from "../../public/work/fystay-mobile.webp";
 import fystayPage from "../../public/work/fystay-page.webp";
+import alexLogo from "../../public/work/logos/alex-k-bells.png";
+import boonmaLogo from "../../public/work/logos/boonma.png";
+import evexecLogo from "../../public/work/logos/ev-exec.png";
+import fystayLogo from "../../public/work/logos/fystay.png";
 
 /**
  * Portfolio entries. Every project here was designed and built by FY Devs (confirmed
@@ -36,6 +40,8 @@ export type Project = {
   host: string;
   desktop: StaticImageData;
   mobile: StaticImageData;
+  /** The business's own logo, as a square tile (used with the owner's permission). */
+  logo: StaticImageData;
   /** Full-page capture, used for hover-to-scroll previews. */
   page: StaticImageData;
   /** A short clip browsing the full page (cursor, clicks, scrolling), rendered from the capture. */
@@ -67,6 +73,7 @@ export const projects: Project[] = [
     host: "evexec.co.uk",
     desktop: evexecDesktop,
     mobile: evexecMobile,
+    logo: evexecLogo,
     page: evexecPage,
     walkthrough: {
       mp4: "/work/evexec-walkthrough.mp4",
@@ -96,6 +103,7 @@ export const projects: Project[] = [
     host: "boonma.vercel.app",
     desktop: boonmaDesktop,
     mobile: boonmaMobile,
+    logo: boonmaLogo,
     page: boonmaPage,
     walkthrough: {
       mp4: "/work/boonma-walkthrough.mp4",
@@ -126,6 +134,7 @@ export const projects: Project[] = [
     host: "fystay.co.uk",
     desktop: fystayDesktop,
     mobile: fystayMobile,
+    logo: fystayLogo,
     page: fystayPage,
     walkthrough: {
       mp4: "/work/fystay-walkthrough.mp4",
@@ -155,6 +164,7 @@ export const projects: Project[] = [
     host: "alexkbells.vercel.app",
     desktop: alexDesktop,
     mobile: alexMobile,
+    logo: alexLogo,
     page: alexPage,
     walkthrough: {
       mp4: "/work/alex-walkthrough.mp4",
