@@ -18,57 +18,35 @@ export const metadata = pageMetadata(
 const evexec = projectBySlug("ev-exec")!;
 
 /*
- * Shown, not described: first the visitor makes the app their own (the configurator, on
- * the first screen), then a booking plays out (the replay) and lands in the office's and
- * drivers' apps (the real screens).
+ * Shown, not described, in the order a booking happens: the customer books (the hero
+ * replay), the office and drivers take it from there (the real apps), then the visitor
+ * makes it their own.
  */
 export default function BookingSoftwarePage() {
   return (
     <>
-      {/* First screen: the visitor restyles the booking app for their own business. */}
-      <section
-        id="make-it-yours"
-        className={`tile booking-hero ${jost.variable} ${archivo.variable}`}
-        aria-labelledby="hero-title"
-      >
+      <section className={`tile booking-hero ${jost.variable}`} aria-labelledby="hero-title">
         <div className="container container--wide">
           <ServiceSwitcher current="booking" />
-          <h1
-            id="hero-title"
-            className="tile__title booking-hero__title rise"
-            style={{ "--i": 1 } as React.CSSProperties}
-          >
-            Your business. <span className="serif-em">Your booking app.</span>
-          </h1>
-        </div>
-        <div className="container container--wide booking-studio rise" style={{ "--i": 2 } as React.CSSProperties}>
-          <BookingStudio />
-          <p className="studio__more">
-            <Link href="/app-development" className="arrow-link">
-              Something different in mind? App development <ArrowRight />
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* The whole journey, played out: the customer books, the office is pinged. */}
-      <section id="flow" className={`tile ${jost.variable}`} aria-labelledby="flow-title">
-        <div className="container container--wide" data-reveal>
-          <p className="tile__name">The customer side</p>
-          <h2 id="flow-title" className="tile__title">
+          <h1 id="hero-title" className="tile__title rise" style={{ "--i": 1 } as React.CSSProperties}>
             Booked in a minute. <span className="serif-em">In your app in a second.</span>
-          </h2>
-          <p className="tile__line">Proven every day at {evexec.name}.</p>
-          <div className="tile__ctas">
+          </h1>
+          <p className="tile__line rise" style={{ "--i": 2 } as React.CSSProperties}>
+            Booking apps for any business, proven at {evexec.name}.
+          </p>
+          <div className="tile__ctas rise" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href="/contact?topic=booking-software" className="btn btn--primary">
               Request a demo
               <ArrowRight />
             </Link>
+            <Link href="#make-it-yours" className="btn btn--secondary">
+              Make it yours
+            </Link>
           </div>
         </div>
-        <div className="container container--wide tile__visual tile__visual--pad" data-reveal>
+        <div className="container container--wide tile__visual rise" style={{ "--i": 4 } as React.CSSProperties}>
           <BookingDemo />
-          <p className="booking-caption">
+          <p className="booking-hero__caption">
             Built for {evexec.name} · Example details · <Link href="/work#ev-exec">See the project</Link>
           </p>
         </div>
@@ -84,6 +62,28 @@ export default function BookingSoftwarePage() {
         </div>
         <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
           <PhoneFan />
+        </div>
+      </section>
+
+      {/* Not just airports: the visitor restyles the app for their own business. */}
+      <section
+        id="make-it-yours"
+        className={`tile ${jost.variable} ${archivo.variable}`}
+        aria-labelledby="studio-title"
+      >
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Make it yours</p>
+          <h2 id="studio-title" className="tile__title">
+            Your business. <span className="serif-em">Your booking app.</span>
+          </h2>
+        </div>
+        <div className="container container--wide booking-studio">
+          <BookingStudio />
+          <p className="studio__more">
+            <Link href="/app-development" className="arrow-link">
+              Something different in mind? App development <ArrowRight />
+            </Link>
+          </p>
         </div>
       </section>
 
