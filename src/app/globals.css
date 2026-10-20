@@ -3180,8 +3180,13 @@ main {
   color: var(--color-ink-2);
 }
 
+/* What the project is, in proportion with the buttons beside it. */
 .showcase__caption {
   flex: 1 1 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-ink);
 }
 
 @media (min-width: 40rem) {
@@ -6582,13 +6587,38 @@ main .proof__list {
   margin-top: var(--space-6);
 }
 
-/* Small phones: slightly smaller phones, so both fit above the browser's toolbar. */
-@media (max-width: 24.99rem) {
-  .booking-hero .bd__phone--customer {
-    width: 56%;
+/*
+ * The replay always fits on the first screen. The customer phone is as wide as the
+ * column allows, but never taller than the screen height left below the copy: its
+ * height is about 2.1 times its width, and --hero-top is roughly where it starts
+ * (header, switcher and copy above it). svh is the height with the browser's toolbars
+ * showing. The operator phone keeps its size relative to the customer's.
+ */
+.booking-hero {
+  --hero-top: 292px;
+}
+
+.booking-hero .bd__phone--customer {
+  width: min(62%, 19rem, calc((100svh - var(--hero-top)) / 2.08));
+}
+
+.booking-hero .bd__phone--ops {
+  width: calc(min(62%, 19rem, calc((100svh - var(--hero-top)) / 2.08)) * 0.71);
+}
+
+/* Short phones (an iPhone SE in Safari): the subline goes, so the phones can stay larger. */
+@media (max-width: 39.99rem) and (max-height: 600px) {
+  .booking-hero .tile__line {
+    display: none;
   }
-  .booking-hero .bd__phone--ops {
-    width: 40%;
+  .booking-hero {
+    --hero-top: 262px;
+  }
+}
+
+@media (min-width: 40rem) {
+  .booking-hero {
+    --hero-top: 370px;
   }
 }
 
@@ -6614,6 +6644,9 @@ main .proof__list {
   }
   .booking-hero .tile__title {
     font-size: clamp(2.5rem, 3.6vw, 4rem);
+  }
+  .booking-hero {
+    --hero-top: 172px;
   }
 }
 
