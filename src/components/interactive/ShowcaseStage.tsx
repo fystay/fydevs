@@ -5,40 +5,51 @@ import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/projects";
 import { ZoomSettledContext } from "./LaptopZoom";
+import { LivePreview } from "./LivePreview";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "page">;
 
 const INTERVAL = 6000;
 
 /**
- * The laptop's keyboard deck, seen from just above: key rows narrow towards the
- * hinge, with a trackpad below. Drawn once; purely decorative.
+ * The laptop's base, drawn from directly above: keyboard and trackpad on a brushed
+ * aluminium deck. CSS hinges it back from the lid in 3D, so the keyboard keeps its
+ * real shape and perspective whichever way the laptop turns. Purely decorative.
  */
-const KEY_ROWS = [14, 14, 13, 12, 11].map((count, row) => {
-  const y = 8 + row * 12;
-  const inset = 88 - row * 7; // rows widen towards the front edge
-  const width = 1000 - inset * 2;
-  const gap = 4;
-  const key = (width - gap * (count - 1)) / count;
-  return Array.from({ length: count }, (_, i) => ({ x: inset + i * (key + gap), y, w: key }));
+const KEY_ROWS = [14, 14, 14, 13, 12].map((count, row) => {
+  const y = 46 + row * 52;
+  const inset = 70;
+  const gap = 10;
+  const key = (1000 - inset * 2 - gap * (count - 1)) / count;
+  return Array.from({ length: count }, (_, i) => ({
+    x: inset + i * (key + gap),
+    y,
+    w: key,
+  }));
 });
 
-function KeyboardDeck() {
+function LaptopBase() {
   return (
-    <svg className="laptop__base" viewBox="0 0 1000 128" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <svg
+      className="laptop__base"
+      viewBox="0 0 1000 640"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <defs>
         <linearGradient id="deck" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#b9b6b1" />
-          <stop offset="1" stopColor="#d6d3ce" />
+          <stop offset="0" stopColor="#bdbab5" />
+          <stop offset="1" stopColor="#d9d6d1" />
         </linearGradient>
       </defs>
-      <path d="M58 0H942L1000 112H0Z" fill="url(#deck)" />
-      <path d="M0 112H1000V118Q1000 126 988 126H12Q0 126 0 118Z" fill="#9c9893" />
-      <path d="M440 112H560V115Q560 118 556 118H444Q440 118 440 115Z" fill="#86827d" />
+      <rect width="1000" height="640" rx="28" fill="url(#deck)" />
+      <rect x="0" y="0" width="1000" height="10" fill="#a8a49f" />
       {KEY_ROWS.flat().map((k) => (
-        <rect key={`${k.x}-${k.y}`} x={k.x} y={k.y} width={k.w} height={9.5} rx={1.8} fill="#2b2a28" />
+        <rect key={`${k.x}-${k.y}`} x={k.x} y={k.y} width={k.w} height={42} rx={6} fill="#2b2a28" />
       ))}
-      <rect x="410" y="71" width="180" height="34" rx="4" fill="#c9c6c1" stroke="#aeaaa5" strokeWidth="1" />
+      <rect x="330" y="346" width="340" height="230" rx="16" fill="#cbc8c3" stroke="#aeaaa5" strokeWidth="2" />
+      <rect x="0" y="626" width="1000" height="14" rx="7" fill="#9c9893" />
     </svg>
   );
 }
@@ -53,6 +64,9 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
   const [userPaused, setUserPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
   const swipe = useRef<{ x: number; y: number } | null>(null);
+  const swiped = useRef(0);
+  // Tapping the screen opens a live look at the site: a cursor browsing the real page.
+  const [live, setLive] = useState(false);
 
   const go = useCallback((i: number) => setIndex((i + items.length) % items.length), [items.length]);
 
@@ -66,7 +80,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
 
   // Holds still while the hero zoom is carrying it onto the screen, so projects never cross-fade mid-move.
   const zoomSettled = useContext(ZoomSettledContext);
-  const playing = !reduced && !userPaused && !hovered && zoomSettled;
+  const playing = !reduced && !userPaused && !hovered && zoomSettled && !live;
 
   useEffect(() => {
     if (!playing) return;
@@ -83,7 +97,10 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
     swipe.current = null;
     if (!start) return;
     const dx = e.clientX - start.x;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - start.y)) go(index + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(e.clientY - start.y)) {
+      swiped.current = Date.now();
+      go(index + (dx < 0 ? 1 : -1));
+    }
   };
 
   const current = items[index];
@@ -105,22 +122,41 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
         onPointerUp={onPointerUp}
         onPointerCancel={() => (swipe.current = null)}
       >
-        <div className="laptop__screen">
-          <div className="laptop__display showcase__frames">
-            {items.map((p, i) => (
-              <Image
-                key={p.slug}
-                src={p.desktop}
-                alt={i === index ? `The ${p.name} website on a laptop` : ""}
-                aria-hidden={i !== index}
-                sizes="(min-width: 64rem) 900px, 100vw"
-                preload={i === 0}
-                className={`showcase__img${i === index ? " is-active" : ""}`}
+        <div className="laptop__view">
+          <div className="laptop__body">
+            <div className="laptop__screen">
+              <div className="laptop__display showcase__frames">
+                {items.map((p, i) => (
+                  <Image
+                    key={p.slug}
+                    src={p.desktop}
+                    alt={i === index ? `The ${p.name} website on a laptop` : ""}
+                    aria-hidden={i !== index}
+                    sizes="(min-width: 64rem) 900px, 100vw"
+                    preload={i === 0}
+                    className={`showcase__img${i === index ? " is-active" : ""}`}
+                  />
+                ))}
+                {live && <LivePreview key={current.slug} slug={current.slug} page={current.page} name={current.name} />}
+                <span className="laptop__hint" aria-hidden="true" hidden={live}>
+                  <span className="on-touch">Tap</span>
+                  <span className="on-hover">Click</span> to explore
+                </span>
+              </div>
+              {/* Covers the screen, so a tap anywhere on it starts or stops the live preview. */}
+              <button
+                type="button"
+                className="laptop__hit"
+                aria-pressed={live}
+                aria-label={live ? `Stop the ${current.name} preview` : `Preview the ${current.name} website in action`}
+                onClick={() => {
+                  if (Date.now() - swiped.current > 400) setLive((v) => !v);
+                }}
               />
-            ))}
+            </div>
+            <LaptopBase />
           </div>
         </div>
-        <KeyboardDeck />
       </div>
 
       <div className="showcase__bar">
@@ -139,7 +175,10 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                 {i === index && (
                   <span
                     key={`${index}-${playing}`}
-                    style={{ animationDuration: `${INTERVAL}ms`, animationPlayState: playing ? "running" : "paused" }}
+                    style={{
+                      animationDuration: `${INTERVAL}ms`,
+                      animationPlayState: playing ? "running" : "paused",
+                    }}
                   />
                 )}
               </span>

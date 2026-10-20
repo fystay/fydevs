@@ -1913,26 +1913,9 @@ main {
   top: 0;
   left: 0;
   transform-origin: 0 0;
-  backface-visibility: hidden;
-  animation: zoom-screen-on 600ms ease both;
-}
-
-/* The photo's screen already shows the same website; the live one settles over it as the page loads. */
-@keyframes zoom-screen-on {
-  from {
-    opacity: 0;
-  }
 }
 
 /* Everything but the display (bezel, keyboard, project tabs) arrives as the photo fades away. */
-.zoom.is-zoom .laptop__screen::before {
-  opacity: var(--zoom-bezel, 1);
-}
-
-.zoom.is-zoom .laptop__base {
-  opacity: var(--zoom-ui, 1);
-}
-
 /*
  * The next section rises into the empty stage below the landed showcase while the laptop
  * holds still, so there's no gap when the pin releases (the script measures the space).
@@ -1948,17 +1931,6 @@ main {
 
 .zoom.is-zoom .showcase__bar {
   opacity: var(--zoom-tabs, 1);
-}
-
-/* Fades the photo's right edge into the page as the camera moves it left (width set by the script). */
-.zoom.is-zoom .zoom__veil {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to right, transparent, var(--color-bg) 6rem);
-  pointer-events: none;
 }
 
 /* At the end of the zoom this column is exactly the visible stage; the showcase sits centred in it. */
@@ -2800,6 +2772,29 @@ main {
   position: relative;
   max-width: 60rem;
   margin-inline: auto;
+  container-type: inline-size;
+}
+
+/*
+ * The laptop is a real 3D object: the lid (bezel and display) stands upright and the base
+ * hinges back from its bottom edge, seen from just above. The camera's distance scales with
+ * the laptop's width, so it looks the same at every size.
+ */
+.laptop__view {
+  perspective: 520cqw;
+  perspective-origin: 50% 35%;
+}
+
+/* Room for the base below the lid (it is drawn in 3D, outside the normal flow). */
+.laptop__view::after {
+  content: "";
+  display: block;
+  aspect-ratio: 1000 / 135;
+}
+
+.laptop__body {
+  position: relative;
+  transform-style: preserve-3d;
 }
 
 /* Phones: as big as the screen allows. */
@@ -2848,11 +2843,172 @@ main {
   pointer-events: none;
 }
 
-.laptop__base {
+/* Covers the screen: a tap starts or stops the live preview. */
+.laptop__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  border-radius: clamp(0.6rem, 0.3rem + 1vw, 1.1rem) clamp(0.6rem, 0.3rem + 1vw, 1.1rem) 0.3rem 0.3rem;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.laptop__hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* A quiet invitation on the screen, breathing gently. */
+.laptop__hint {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 7%;
+  display: inline-flex;
+  gap: 0.3em;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(14 14 15 / 0.92); /* solid: backdrop blur doesn't render inside the 3D laptop */
+  box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.laptop__hint[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .laptop__hint {
+    animation: hint-breathe 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes hint-breathe {
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.zoom.is-zoom .laptop__hint {
+  opacity: var(--zoom-tabs, 1);
+}
+
+/* The live preview: the site's full page in the display, browsed by a cursor (LivePreview). */
+.live {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: #0b0b0c;
+  animation: live-in 350ms ease both;
+}
+
+@keyframes live-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.live__page {
+  will-change: transform;
+}
+
+.live__page img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1000 / 128;
+}
+
+/* Reduced motion: no cursor; the page scrolls under the visitor's own finger. */
+.live--manual {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laptop__hit[aria-pressed="true"] {
+    pointer-events: none;
+  }
+}
+
+.live__cursor,
+.live__ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.live__cursor {
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+}
+
+.live__cursor svg {
+  display: block;
+  width: clamp(11px, 2.4vw, 16px);
+  height: auto;
+  transform-origin: 2px 2px;
+}
+
+.live__cursor.is-pressed svg {
+  animation: cursor-press 320ms ease;
+}
+
+@keyframes cursor-press {
+  40% {
+    transform: scale(0.8);
+  }
+}
+
+.live__ripple::after {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgb(255 255 255 / 0.9);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.18);
+  opacity: 0;
+}
+
+.live__ripple.is-on::after {
+  animation: click-ripple 520ms ease-out;
+}
+
+@keyframes click-ripple {
+  from {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.laptop__base {
+  position: absolute;
+  top: 100%;
+  left: 6%;
+  width: 88%;
+  height: auto;
+  aspect-ratio: 1000 / 640;
+  transform-origin: 50% 0;
+  transform: rotateX(82deg);
 }
 
 .showcase__frames {
