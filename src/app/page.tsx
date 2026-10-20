@@ -182,6 +182,13 @@ export default function HomePage() {
               <span>software products built</span>
             </li>
           </ul>
+          {/* A plain fact, in our own voice: every project shown is a business our family runs. */}
+          <blockquote className="proof__note">
+            <p>
+              Every project here is a working business our family runs: an airport transfer firm, a massage studio, a
+              holiday-stays platform and a coaching business. <em>We build what we trust with our own livelihoods.</em>
+            </p>
+          </blockquote>
           <p className="proof__more">
             <Link href="/work" className="arrow-link">
               Read the case studies <ArrowRight />
@@ -371,7 +378,11 @@ export default function HomePage() {
       </section>
 
       <CtaBand
-        title={<>Ready to <span className="serif-em">start?</span></>}
+        title={
+          <>
+            Ready to <span className="serif-em">start?</span>
+          </>
+        }
         body="Tell us your goals, budget and timeline. We'll reply with honest advice and a clear next step."
       >
         <Link href="/contact?topic=website" className="btn btn--primary">

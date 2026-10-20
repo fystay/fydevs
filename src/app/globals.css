@@ -3711,6 +3711,24 @@ ol.steps li::after {
   font-variant-numeric: tabular-nums;
 }
 
+.proof__note {
+  max-width: 44rem;
+  margin: var(--space-7) 0 0;
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--home-orange, var(--color-accent));
+}
+
+.proof__note p {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+
+.proof__note em {
+  color: var(--color-accent);
+}
+
 .proof__more {
   margin-top: var(--space-5);
 }
