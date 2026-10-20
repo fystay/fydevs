@@ -71,8 +71,18 @@ export function ArrowLink({ href, children }: { href: string; children: ReactNod
   );
 }
 
-export function PricingNotice() {
+export function PricingNotice({ compact = false }: { compact?: boolean }) {
   if (PRICING_STATUS === "confirmed") return <p className="fine">{VAT_NOTE}</p>;
+  // One quiet line for pages that only point to prices; the full wording sits beside them on /pricing.
+  if (compact)
+    return (
+      <p className="notice notice--compact">
+        <span>
+          <strong>Provisional pricing.</strong> Indicative, excluding VAT, and confirmed in writing before you commit.{" "}
+          <Link href="/pricing">Details</Link>
+        </span>
+      </p>
+    );
   return (
     <p className="notice">
       <span>

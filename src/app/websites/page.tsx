@@ -200,7 +200,7 @@ export default function WebsitesPage() {
           Start a Project
         </Link>
         <Link href="/build" className="btn btn--secondary">
-          Get an instant estimate
+          Instant estimate
         </Link>
       </CtaBand>
     </>

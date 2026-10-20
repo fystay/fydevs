@@ -1407,6 +1407,22 @@ main {
   color: var(--color-ink);
 }
 
+/* A single quiet line: no box, just the accent rule. */
+.notice--compact {
+  max-width: 40rem;
+  padding: 0 0 0 var(--space-4);
+  border: 0;
+  border-left: 2px solid var(--color-accent);
+  border-radius: 0;
+  background: none;
+  font-size: var(--text-xs);
+  color: var(--color-ink-3);
+}
+
+.notice--compact a {
+  color: var(--color-ink-2);
+}
+
 /* Tables */
 .table-wrap {
   overflow-x: auto;
@@ -2677,6 +2693,11 @@ main {
   gap: var(--space-4);
 }
 
+/* One row, not the footer's stacked link spacing. */
+.site-footer .build-line li {
+  margin: 0;
+}
+
 @media (min-width: 40rem) {
   .build-line li + li::before {
     content: "/";
@@ -3094,7 +3115,7 @@ main {
 }
 
 .showcase__tab-name {
-  font-size: var(--text-sm);
+  font-size: clamp(0.78rem, 0.6rem + 0.75vw, var(--text-sm));
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -5358,18 +5379,28 @@ main .proof__list {
   border-radius: clamp(0.8rem, 0.5rem + 1.3vw, 2rem);
 }
 
-/* Booking software: three app screens, the middle one raised. */
+/* Booking software: three app screens, the middle one large and in front, the others tucked behind it. */
 .trio {
+  position: relative;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  gap: clamp(0.6rem, 0.2rem + 2vw, 2rem);
+  align-items: center;
   padding-bottom: clamp(3rem, 2rem + 4vw, 5rem);
 }
 
+/* A soft light behind the phones, so the light app screens sit in the dark tile rather than on it. */
+.trio::before {
+  content: "";
+  position: absolute;
+  inset: 5% 15% 15%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.1), transparent);
+  pointer-events: none;
+}
+
 .trio .app-phone {
+  position: relative;
   display: block;
-  width: min(30%, 16rem);
+  width: min(32%, 15rem);
   margin: 0;
   padding: clamp(0.2rem, 0.1rem + 0.4vw, 0.45rem);
   border-radius: clamp(1.1rem, 0.6rem + 2vw, 2.4rem);
@@ -5379,8 +5410,22 @@ main .proof__list {
   border-radius: clamp(0.9rem, 0.5rem + 1.6vw, 2rem);
 }
 
+.trio .app-phone:nth-child(1) {
+  margin-right: -7%;
+  rotate: -4deg;
+}
+
+.trio .app-phone:nth-child(3) {
+  margin-left: -7%;
+  rotate: 4deg;
+}
+
 .trio .app-phone:nth-child(2) {
-  margin-bottom: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+  z-index: 1;
+  width: min(44%, 20rem);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
 }
 
 /* Two smaller tiles side by side on wider screens. */

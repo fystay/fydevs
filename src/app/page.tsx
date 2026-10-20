@@ -234,7 +234,7 @@ export default function HomePage() {
           <p className="tile__line">An instant estimate in two minutes.</p>
           <div className="tile__ctas">
             <Link href="/build" className="btn btn--primary">
-              Get my estimate
+              Instant estimate
               <ArrowRight />
             </Link>
             <Link href="/pricing" className="btn btn--secondary">
@@ -242,7 +242,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="price-strip__notice">
-            <PricingNotice />
+            <PricingNotice compact />
           </div>
         </div>
       </section>

@@ -30,11 +30,9 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {site.name}
           </p>
-          <ul role="list" className="build-line" aria-label="How this site is built">
-            <li>Prerendered</li>
+          <ul role="list" className="build-line" aria-label="Privacy">
             <li>No cookies</li>
             <li>No trackers</li>
-            <li>Built with Next.js</li>
           </ul>
         </div>
       </div>

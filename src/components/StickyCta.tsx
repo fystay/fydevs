@@ -62,7 +62,7 @@ export function StickyCta() {
         <ArrowRight />
       </Link>
       <Link href="/build" className="btn btn--secondary">
-        Get a price
+        Instant estimate
       </Link>
     </div>
   );

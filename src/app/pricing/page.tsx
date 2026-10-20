@@ -26,7 +26,7 @@ export default function PricingPage() {
       >
         <div className="btn-row">
           <Link href="/build" className="btn btn--primary">
-            Get my estimate
+            Instant estimate
             <ArrowRight />
           </Link>
           <Link href="#care" className="btn btn--secondary">
@@ -82,7 +82,7 @@ export default function PricingPage() {
         body="Nine quick steps to an instant estimate you can send us."
       >
         <Link href="/build" className="btn btn--primary">
-          Get my estimate
+          Instant estimate
         </Link>
         <Link href="/contact?topic=website" className="btn btn--secondary">
           Start a Project

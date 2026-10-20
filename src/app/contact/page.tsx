@@ -53,7 +53,7 @@ export default async function ContactPage({
                 </p>
                 <p className="mt-4">
                   <Link href="/build" className="arrow-link">
-                    Get an instant estimate <ArrowRight />
+                    Instant estimate <ArrowRight />
                   </Link>
                 </p>
               </div>
