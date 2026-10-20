@@ -7309,3 +7309,699 @@ main .proof__list {
 .hero-estimate:active {
   opacity: 0.75;
 }
+
+/* ==========================================================================
+   App development page: the spreadsheet-to-app hero (SheetToApp), Build your app
+   (AppBuilder), the project clips (ClipShowcase) and the five stages (BuildStages).
+   Screens are sized in em from their own width, like the booking replay.
+   ========================================================================== */
+
+/* Phones: the spreadsheet-to-app first, then the buttons, so it's on the first screen. */
+.apps-hero__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.apps-hero__visual {
+  margin-top: var(--space-7);
+}
+
+@media (max-width: 39.99rem) {
+  .apps-hero__visual {
+    order: -1;
+    margin: var(--space-5) 0 var(--space-6);
+  }
+  /* The phone never runs below the first screen (about 2.1 times as tall as it is wide). */
+  .apps-hero__visual .sta__phone {
+    width: min(52%, 15.5rem, calc((100svh - 345px) / 2.1));
+  }
+}
+
+/* Desktop: copy and buttons on the left, the spreadsheet-to-app on the right (the switcher
+   keeps its place above both). */
+@media (min-width: 64rem) {
+  /* The copy sits together, centred beside the visual: rows 3 to 5, between two spacers. */
+  .page-hero:has(.apps-hero__body) .container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+    column-gap: var(--space-7);
+  }
+  .page-hero:has(.apps-hero__body) .container > .h1 {
+    grid-row: 3;
+  }
+  .page-hero:has(.apps-hero__body) .container > .lede {
+    grid-row: 4;
+  }
+  .page-hero:has(.apps-hero__body) .btn-row {
+    grid-row: 5;
+  }
+  .page-hero:has(.apps-hero__body) .container > * {
+    grid-column: 1;
+  }
+  .page-hero:has(.apps-hero__body) .container > .svc {
+    grid-column: 1 / -1;
+  }
+  .page-hero:has(.apps-hero__body) .container > .rise:has(.apps-hero__body),
+  .apps-hero__body {
+    display: contents;
+  }
+  .apps-hero__visual {
+    grid-column: 2;
+    grid-row: 2 / -1;
+    margin: 0;
+  }
+}
+
+.apps-tile__body {
+  margin-top: clamp(3rem, 2rem + 4vw, 5rem);
+  padding-bottom: clamp(4.5rem, 3rem + 6vw, 8rem);
+  text-align: left;
+}
+
+/* Spreadsheet to app: the jobs lift off the sheet and land as cards on the phone. */
+.sta {
+  --a: #56624a;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+}
+
+.sta__stage {
+  display: grid;
+  place-items: start center;
+  width: min(100%, 44rem);
+}
+
+.sta__sheet,
+.sta__phone {
+  grid-area: 1 / 1;
+}
+
+.sta__sheet {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #d8d8d8;
+  border-radius: var(--radius-md);
+  background: #fff;
+  box-shadow: 0 24px 50px -30px rgb(0 0 0 / 0.35);
+  font-family: Arial, sans-serif;
+  font-size: clamp(0.625rem, 0.5rem + 0.5vw, 0.8125rem);
+  color: #222;
+  transition:
+    opacity 600ms var(--ease),
+    scale 600ms var(--ease);
+}
+
+.sta__sheet-bar {
+  padding: 0.5em 0.9em;
+  border-bottom: 1px solid #d8d8d8;
+  background: #f3f3f3;
+  font-family: var(--font-mono);
+  color: #666;
+}
+
+.sta__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1.3fr 1fr 1.5fr 0.6fr;
+}
+
+.sta__grid > * {
+  overflow: hidden;
+  padding: 0.55em 0.6em;
+  border-right: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition:
+    opacity 450ms var(--ease),
+    translate 450ms var(--ease);
+}
+
+.sta__grid > b {
+  background: #f6f6f6;
+  font-weight: 700;
+}
+
+.sta__grid .is-flag {
+  background: #fde7e7;
+  color: #b3261e;
+  font-weight: 700;
+}
+
+.sta__grid .is-empty {
+  background: #fff4c2;
+}
+
+.sta__phone {
+  z-index: 1;
+  width: min(52%, 15.5rem);
+  max-width: none;
+  margin: 0;
+  opacity: 0;
+  translate: 0 12%;
+  scale: 0.94;
+  transition:
+    opacity 600ms var(--ease),
+    translate 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    scale 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sta__screen {
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: #fff;
+  container-type: inline-size;
+}
+
+.sta__screen > * {
+  font-size: calc(100cqw / 22);
+}
+
+.sta__top {
+  padding: 1.1em 1.6em 0.4em;
+  font-weight: 600;
+}
+
+.sta__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6em 1.1em 0.8em;
+  font-size: calc(100cqw / 15) !important;
+}
+
+.sta__add {
+  display: grid;
+  place-items: center;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: var(--a);
+  color: #fff;
+  font-size: 0.8em;
+}
+
+.sta__card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.8em;
+  margin: 0 1.1em 0.6em;
+  padding: 0.8em;
+  border-radius: 0.9em;
+  background: #f3f4f1;
+  opacity: 0;
+  translate: 0 1em;
+  transition:
+    opacity 450ms var(--ease),
+    translate 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sta__time {
+  font-weight: 700;
+}
+
+.sta__who {
+  display: grid;
+  min-width: 0;
+  font-size: 0.85em;
+  color: #555;
+}
+
+.sta__who b {
+  font-size: 1.1em;
+  color: #1d1d1f;
+}
+
+.sta__side {
+  display: grid;
+  justify-items: end;
+  gap: 0.25em;
+}
+
+.sta__side i {
+  padding: 0.15em 0.55em;
+  border-radius: 1em;
+  background: #e4ead9;
+  color: #3d4732;
+  font-size: 0.72em;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sta__side i[data-status="On the way"] {
+  background: #dde8f7;
+  color: #24456f;
+}
+
+.sta__side i[data-status="Quote sent"] {
+  background: #f7ecd4;
+  color: #6c4b12;
+}
+
+.sta__side i[data-status="Paid"] {
+  background: #e7e7e7;
+  color: #333;
+}
+
+/* The change itself: rows lift away in order, the sheet fades, the phone rises, the cards land. */
+.sta[data-state="app"] .sta__grid > span {
+  opacity: 0;
+  translate: 0 -0.8em;
+  transition-delay: calc(var(--r) * 120ms);
+}
+
+.sta[data-state="app"] .sta__sheet {
+  opacity: 0.12;
+  scale: 0.94;
+  transition-delay: 500ms;
+}
+
+.sta[data-state="app"] .sta__phone {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  transition-delay: 350ms;
+}
+
+.sta[data-state="app"] .sta__card {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(750ms + var(--r) * 140ms);
+}
+
+.sta__replay {
+  min-height: 2.75rem;
+  padding: 0.4rem 1.1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sta__replay:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Build your app: features on the left (above, on phones), the phone assembling on the right. */
+.ab {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: center;
+}
+
+@media (min-width: 56rem) {
+  .ab {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.ab__controls {
+  justify-self: stretch;
+}
+
+.ab .ab__chips {
+  flex-wrap: wrap;
+}
+
+.studio__legend span {
+  margin-left: 0.5em;
+  color: var(--color-ink);
+}
+
+.ab__phone {
+  width: min(62%, 18rem);
+  max-width: none;
+  margin: 0;
+}
+
+.ab__screen {
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+  border-radius: 2rem;
+  container-type: inline-size;
+}
+
+.ab-block,
+.ab-ping {
+  animation: bd-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ab-block {
+  margin-bottom: 0.8em;
+}
+
+.ab-ping {
+  margin: 0 1em 0.5em;
+  padding: 0.7em 0.9em;
+  border-radius: 1em;
+  background: #1d1d1f;
+  color: #fff;
+  font-size: 0.82em;
+}
+
+.ab-empty {
+  padding: 3em 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ab-chart small {
+  display: block;
+}
+
+.ab-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25em;
+  height: 2.6em;
+}
+
+.ab-bars i {
+  width: 0.55em;
+  border-radius: 0.2em;
+  background: var(--a);
+}
+
+.ab-team {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+.ab-team i {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--fg);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.ab-team i + i {
+  margin-left: -0.7em;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.ab-team span {
+  margin-left: 0.4em;
+}
+
+/* The project clips, in a browser window on the dark band. */
+.clips {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+}
+
+.clips__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.clips__tabs button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--color-inverse-line);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-inverse-ink-2);
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.clips__tabs button[aria-pressed="true"] {
+  border-color: var(--color-inverse-ink);
+  background: var(--color-inverse-ink);
+  color: var(--color-inverse-bg);
+}
+
+.clips__frame {
+  width: min(100%, 60rem);
+}
+
+.clips__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #0c1220;
+}
+
+.clips__caption {
+  color: var(--color-inverse-ink-2);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.clips__caption .arrow-link {
+  color: var(--color-inverse-ink);
+}
+
+/* The five stages: one screen, from sticky notes to live. Phones swipe; wider screens show all five. */
+.bs {
+  --a: #56624a;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 70%;
+  gap: var(--space-4);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 0 var(--gutter) var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.bs::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 56rem) {
+  .bs {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+
+.bs__stage {
+  scroll-snap-align: start;
+}
+
+.bs__screen {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  container-type: inline-size;
+  color: #1d1d1f;
+}
+
+/* Sized from the screen's width (a container can't size its own text from itself). */
+.bs__inner {
+  padding: 1em;
+  font-size: calc(100cqw / 15);
+}
+
+.bs__stage[data-stage="discovery"] .bs__screen {
+  background: #f7f1e4;
+}
+
+.bs__stage[data-stage="scope"] .bs__screen {
+  background: #f1f1f1;
+}
+
+.bs__num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-3);
+}
+
+.bs__stage h3 {
+  margin-top: var(--space-1);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  font-weight: 500;
+}
+
+.bs__stage p {
+  color: var(--color-ink-2);
+  font-size: var(--text-sm);
+}
+
+.bs-notes {
+  display: grid;
+  gap: 0.8em;
+  padding-top: 0.6em;
+}
+
+.bs-notes span {
+  padding: 0.7em 0.8em;
+  background: #ffe38a;
+  box-shadow: 0 6px 12px -8px rgb(0 0 0 / 0.4);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.bs-head {
+  margin-bottom: 0.6em;
+  font-weight: 700;
+}
+
+.bs-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 0;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 0.85em;
+}
+
+.bs-who {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bs-time {
+  font-weight: 700;
+}
+
+.bs-chip {
+  padding: 0.15em 0.5em;
+  border-radius: 1em;
+  background: #e4ead9;
+  color: #3d4732;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bs-bar {
+  display: inline-block;
+  height: 0.75em;
+  border-radius: 0.3em;
+  background: #cfcfcf;
+}
+
+.bs__stage[data-stage="design"] .bs-bar {
+  background: #d9dfcf;
+}
+
+.bs__stage[data-stage="design"] .bs-bar--chip {
+  background: #b9c4a6;
+}
+
+.bs-btn,
+.bs-price {
+  display: block;
+  margin-top: 0.9em;
+  padding: 0.65em;
+  border-radius: 0.6em;
+  text-align: center;
+  font-weight: 700;
+}
+
+.bs-btn {
+  background: var(--a);
+  color: #fff;
+}
+
+.bs__stage[data-stage="design"] .bs-btn .bs-bar {
+  vertical-align: middle;
+  background: rgb(255 255 255 / 0.55);
+}
+
+.bs-price {
+  border: 2px dashed var(--a);
+  color: var(--a);
+  rotate: -2deg;
+}
+
+.bs-live {
+  margin-bottom: 0.7em;
+  padding: 0.5em 0.8em;
+  border-radius: 0.8em;
+  background: #1d1d1f;
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+/* For bookings, the ready-made product. */
+.apps-booking {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink-2);
+  text-decoration: none;
+  transition: border-color var(--duration) var(--ease);
+}
+
+.apps-booking:hover {
+  border-color: var(--color-ink);
+}
+
+.apps-booking > span:nth-child(2) {
+  flex: 1;
+}
+
+.apps-booking b {
+  display: block;
+  color: var(--color-ink);
+}
+
+.apps-booking__phone {
+  flex: none;
+  width: 3.5rem;
+  margin: 0;
+  padding: 0.2rem;
+  border-radius: 0.8rem;
+}
+
+.apps-booking__phone img {
+  border-radius: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sta__sheet,
+  .sta__phone,
+  .sta__card,
+  .sta__grid > *,
+  .ab-block,
+  .ab-ping {
+    transition: none;
+    animation: none;
+  }
+}
