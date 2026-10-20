@@ -260,7 +260,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
           <p className="showcase__caption" aria-live="polite">
             {current.sector}
           </p>
-          <Link href={`/work#${current.slug}`} className="showcase__link">
+          <Link href={`/work#${current.slug}`} className="showcase__link showcase__link--primary">
             View project
           </Link>
           <a
