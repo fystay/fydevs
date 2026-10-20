@@ -5,7 +5,6 @@ import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
-import { PhoneFan } from "@/components/interactive/PhoneFan";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
@@ -23,7 +22,6 @@ const LAPTOP_SCREEN: ScreenQuad = [
   [672, 1062],
 ];
 
-const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
 
@@ -139,27 +137,6 @@ export default function HomePage() {
               <Image src={boonma.mobile} alt="" sizes="(min-width: 64rem) 200px, 22vw" placeholder="blur" />
             </span>
           </Link>
-        </div>
-      </section>
-
-      <section id="booking" data-nav="/booking-software" className="tile inverse" aria-labelledby="booking-title">
-        <div className="container container--wide" data-reveal>
-          <p className="tile__name">Booking software</p>
-          <h2 id="booking-title" className="tile__title">
-            Run the office. <span className="serif-em">Run the road.</span>
-          </h2>
-          <p className="tile__line">Operator and driver apps, proven at {evexec.name}.</p>
-          <div className="tile__ctas">
-            <Link href="/contact?topic=booking-software" className="btn btn--primary">
-              Request a demo
-            </Link>
-            <Link href="/booking-software" className="btn btn--secondary">
-              Take the tour
-            </Link>
-          </div>
-        </div>
-        <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-          <PhoneFan />
         </div>
       </section>
 

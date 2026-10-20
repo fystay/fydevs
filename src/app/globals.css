@@ -6519,12 +6519,39 @@ main .proof__list {
 }
 
 /* On dark bands the app and booking accents need to be lighter to stay readable (≥ 3:1). */
-:root:has(.svc[data-current="apps"]) .inverse :is(.h1, .h2) .serif-em {
+:root:has(.svc[data-current="apps"]) .inverse :is(.h1, .h2, .tile__title) .serif-em {
   color: #a9b596;
 }
 
-:root:has(.svc[data-current="booking"]) .inverse :is(.h1, .h2) .serif-em {
+:root:has(.svc[data-current="booking"]) .inverse :is(.h1, .h2, .tile__title) .serif-em {
   color: #7fb3b8;
+}
+
+/* Booking software's hero: a dark tile, the service switcher at the same height as on
+   the other service pages, centred over the title. */
+.booking-hero {
+  padding-top: var(--svc-top);
+}
+
+.booking-hero .svc__list {
+  justify-content: center;
+}
+
+.inverse .svc__link {
+  color: var(--color-inverse-ink-2);
+}
+
+.inverse .svc__link:hover,
+.inverse .svc__link[aria-current="page"] {
+  color: var(--color-inverse-ink);
+}
+
+.inverse .svc[data-current="booking"] {
+  --svc-accent: #7fb3b8;
+}
+
+.inverse .svc__item:not(:last-child)::after {
+  color: var(--color-inverse-line);
 }
 
 /* ==========================================================================

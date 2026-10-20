@@ -1,10 +1,12 @@
 import { Archivo, Jost } from "next/font/google";
 import Link from "next/link";
-import { CtaBand, PageHero, SectionHead } from "@/components/Blocks";
+import { CtaBand, SectionHead } from "@/components/Blocks";
 import { ArrowRight } from "@/components/Icons";
+import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { AppTour } from "@/components/interactive/AppTour";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { BookingStudio } from "@/components/interactive/BookingStudio";
+import { PhoneFan } from "@/components/interactive/PhoneFan";
 import { pageMetadata } from "@/lib/metadata";
 import { projectBySlug } from "@/lib/projects";
 
@@ -24,26 +26,29 @@ const evexec = projectBySlug("ev-exec")!;
 export default function BookingSoftwarePage() {
   return (
     <>
-      <PageHero
-        service="booking"
-        eyebrow="Booking software"
-        title={
-          <>
-            Booking software, <span className="serif-em">made for your business.</span>
-          </>
-        }
-        lede={`Proven every day at ${evexec.name}.`}
-      >
-        <div className="btn-row">
-          <Link href="/contact?topic=booking-software" className="btn btn--primary">
-            Request a demo
-            <ArrowRight />
-          </Link>
-          <Link href="#flow" className="btn btn--secondary">
-            See it work
-          </Link>
+      {/* The hero: the office and driver apps on a fan of phones you can swipe round. */}
+      <section className="tile inverse booking-hero" aria-labelledby="hero-title">
+        <div className="container container--wide">
+          <ServiceSwitcher current="booking" />
+          <h1 id="hero-title" className="tile__title rise" style={{ "--i": 1 } as React.CSSProperties}>
+            Run the office. <span className="serif-em">Run the road.</span>
+          </h1>
+          <p className="tile__line rise" style={{ "--i": 2 } as React.CSSProperties}>
+            Operator and driver apps, proven at {evexec.name}.
+          </p>
+          <div className="tile__ctas rise" style={{ "--i": 3 } as React.CSSProperties}>
+            <Link href="/contact?topic=booking-software" className="btn btn--primary">
+              Request a demo
+            </Link>
+            <Link href="#flow" className="btn btn--secondary">
+              See it work
+            </Link>
+          </div>
         </div>
-      </PageHero>
+        <div className="container container--wide tile__visual rise" style={{ "--i": 4 } as React.CSSProperties}>
+          <PhoneFan />
+        </div>
+      </section>
 
       {/* The whole journey, played out: the customer books, the office is pinged. */}
       <section id="flow" className={`section booking-flow ${jost.variable}`} aria-labelledby="flow-title">
