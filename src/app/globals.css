@@ -5497,3 +5497,15 @@ main .proof__list {
 .four-steps__more {
   padding-block: var(--space-8) clamp(4.5rem, 3rem + 6vw, 8rem);
 }
+
+/* Hero: the second button sits on the photo, so it gets a soft frosted backing. */
+.hero-ed .btn--secondary {
+  border-color: rgb(28 28 28 / 0.18);
+  background: rgb(255 255 255 / 0.55);
+}
+
+.hero-ed .hero-note {
+  max-width: none;
+  margin-top: calc(var(--space-2) * -1);
+  font-size: var(--text-xs);
+}

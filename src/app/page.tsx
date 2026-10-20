@@ -70,26 +70,20 @@ export default function HomePage() {
                   </span>
                 </h1>
                 <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
-                  Bespoke websites that win enquiries, and software that saves your team time. Published prices, no
-                  templates.
+                  Bespoke, mobile-first, priced in the open.
                 </p>
                 <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
                   <Link href="/contact?topic=website" className="btn btn--primary">
                     Start a Project
                     <ArrowRight />
                   </Link>
-                </div>
-                <div className="hero-ed__links rise" style={{ "--i": 4 } as React.CSSProperties}>
-                  <Link href="/work" className="circle-link">
-                    <span className="circle-link__icon" aria-hidden="true">
-                      <ArrowRight size={14} />
-                    </span>
-                    View our work
+                  <Link href="/build" className="btn btn--secondary">
+                    Instant estimate
                   </Link>
-                  <p className="hero-note">
-                    Or <Link href="/build">get an instant website estimate</Link> in two minutes.
-                  </p>
                 </div>
+                <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
+                  An indicative price in two minutes.
+                </p>
               </div>
             </div>
           </section>
