@@ -3628,6 +3628,10 @@ ol.steps li::after {
   font-variant-numeric: tabular-nums;
 }
 
+.proof__more {
+  margin-top: var(--space-5);
+}
+
 .proof__list span {
   font-family: var(--font-mono);
   font-size: 0.6875rem;

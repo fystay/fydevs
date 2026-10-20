@@ -10,13 +10,11 @@ import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { Tilt } from "@/components/interactive/Tilt";
 import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
-import { WorkCarousel } from "@/components/interactive/WorkCarousel";
 import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 import { carePlanCards } from "@/lib/plans";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import workspace from "../../public/hero/fydevs-workspace.webp";
-
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
 export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
@@ -33,51 +31,63 @@ const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
 
+// Short on purpose: the visuals do the selling; the detail lives on the service pages.
 const webBenefits = [
-  ["Designed for your customers", "A bespoke design built around your brand and the people you sell to, never a reskinned template."],
-  ["Fast on every phone", "Hand-built, accessible pages that load quickly and work beautifully on mobile."],
-  ["Built to win enquiries", "Clear calls to action, enquiry forms, and online booking or payments where they help."],
-  ["Easy to look after", "Optional content management, hosting and care, so your site stays secure and up to date."],
+  "Designed for your customers",
+  "Fast on every phone",
+  "Built to win enquiries",
+  "Easy to look after",
 ];
 
 const saasBenefits = [
-  ["Built around your workflow", "We learn how your team works today and design the software around it, not the other way round."],
-  ["Proven in a real operation", `Our driver and operator software was developed for ${evexec.name}, a working airport transfer business.`],
-  ["Products we run ourselves", "FYStay, our holiday stays platform, is designed, built and operated by FY Devs."],
-  ["Scoped before you commit", "A written scope, fixed price and payment schedule before any work begins."],
+  "Built around your workflow",
+  `Proven at ${evexec.name}, a working transfer business`,
+  "Fixed price, delivered in stages",
+  "Scoped before you commit",
 ];
 
 const process = [
-  ["Enquiry", "Tell us what you need using the short form or the instant estimate. We reply by email."],
-  ["Discovery call", "A conversation about your goals, your customers and what success looks like."],
-  ["Proposal & quote", "A written scope, fixed price, payment schedule and timeline for you to approve."],
-  ["Design", "We design your key pages and refine them with you over the agreed revision rounds."],
-  ["Build & test", "We build, then test on phones, tablets and desktops, with a keyboard and a screen reader."],
-  ["Launch & support", "We put it live, hand everything over, and support you afterwards if you choose a care plan."],
+  ["Enquiry", "Short form or instant estimate."],
+  ["Discovery call", "Your goals and your customers."],
+  ["Proposal & quote", "Written scope and fixed price."],
+  ["Design", "Key pages, refined with you."],
+  ["Build & test", "Every device, fully accessible."],
+  ["Launch & support", "Live, handed over, supported."],
 ];
+
+/*
+ * The homepage shows the points that tell the plans apart, taken word for word from each
+ * plan's full list; every inclusion is on /websites.
+ */
+const packageHighlights: Record<PackageId, string[]> = {
+  essential: ["Up to 5 pages", "Enquiry form", "Two rounds of design revisions"],
+  professional: ["Up to 12 pages", "Content management", "Three rounds of design revisions"],
+  premium: ["Up to 25 pages", "Extensive custom design and interaction", "Launch and 60 days of handover support"],
+};
+const careHighlights = 3;
 
 const packageOrder: PackageId[] = ["essential", "professional", "premium"];
 const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
 
 const plans: PlanCard[] = [
-  ...packageOrder.map((id): PlanCard => ({
-    id,
-    name: PACKAGES[id].name,
-    summary: PACKAGES[id].summary,
-    price: formatGBP(PACKAGES[id].from),
-    from: true,
-    includes: PACKAGES[id].includes,
-    href: `/build?pages=${packagePages[id]}`,
-    cta: "Start a Project",
-  })),
+  ...packageOrder.map(
+    (id): PlanCard => ({
+      id,
+      name: PACKAGES[id].name,
+      summary: PACKAGES[id].summary,
+      price: formatGBP(PACKAGES[id].from),
+      from: true,
+      includes: PACKAGES[id].includes.filter((item) => packageHighlights[id].includes(item)),
+      href: `/build?pages=${packagePages[id]}`,
+      cta: "Start a Project",
+    }),
+  ),
   {
     id: "saas",
     name: "SaaS & bespoke software",
-    summary:
-      "Priced after a scoping conversation, with everything agreed in writing before any commitment.",
+    summary: "Booking systems, customer portals and web applications.",
     price: "Custom quote",
     includes: [
-      "Booking systems, customer portals and web applications",
       "Discovery call and written scope",
       "Fixed price and payment schedule",
       "Working software delivered in agreed stages",
@@ -87,7 +97,6 @@ const plans: PlanCard[] = [
     variant: "inverse",
   },
 ];
-
 
 export default function HomePage() {
   return (
@@ -114,18 +123,16 @@ export default function HomePage() {
               <div className="hero-ed__copy">
                 <ServiceSwitcher current="web" />
                 <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-                  Websites{" "}
-                  <br />
+                  Websites <br />
                   and software{" "}
                   <span className="serif-em">
-                    that grow{" "}
-                    <br />
+                    that grow <br />
                     your business.
                   </span>
                 </h1>
                 <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
-                  We design bespoke, mobile-first websites that turn visitors into enquiries, and build SaaS and booking
-                  software that saves your team time. Published prices, no templates, and real work you can visit.
+                  Bespoke websites that win enquiries, and software that saves your team time. Published prices, no
+                  templates.
                 </p>
                 <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
                   <Link href="/contact?topic=website" className="btn btn--primary">
@@ -164,17 +171,22 @@ export default function HomePage() {
             </li>
             <li>
               <strong>{formatGBP(PACKAGES.essential.from)}</strong>
-              <span>websites from, prices published</span>
+              <span>websites from</span>
             </li>
             <li>
               <strong>0</strong>
-              <span>templates, every design is bespoke</span>
+              <span>templates used</span>
             </li>
             <li>
               <strong>2</strong>
-              <span>software products designed and built</span>
+              <span>software products built</span>
             </li>
           </ul>
+          <p className="proof__more">
+            <Link href="/work" className="arrow-link">
+              Read the case studies <ArrowRight />
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -184,18 +196,13 @@ export default function HomePage() {
           <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
             <p className="eyebrow eyebrow--num">Web design & development</p>
             <h2 id="web-title" className="h2">
-              A website that brings{" "}
-              <span className="serif-em">you customers.</span>
+              A website that brings <span className="serif-em">you customers.</span>
             </h2>
-            <p className="lede">
-              Bespoke websites designed around your brand and built to turn visitors into enquiries, bookings and
-              sales.
-            </p>
+            <p className="lede">Bespoke websites built to turn visitors into enquiries and sales.</p>
             <ul role="list" className="benefits">
-              {webBenefits.map(([title, body]) => (
+              {webBenefits.map((title) => (
                 <li key={title}>
                   <strong>{title}</strong>
-                  <span>{body}</span>
                 </li>
               ))}
             </ul>
@@ -220,10 +227,7 @@ export default function HomePage() {
                 />
               </Link>
             </Tilt>
-            <p className="media-caption">
-              Boonma, a client website. <span className="on-hover">Hover to scroll the full page.</span>
-              <span className="on-touch">Scrolling the full page.</span>
-            </p>
+            <p className="media-caption">Boonma, a client website.</p>
           </div>
         </div>
       </section>
@@ -237,14 +241,12 @@ export default function HomePage() {
               Software that runs <span className="serif-em">your business.</span>
             </h2>
             <p className="lede">
-              Booking systems, customer portals and web applications built around how you work. We run software of
-              our own, so we know what it takes.
+              Booking systems, customer portals and web apps, from a team that runs its own platform.
             </p>
             <ul role="list" className="benefits">
-              {saasBenefits.map(([title, body]) => (
+              {saasBenefits.map((title) => (
                 <li key={title}>
                   <strong>{title}</strong>
-                  <span>{body}</span>
                 </li>
               ))}
             </ul>
@@ -269,39 +271,8 @@ export default function HomePage() {
                 />
               </Link>
             </Tilt>
-            <p className="media-caption">
-              FYStay, our own platform. <span className="on-hover">Hover to scroll the full page.</span>
-              <span className="on-touch">Scrolling the full page.</span>
-            </p>
+            <p className="media-caption">FYStay, our own platform.</p>
           </div>
-        </div>
-      </section>
-
-      {/* Case studies */}
-      <section className="section" data-nav="/work" aria-labelledby="work-title">
-        <div className="container container--wide">
-          <div className="section-head section-head--split" data-reveal>
-            <div className="stack">
-              <p className="eyebrow">Case studies</p>
-              <h2 id="work-title" className="h2">
-                Real projects, <span className="serif-em">live today.</span>
-              </h2>
-            </div>
-            <div className="stack" style={{ "--stack": "var(--space-4)" } as React.CSSProperties}>
-              <p className="muted">
-                Three client websites and our own platform. Swipe through, then read the challenge, our solution and
-                what we built for each.
-              </p>
-              <p>
-                <Link href="/work" className="arrow-link">
-                  Read the case studies <ArrowRight />
-                </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div data-reveal>
-          <WorkCarousel items={projects} />
         </div>
       </section>
 
@@ -316,8 +287,8 @@ export default function HomePage() {
               </h2>
             </div>
             <p className="muted">
-              Every website is bespoke, so these are starting points. Your exact price is confirmed in writing before
-              you commit.
+              Starting points for bespoke work, confirmed in writing before you commit.{" "}
+              <Link href="/websites#packages">Everything included</Link>.
             </p>
           </div>
         </div>
@@ -334,17 +305,18 @@ export default function HomePage() {
           {/* Ongoing services */}
           <div id="ongoing" className="ongoing" data-reveal>
             <div className="ongoing__intro">
-              <h3 className="h3">After launch: hosting, care and future development</h3>
-              <p className="muted small">
-                Monthly plans are optional and always priced separately from your build. New features and larger
-                improvements are quoted as separate work, or covered by the hours in Care Plus.
-              </p>
+              <h3 className="h3">After launch: hosting and care</h3>
+              <p className="muted small">Optional monthly plans, priced separately from your build.</p>
             </div>
           </div>
         </div>
 
         <div data-reveal>
-          <PlanSwiper plans={carePlanCards} initial="care" label="Hosting and care plans" />
+          <PlanSwiper
+            plans={carePlanCards.map((plan) => ({ ...plan, includes: plan.includes?.slice(0, careHighlights) }))}
+            initial="care"
+            label="Hosting and care plans"
+          />
         </div>
       </section>
 
@@ -358,9 +330,7 @@ export default function HomePage() {
                 From first message <span className="serif-em">to launch.</span>
               </h2>
             </div>
-            <p className="muted">
-              Six clear stages, with nothing to pay until you&apos;ve approved a written scope and price.
-            </p>
+            <p className="muted">Nothing to pay until you&apos;ve approved a written scope and price.</p>
           </div>
           <ol role="list" className="steps" aria-label="Our process, step by step" tabIndex={0}>
             {process.map(([title, body], i) => (
