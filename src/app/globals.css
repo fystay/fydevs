@@ -1056,15 +1056,15 @@ main {
   }
 }
 
-/* Below 68rem (where the links would wrap beside the logo) the hamburger menu is used. */
-@media (max-width: 67.99rem) {
+/* Below 74rem (where the links would wrap beside the logo) the hamburger menu is used. */
+@media (max-width: 73.99rem) {
   .flyout,
   .nav-backdrop {
     display: none;
   }
 }
 
-@media (min-width: 68rem) {
+@media (min-width: 74rem) {
   .nav-desktop,
   .header-cta {
     display: block;
@@ -5049,8 +5049,8 @@ main .proof__list {
   background: transparent;
 }
 
-/* The full menu (with its own Start a Project button) shows from 68rem. */
-@media (min-width: 68rem) {
+/* The full menu (with its own Start a Project button) shows from 74rem. */
+@media (min-width: 74rem) {
   .sticky-cta {
     display: none;
   }

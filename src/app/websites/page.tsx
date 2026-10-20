@@ -2,11 +2,10 @@ import Link from "next/link";
 import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Blocks";
 import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
-import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
+import { PlanSwiper } from "@/components/interactive/PlanSwiper";
 import { projects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/metadata";
-import { carePlanCards } from "@/lib/plans";
-import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
+import { carePlanCards, packagePlanCards } from "@/lib/plans";
 
 export const metadata = pageMetadata(
   "/websites",
@@ -22,21 +21,6 @@ const services = [
   { title: "Functionality", body: "Forms, payments and bookings that serve a purpose." },
   { title: "Modernisation", body: "Rebuild a slow or dated site, keeping what works." },
 ];
-
-const packageOrder: PackageId[] = ["essential", "professional", "premium"];
-const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
-
-// The full inclusions for each package; the homepage shows a shorter version.
-const packageCards: PlanCard[] = packageOrder.map((id) => ({
-  id,
-  name: PACKAGES[id].name,
-  summary: PACKAGES[id].summary,
-  price: formatGBP(PACKAGES[id].from),
-  from: true,
-  includes: PACKAGES[id].includes,
-  href: `/build?pages=${packagePages[id]}`,
-  cta: "Start a Project",
-}));
 
 const costRows: [string, string][] = [
   ["Domain registration and renewal", "Charged separately, or registered in your name"],
@@ -148,7 +132,7 @@ export default function WebsitesPage() {
           </SectionHead>
         </div>
         <div data-reveal>
-          <PlanSwiper plans={packageCards} initial="professional" label="Website packages" />
+          <PlanSwiper plans={packagePlanCards} initial="professional" label="Website packages" />
         </div>
         <div className="container container--wide">
           <div className="mt-6" style={{ display: "grid", gap: "var(--space-5)" }}>

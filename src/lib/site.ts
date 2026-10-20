@@ -76,16 +76,16 @@ export const primaryNav: NavItem[] = [
       primary: [
         { href: "/websites", label: "Explore websites" },
         { href: "/build", label: "Instant estimate" },
-        { href: "/websites#packages", label: "Packages & prices" },
-        { href: "/websites#care", label: "Hosting & care" },
+        { href: "/pricing", label: "Packages & prices" },
+        { href: "/pricing#care", label: "Hosting & care" },
       ],
       groups: [
         {
           title: "Packages",
           links: [
-            { href: "/websites#packages", label: "Essential" },
-            { href: "/websites#packages", label: "Professional" },
-            { href: "/websites#packages", label: "Premium" },
+            { href: "/pricing", label: "Essential" },
+            { href: "/pricing", label: "Professional" },
+            { href: "/pricing", label: "Premium" },
           ],
         },
         {
@@ -138,6 +138,7 @@ export const primaryNav: NavItem[] = [
       ],
     },
   },
+  { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -147,9 +148,9 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     title: "Websites",
     links: [
       { href: "/websites", label: "Web design" },
-      { href: "/websites#packages", label: "Packages & prices" },
+      { href: "/pricing", label: "Packages & prices" },
       { href: "/build", label: "Instant estimate" },
-      { href: "/websites#care", label: "Hosting & care" },
+      { href: "/pricing#care", label: "Hosting & care" },
     ],
   },
   {

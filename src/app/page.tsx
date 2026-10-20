@@ -120,7 +120,7 @@ export default function HomePage() {
             <Link href="/contact?topic=website" className="btn btn--primary">
               Start a Project
             </Link>
-            <Link href="/websites#packages" className="btn btn--secondary">
+            <Link href="/pricing" className="btn btn--secondary">
               See prices
             </Link>
           </div>
@@ -206,7 +206,7 @@ export default function HomePage() {
             </h2>
             <p className="tile__line">Hosting, backups and updates, handled.</p>
             <div className="tile__ctas">
-              <Link href="/websites#care" className="btn btn--primary">
+              <Link href="/pricing#care" className="btn btn--primary">
                 See plans
               </Link>
             </div>
@@ -229,6 +229,9 @@ export default function HomePage() {
             <Link href="/build" className="btn btn--primary">
               Get my estimate
               <ArrowRight />
+            </Link>
+            <Link href="/pricing" className="btn btn--secondary">
+              See all prices
             </Link>
           </div>
           <div className="price-strip__notice">
