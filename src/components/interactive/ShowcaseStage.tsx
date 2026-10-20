@@ -7,7 +7,7 @@ import type { Project } from "@/lib/projects";
 import { ZoomSettledContext } from "./LaptopZoom";
 import { LivePreview } from "./LivePreview";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "page">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "walkthrough">;
 
 const INTERVAL = 6000;
 
@@ -137,7 +137,13 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                     className={`showcase__img${i === index ? " is-active" : ""}`}
                   />
                 ))}
-                {live && <LivePreview key={current.slug} slug={current.slug} page={current.page} name={current.name} />}
+                {live && (
+                  <LivePreview
+                    key={current.slug}
+                    {...current.walkthrough}
+                    name={current.name}
+                  />
+                )}
                 <span className="laptop__hint" aria-hidden="true" hidden={live}>
                   <span className="on-touch">Tap</span>
                   <span className="on-hover">Click</span> to explore

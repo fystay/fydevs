@@ -2904,12 +2904,15 @@ main {
   opacity: var(--zoom-tabs, 1);
 }
 
-/* The live preview: the site's full page in the display, browsed by a cursor (LivePreview). */
+/* The walkthrough clip, filling the display (LivePreview). */
 .live {
   position: absolute;
   inset: 0;
   z-index: 1;
-  overflow: hidden;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   background: #0b0b0c;
   animation: live-in 350ms ease both;
 }
@@ -2917,86 +2920,6 @@ main {
 @keyframes live-in {
   from {
     opacity: 0;
-  }
-}
-
-.live__page {
-  will-change: transform;
-}
-
-.live__page img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* Reduced motion: no cursor; the page scrolls under the visitor's own finger. */
-.live--manual {
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .laptop__hit[aria-pressed="true"] {
-    pointer-events: none;
-  }
-}
-
-.live__cursor,
-.live__ripple {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.live__cursor {
-  z-index: 2;
-  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
-}
-
-.live__cursor svg {
-  display: block;
-  width: clamp(11px, 2.4vw, 16px);
-  height: auto;
-  transform-origin: 2px 2px;
-}
-
-.live__cursor.is-pressed svg {
-  animation: cursor-press 320ms ease;
-}
-
-@keyframes cursor-press {
-  40% {
-    transform: scale(0.8);
-  }
-}
-
-.live__ripple::after {
-  content: "";
-  position: absolute;
-  top: -14px;
-  left: -14px;
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgb(255 255 255 / 0.9);
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.18);
-  opacity: 0;
-}
-
-.live__ripple.is-on::after {
-  animation: click-ripple 520ms ease-out;
-}
-
-@keyframes click-ripple {
-  from {
-    opacity: 1;
-    transform: scale(0.2);
-  }
-  to {
-    opacity: 0;
-    transform: scale(1.5);
   }
 }
 

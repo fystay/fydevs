@@ -38,6 +38,8 @@ export type Project = {
   mobile: StaticImageData;
   /** Full-page capture, used for hover-to-scroll previews. */
   page: StaticImageData;
+  /** A short clip browsing the full page (cursor, clicks, scrolling), rendered from the capture. */
+  walkthrough: { mp4: string; webm: string; poster: string };
   /** Short note on the visual identity, to show the range of bespoke work. */
   identity: string;
 };
@@ -66,6 +68,11 @@ export const projects: Project[] = [
     desktop: evexecDesktop,
     mobile: evexecMobile,
     page: evexecPage,
+    walkthrough: {
+      mp4: "/work/evexec-walkthrough.mp4",
+      webm: "/work/evexec-walkthrough.webm",
+      poster: "/work/evexec-walkthrough.webp",
+    },
     identity: "Dark, executive and calm, with gold used sparingly for action.",
   },
   {
@@ -90,6 +97,11 @@ export const projects: Project[] = [
     desktop: boonmaDesktop,
     mobile: boonmaMobile,
     page: boonmaPage,
+    walkthrough: {
+      mp4: "/work/boonma-walkthrough.mp4",
+      webm: "/work/boonma-walkthrough.webm",
+      poster: "/work/boonma-walkthrough.webp",
+    },
     identity: "Warm editorial serif, soft ivory and a deep plum accent.",
   },
   {
@@ -115,6 +127,11 @@ export const projects: Project[] = [
     desktop: fystayDesktop,
     mobile: fystayMobile,
     page: fystayPage,
+    walkthrough: {
+      mp4: "/work/fystay-walkthrough.mp4",
+      webm: "/work/fystay-walkthrough.webm",
+      poster: "/work/fystay-walkthrough.webp",
+    },
     identity: "Seaside warmth: terracotta, sand and an app-like mobile tab bar.",
   },
   {
@@ -139,6 +156,11 @@ export const projects: Project[] = [
     desktop: alexDesktop,
     mobile: alexMobile,
     page: alexPage,
+    walkthrough: {
+      mp4: "/work/alex-walkthrough.mp4",
+      webm: "/work/alex-walkthrough.webm",
+      poster: "/work/alex-walkthrough.webp",
+    },
     identity: "Heavy uppercase type and monochrome film, built for energy.",
   },
 ];
