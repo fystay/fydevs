@@ -6052,6 +6052,11 @@ main .proof__list {
   scale: 1.06;
 }
 
+.studio__more {
+  margin-top: var(--space-7);
+  text-align: center;
+}
+
 .studio__features {
   grid-area: features;
   display: grid;

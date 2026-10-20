@@ -110,8 +110,8 @@ export const primaryNav: NavItem[] = [
         {
           title: "Learn more",
           links: [
-            { href: "/booking-software#fit", label: "Is it right for you?" },
-            { href: "/booking-software#demo", label: "What a demo covers" },
+            { href: "/booking-software#flow", label: "See it work" },
+            { href: "/booking-software#make-it-yours", label: "Make it yours" },
             { href: "/work#ev-exec", label: "Built for EV Exec" },
           ],
         },

@@ -9,7 +9,7 @@ import opBookings from "../../../public/work/app/op-bookings.webp";
 import opJob from "../../../public/work/app/op-job.webp";
 import opToday from "../../../public/work/app/op-today.webp";
 
-type Screen = { src: StaticImageData; title: string; caption: string; alt: string };
+type Screen = { src: StaticImageData; title: string; alt: string };
 
 /** Real screens from the live system; customer and driver details are replaced with examples. */
 export const APPS: Record<"operator" | "driver", { label: string; screens: Screen[] }> = {
@@ -19,19 +19,16 @@ export const APPS: Record<"operator" | "driver", { label: string; screens: Scree
       {
         src: opToday,
         title: "Today",
-        caption: "Jobs, replies and drivers that need you, at a glance.",
         alt: "Operator app, Today: jobs today, messages to reply to, bookings needing a driver, and drivers on shift",
       },
       {
         src: opBookings,
         title: "Bookings",
-        caption: "Every job with its driver, price and status, as a list, calendar or board.",
         alt: "Operator app, Bookings: upcoming transfers by day, each with pickup, drop-off, price, driver and status",
       },
       {
         src: opJob,
         title: "Job detail",
-        caption: "Call or WhatsApp the customer, edit the job or add the return.",
         alt: "Operator app, a booking: call and WhatsApp buttons, route, and actions to edit or create a return journey",
       },
     ],
@@ -42,19 +39,16 @@ export const APPS: Record<"operator" | "driver", { label: string; screens: Scree
       {
         src: drJobs,
         title: "Jobs",
-        caption: "Upcoming work for today, tomorrow or the week, with payment status.",
         alt: "Driver app, Jobs: upcoming transfers with times, routes, references and payment status",
       },
       {
         src: drJob,
         title: "On the job",
-        caption: "Flight details, one-tap directions and the passenger a tap away.",
         alt: "Driver app, a job: passenger contact, route with directions, and the verified flight's arrival time",
       },
       {
         src: drCalendar,
         title: "Calendar",
-        caption: "The month's jobs and earnings in one view.",
         alt: "Driver app, Calendar: jobs and earnings for the month, with the day's jobs below",
       },
     ],
@@ -151,12 +145,11 @@ export function AppTour() {
               </figure>
               <p className="app-tour__app">{APPS[key].label}</p>
               <h3>{s.title}</h3>
-              <p>{s.caption}</p>
             </li>
           )),
         )}
       </ul>
-      <p className="app-tour__note">Swipe for the driver app · Screens from the live system, details are examples</p>
+      <p className="app-tour__note">Real screens · Example details</p>
     </div>
   );
 }
