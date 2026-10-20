@@ -7386,6 +7386,11 @@ main .proof__list {
   }
 }
 
+/* The homepage's App development card shows the same spreadsheet-to-app. */
+.tile__sta {
+  padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
 .apps-tile__body {
   margin-top: clamp(3rem, 2rem + 4vw, 5rem);
   padding-bottom: clamp(4.5rem, 3rem + 6vw, 8rem);
@@ -7395,6 +7400,7 @@ main .proof__list {
 /* Spreadsheet to app: the jobs lift off the sheet and land as cards on the phone. */
 .sta {
   --a: #56624a;
+  text-align: left; /* also inside centred tiles */
   display: grid;
   justify-items: center;
   gap: var(--space-4);

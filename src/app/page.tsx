@@ -7,6 +7,7 @@ import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { FamilyLine } from "@/components/interactive/FamilyLine";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
+import { SheetToApp } from "@/components/interactive/SheetToApp";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
@@ -27,7 +28,6 @@ const LAPTOP_SCREEN: ScreenQuad = [
 
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
-const fystay = projectBySlug("fystay")!;
 
 // Four steps, a few words and a line icon each: the detail lives on the service pages.
 const steps = [
@@ -179,14 +179,10 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <Link href="/work#fystay" className="tile__shot" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-            <Image
-              src={fystay.desktop}
-              alt="FYStay, the holiday stays platform we built and run"
-              sizes="(min-width: 64rem) 560px, 90vw"
-              placeholder="blur"
-            />
-          </Link>
+          {/* The App development hero in miniature: a spreadsheet turning into an app. */}
+          <div className="tile__sta" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+            <SheetToApp />
+          </div>
         </section>
 
         <section id="care" data-nav="/websites" className="tile tile--card tile--dark" aria-labelledby="care-title">
