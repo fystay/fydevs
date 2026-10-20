@@ -5738,7 +5738,7 @@ main .proof__list {
   font-size: 0.92em;
 }
 
-/* A tap: a soft ring that grows and fades where the finger lands. */
+/* A tap: a thin ring that grows and fades where the finger lands. */
 .bd-tap {
   position: absolute;
   left: 50%;
@@ -5746,8 +5746,9 @@ main .proof__list {
   width: 2.6em;
   height: 2.6em;
   margin: -1.3em 0 0 -1.3em;
+  border: 2px solid rgb(255 255 255 / 0.75);
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.35);
+  background: radial-gradient(circle, rgb(255 255 255 / 0.3) 0 18%, transparent 20%);
   pointer-events: none;
   animation: bd-tap 520ms ease-out both;
 }
@@ -6448,35 +6449,65 @@ main .proof__list {
   text-align: left;
 }
 
+/* Two whole lines, "Booked in a minute." over "In your app in a second."; the second is
+   the longer, about 9.6 times the font size, so the size keeps it inside the column. */
 .booking-hero .tile__title {
-  max-width: 15ch;
+  max-width: none;
   margin-inline: 0;
-  font-size: clamp(2.125rem, 1.3rem + 3.2vw, 4.25rem);
+  font-size: min(9.1vw, 4rem);
+  white-space: nowrap;
+}
+
+.booking-hero .tile__title .serif-em {
+  display: block;
 }
 
 .booking-hero .tile__line {
   margin: var(--space-3) 0 0;
 }
 
-.booking-hero .tile__ctas {
-  justify-content: flex-start;
-  margin-top: var(--space-5);
-}
-
 .booking-hero__visual {
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
   text-align: center;
 }
 
+.booking-hero__ctas.tile__ctas {
+  justify-content: flex-start;
+  margin-top: var(--space-6);
+}
+
+/* Small phones: slightly smaller phones, so both fit above the browser's toolbar. */
+@media (max-width: 24.99rem) {
+  .booking-hero .bd__phone--customer {
+    width: 56%;
+  }
+  .booking-hero .bd__phone--ops {
+    width: 40%;
+  }
+}
+
+/* Desktop: copy and buttons on the left, the replay on the right. */
 @media (min-width: 64rem) {
   .booking-hero__layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    align-items: center;
-    gap: var(--space-7);
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: var(--space-7);
+  }
+  .booking-hero__copy {
+    align-self: end;
   }
   .booking-hero__visual {
+    grid-column: 2;
+    grid-row: 1 / span 2;
     margin-top: 0;
+  }
+  .booking-hero__ctas.tile__ctas {
+    align-self: start;
+  }
+  .booking-hero .tile__title {
+    font-size: clamp(2.5rem, 3.6vw, 4rem);
   }
 }
 

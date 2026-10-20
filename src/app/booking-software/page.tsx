@@ -25,7 +25,10 @@ const evexec = projectBySlug("ev-exec")!;
 export default function BookingSoftwarePage() {
   return (
     <>
-      {/* Compact copy, so the replay is on screen as soon as the page opens (beside the copy on desktop). */}
+      {/*
+        Compact copy, so the replay is on screen as soon as the page opens: on phones the
+        buttons follow the replay; on desktop the copy and buttons sit beside it.
+      */}
       <section className={`tile booking-hero ${jost.variable}`} aria-labelledby="hero-title">
         <div className="container container--wide">
           <ServiceSwitcher current="booking" />
@@ -35,23 +38,23 @@ export default function BookingSoftwarePage() {
                 Booked in a minute. <span className="serif-em">In your app in a second.</span>
               </h1>
               <p className="tile__line rise" style={{ "--i": 2 } as React.CSSProperties}>
-                Booking apps for any business, proven at {evexec.name}.
+                Booking apps for any business.
               </p>
-              <div className="tile__ctas rise" style={{ "--i": 3 } as React.CSSProperties}>
-                <Link href="/contact?topic=booking-software" className="btn btn--primary">
-                  Request a demo
-                  <ArrowRight />
-                </Link>
-                <Link href="#make-it-yours" className="btn btn--secondary">
-                  Make it yours
-                </Link>
-              </div>
             </div>
-            <div className="booking-hero__visual rise" style={{ "--i": 4 } as React.CSSProperties}>
+            <div className="booking-hero__visual rise" style={{ "--i": 3 } as React.CSSProperties}>
               <BookingDemo />
               <p className="booking-hero__caption">
                 Built for {evexec.name} · Example details · <Link href="/work#ev-exec">See the project</Link>
               </p>
+            </div>
+            <div className="tile__ctas booking-hero__ctas rise" style={{ "--i": 4 } as React.CSSProperties}>
+              <Link href="/contact?topic=booking-software" className="btn btn--primary">
+                Request a demo
+                <ArrowRight />
+              </Link>
+              <Link href="#make-it-yours" className="btn btn--secondary">
+                Make it yours
+              </Link>
             </div>
           </div>
         </div>
