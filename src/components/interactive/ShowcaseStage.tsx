@@ -7,7 +7,7 @@ import type { Project } from "@/lib/projects";
 import { ZoomSettledContext } from "./LaptopZoom";
 import { LivePreview } from "./LivePreview";
 
-type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "walkthrough">;
+type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile" | "walkthrough">;
 
 /**
  * The laptop's base, drawn from directly above: keyboard and trackpad on a brushed
@@ -220,6 +220,21 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
             <LaptopBase />
           </div>
         </div>
+        {/* The same site on a phone, standing in front of the laptop. */}
+        <figure className="phone">
+          <div className="phone__screen showcase__frames">
+            {items.map((p, i) => (
+              <Image
+                key={p.slug}
+                src={p.mobile}
+                alt={i === index ? `The ${p.name} website on a phone` : ""}
+                aria-hidden={i !== index}
+                sizes="(min-width: 64rem) 180px, 25vw"
+                className={`showcase__img${i === index ? " is-active" : ""}`}
+              />
+            ))}
+          </div>
+        </figure>
       </div>
 
       <div className="showcase__bar">
