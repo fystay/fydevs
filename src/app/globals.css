@@ -1665,8 +1665,12 @@ main {
   color: var(--hx-accent);
 }
 
+/* Two long lines, "Websites and apps" over "that grow your business.", each kept whole.
+   The second is the longer, about 9.7 times the font size, so the sizes below are set
+   to keep it inside the screen. */
 .hero-ed__title {
   margin-bottom: var(--space-2);
+  white-space: nowrap;
 }
 
 .hero-ed .lede {
@@ -1786,7 +1790,7 @@ main {
     padding-bottom: calc(100vw * 0.64);
   }
   .hero-ed__title {
-    font-size: clamp(1.75rem, 3.95svh, 2.5rem);
+    font-size: min(9.2vw, 4.6svh);
     margin-bottom: 0;
   }
   .hero-ed .lede {
@@ -1844,13 +1848,15 @@ main {
   .hero-ed__layout {
     width: 100%;
   }
+  /* The headline runs wider than the copy column, across the wall above the desk. */
   .hero-ed__copy {
     max-width: min(44%, 37rem);
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
     padding-block: var(--svc-top) var(--space-7);
   }
   .hero-ed__title {
-    font-size: clamp(3.5rem, 0.6rem + 4.4vw, 6rem);
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
   }
   .hero-ed__visual {
     background: linear-gradient(to right, var(--hx-wall-lit) 30%, var(--hx-wall) 70%);

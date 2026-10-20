@@ -58,12 +58,7 @@ export default function HomePage() {
               <div className="hero-ed__copy">
                 <ServiceSwitcher current="web" />
                 <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-                  Websites <br />
-                  and apps{" "}
-                  <span className="serif-em">
-                    that grow <br />
-                    your business.
-                  </span>
+                  Websites and apps <span className="serif-em">that grow your business.</span>
                 </h1>
                 <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
                   Bespoke, mobile-first, priced in the open.
