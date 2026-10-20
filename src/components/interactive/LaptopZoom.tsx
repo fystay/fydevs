@@ -75,39 +75,121 @@ function rectToQuad(w: number, h: number, quad: Point[]) {
 
 type Box = { x: number; y: number; w: number; h: number };
 
+/** A flat rectangle's pose in 3D: rotations (radians), scale, and where its centre sits. */
+type Pose = { rx: number; ry: number; rz: number; k: number; tx: number; ty: number };
+
 type Geometry = {
   q0: Point[]; // the screen in the photo, in stage pixels
-  aim: Point; // the point on that screen the camera dives towards
-  sCover: number; // the zoom at which the screen fills the stage
-  full: Point[]; // the website squared up and filling the stage (16:10, cropped to the view)
-  display: Point[]; // the showcase laptop's display, where it ends up
+  c0: Point; // its centre
+  sDive: number; // how far the camera dives: until the website spans the view's width
+  start: Pose; // the website's 3D pose at the end of the dive (fitted to the photo's angle)
+  end: Pose; // facing the viewer, in the showcase laptop
+  P: number; // perspective distance
   W: number;
   H: number;
-  d: Box; // the display's box in the showcase
+  d: Box; // the showcase display's box
 };
 
-/** The three acts of the scroll: dive into the screen, square it up while it fills the view, pull back. */
-const DIVE_END = 0.42;
-const SQUARE_END = 0.58;
-
-const corners = ({ x, y, w, h }: Box): Point[] => [
-  [x, y],
-  [x + w, y],
-  [x + w, y + h],
-  [x, y + h],
-];
+/** The scroll in two acts: dive into the screen, then turn to face the viewer while pulling back. */
+const DIVE_END = 0.4;
 
 /** The quad scaled by s about point c, which is moved to t. */
 const place = (q: Point[], c: Point, s: number, t: Point) => q.map(([x, y]): Point => [t[0] + s * (x - c[0]), t[1] + s * (y - c[1])]);
 
-/** Whether the quad contains every corner of the w×h stage. */
-function covers(q: Point[], w: number, h: number) {
-  return corners({ x: 0, y: 0, w, h }).every(([x, y]) =>
-    q.every((a, i) => {
-      const b = q[(i + 1) % 4];
-      return (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]) >= 0;
-    }),
-  );
+/** Where the corners of a w×h rectangle in the given pose appear, seen in perspective from the stage centre. */
+function project(w: number, h: number, { rx, ry, rz, k, tx, ty }: Pose, P: number, centre: Point): Point[] {
+  const [cx, cy] = [Math.cos(rx), Math.sin(rx)];
+  const [cyy, sy] = [Math.cos(ry), Math.sin(ry)];
+  const [cz, sz] = [Math.cos(rz), Math.sin(rz)];
+  return (
+    [
+      [-w / 2, -h / 2],
+      [w / 2, -h / 2],
+      [w / 2, h / 2],
+      [-w / 2, h / 2],
+    ] as Point[]
+  ).map(([u, v]): Point => {
+    // Rotate about z, then y, then x; then scale and move.
+    let x = u * cz - v * sz;
+    let y = u * sz + v * cz;
+    let z = 0;
+    [x, z] = [x * cyy + z * sy, -x * sy + z * cyy];
+    [y, z] = [y * cx - z * cy, y * cy + z * cx];
+    x = x * k + tx;
+    y = y * k + ty;
+    z *= k;
+    const f = P / (P - z);
+    return [centre[0] + (x - centre[0]) * f, centre[1] + (y - centre[1]) * f];
+  });
+}
+
+/**
+ * The poses a w×h rectangle could have to look like the quad when seen straight on (no
+ * perspective): its edges give the projected axes, and the missing depths follow from
+ * the rectangle's axes being perpendicular and of equal scale. Two mirror-image answers.
+ */
+function posesFromShape(q: Point[], w: number, h: number): Pose[] {
+  const a: Point = [(q[1][0] - q[0][0] + q[2][0] - q[3][0]) / (2 * w), (q[1][1] - q[0][1] + q[2][1] - q[3][1]) / (2 * w)];
+  const b: Point = [(q[3][0] - q[0][0] + q[2][0] - q[1][0]) / (2 * h), (q[3][1] - q[0][1] + q[2][1] - q[1][1]) / (2 * h)];
+  const A = a[0] ** 2 + a[1] ** 2;
+  const B = b[0] ** 2 + b[1] ** 2;
+  const C = a[0] * b[0] + a[1] * b[1];
+  // With m = 1/k²: (1 − A·m)(1 − B·m) = C²·m², the smaller root being the one with real depths.
+  const qa = A * B - C * C;
+  const m = qa > 1e-12 ? (A + B - Math.sqrt(Math.max(0, (A + B) ** 2 - 4 * qa))) / (2 * qa) : 1 / Math.max(A, B);
+  const k = 1 / Math.sqrt(m);
+  const centre: Point = [q.reduce((t, p) => t + p[0], 0) / 4, q.reduce((t, p) => t + p[1], 0) / 4];
+  return [1, -1].map((sign) => {
+    const z1 = sign * Math.sqrt(Math.max(0, 1 - A * m));
+    const z2 = Math.abs(z1) > 1e-6 ? (-C * m) / z1 : sign * Math.sqrt(Math.max(0, 1 - B * m));
+    const r1 = [a[0] / k, a[1] / k, z1];
+    const r2 = [b[0] / k, b[1] / k, z2];
+    const r3 = [r1[1] * r2[2] - r1[2] * r2[1], r1[2] * r2[0] - r1[0] * r2[2], r1[0] * r2[1] - r1[1] * r2[0]];
+    // R = Rx·Ry·Rz with columns r1, r2, r3 (see project()).
+    const ry = Math.asin(clamp(r3[0], -1, 1));
+    const rz = Math.atan2(-r2[0], r1[0]);
+    const rx = Math.atan2(-r3[1], r3[2]);
+    return { rx, ry, rz, k, tx: centre[0], ty: centre[1] };
+  });
+}
+
+/**
+ * The pose whose perspective view, from a camera at distance P looking at the centre, best
+ * matches the quad, refined from the shape's answers. The photo isn't a physically exact
+ * view, so the match is close rather than exact; the scroll blends away the difference.
+ */
+function fitPose(q: Point[], w: number, h: number, P: number, centre: Point): Pose {
+  const toPose = (v: number[]): Pose => ({ rx: v[0], ry: v[1], rz: v[2], k: v[3], tx: v[4], ty: v[5] });
+  const err = (v: number[]) => project(w, h, toPose(v), P, centre).reduce((e, [x, y], i) => e + (x - q[i][0]) ** 2 + (y - q[i][1]) ** 2, 0);
+  const refine = (x0: number[]) => {
+    const steps = [0.05, 0.05, 0.05, x0[3] * 0.05, 8, 8];
+    let simplex = [x0, ...steps.map((st, i) => x0.map((v, j) => (i === j ? v + st : v)))].map((v) => ({ v, e: err(v) }));
+    for (let it = 0; it < 800; it++) {
+      simplex.sort((p1, p2) => p1.e - p2.e);
+      const n = simplex.length - 1;
+      const mid = simplex[0].v.map((_, j) => simplex.slice(0, n).reduce((t, s) => t + s.v[j], 0) / n);
+      const at = (t: number) => mid.map((mm, j) => mm + t * (simplex[n].v[j] - mm));
+      const r = at(-1);
+      const er = err(r);
+      if (er < simplex[0].e) {
+        const e2 = at(-2);
+        const ee = err(e2);
+        simplex[n] = ee < er ? { v: e2, e: ee } : { v: r, e: er };
+      } else if (er < simplex[n - 1].e) simplex[n] = { v: r, e: er };
+      else {
+        const c = at(0.5);
+        const ec = err(c);
+        if (ec < simplex[n].e) simplex[n] = { v: c, e: ec };
+        else simplex = simplex.map((s, i) => (i ? s.v.map((x, j) => (x + simplex[0].v[j]) / 2) : s.v)).map((v) => ({ v, e: err(v) }));
+      }
+    }
+    simplex.sort((p1, p2) => p1.e - p2.e);
+    return simplex[0];
+  };
+  const best = posesFromShape(q, w, h)
+    .map((p) => refine([p.rx, p.ry, p.rz, p.k, p.tx, p.ty]))
+    .sort((p1, p2) => p1.e - p2.e)[0];
+  return toPose(best.v);
 }
 
 /** True while the zoom is still playing; the showcase holds its slideshow until it settles. */
@@ -115,12 +197,12 @@ export const ZoomSettledContext = createContext(true);
 
 /**
  * Scroll-driven zoom through the hero laptop. While the visitor scrolls through a runway,
- * the hero stays pinned and the camera dives into the website on the laptop screen
- * until it fills the view; the showcase sits over the hero in perspective, its laptop
- * display exactly on the photo's screen, so the two move as one. With only the website
- * in view it squares up to face the viewer (the photo's angle is never seen changing),
- * then the camera pulls back to reveal the showcase laptop, settling exactly where the
- * showcase section sits. Scrolling then carries on with no swap.
+ * the hero stays pinned and the camera dives into the website on the laptop screen until
+ * it spans the view, as the desk fades away; the showcase sits over the hero in
+ * perspective, its laptop display exactly on the photo's screen, so the two move as one.
+ * The website then turns in 3D to face the viewer (its real angle in the photo, eased to
+ * flat) while the camera pulls back, and the laptop's bezel and keyboard arrive as it
+ * squares up, settling exactly where the showcase section sits.
  *
  * Without JavaScript, or with reduced motion, nothing is pinned or transformed: the
  * hero and the showcase sit one after the other.
@@ -154,39 +236,17 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       panel.style.height = `${H}px`;
       root.style.setProperty("--zoom-h", `${H}px`);
       const q0 = screen.map(imageMapper(photo, layoutBox(photo, stage)));
+      const c0: Point = [q0.reduce((a, p) => a + p[0], 0) / 4, q0.reduce((a, p) => a + p[1], 0) / 4];
+      const d = layoutBox(display, panel);
       const centre: Point = [W / 2, H / 2];
-      // The smallest zoom at which the screen, aimed at point c and centred, fills the stage.
-      const coverZoom = (c: Point) => {
-        let lo = 1;
-        let hi = 80;
-        for (let i = 0; i < 30; i++) {
-          const mid = (lo + hi) / 2;
-          if (covers(place(q0, c, mid, centre), W, H)) hi = mid;
-          else lo = mid;
-        }
-        return hi;
-      };
-      // Dive towards the point on the screen that needs the least zoom (the screen is at an angle).
-      let aim: Point = q0[0];
-      let sCover = Infinity;
-      for (let a = 0.15; a <= 0.851; a += 0.05) {
-        for (let b = 0.15; b <= 0.851; b += 0.05) {
-          const top: Point = [lerp(q0[0][0], q0[1][0], a), lerp(q0[0][1], q0[1][1], a)];
-          const bottom: Point = [lerp(q0[3][0], q0[2][0], a), lerp(q0[3][1], q0[2][1], a)];
-          const c: Point = [lerp(top[0], bottom[0], b), lerp(top[1], bottom[1], b)];
-          const z = coverZoom(c);
-          if (z < sCover) {
-            sCover = z;
-            aim = c;
-          }
-        }
-      }
-      sCover *= 1.04;
-      const box = layoutBox(display, panel);
-      // The website squared up and filling the stage, at the display's proportions.
-      const fw = Math.max(W, (H * box.w) / box.h) * 1.02;
-      const fh = (fw * box.h) / box.w;
-      geo = { q0, aim, sCover, full: corners({ x: (W - fw) / 2, y: (H - fh) / 2, w: fw, h: fh }), display: corners(box), W, H, d: box };
+      // Dive only until the website spans the view's width (any further and its pixels show).
+      const q0w = (Math.hypot(q0[1][0] - q0[0][0], q0[1][1] - q0[0][1]) + Math.hypot(q0[2][0] - q0[3][0], q0[2][1] - q0[3][1])) / 2;
+      const sDive = Math.max(1, (W * 1.04) / q0w);
+      // The website's real 3D angle at that moment, so it can turn to face the viewer as a flat card would.
+      const P = Math.max(W, H) * 3;
+      const start = fitPose(place(q0, c0, sDive, centre), d.w, d.h, P, centre);
+      const end: Pose = { rx: 0, ry: 0, rz: 0, k: 1, tx: d.x + d.w / 2, ty: d.y + d.h / 2 };
+      geo = { q0, c0, sDive, start, end, P, W, H, d };
       progress = -1;
     };
 
@@ -201,45 +261,46 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       if (p === progress) return;
       progress = p;
 
-      const { q0, aim, sCover, full, display: end, W, H, d } = geo;
-      // Act 1: the camera dives into the website on the laptop screen until it fills the view.
-      // The photo and the screen move as one, so nothing on screen changes angle yet.
+      const { q0, c0, sDive, start, end, P, W, H, d } = geo;
+      const centre: Point = [W / 2, H / 2];
+      // Act 1: the camera dives into the website on the laptop screen; photo and screen move as one.
       const u = easeInOut(clamp(p / DIVE_END));
-      const s = sCover ** u;
-      const t: Point = [lerp(aim[0], W / 2, u), lerp(aim[1], H / 2, u)];
-      const dived = place(q0, aim, s, t);
-      let quad = dived;
-      if (p > DIVE_END && p <= SQUARE_END) {
-        // Act 2: with only the website in view, it squares up to face the viewer.
-        const v = easeInOut((p - DIVE_END) / (SQUARE_END - DIVE_END));
-        quad = dived.map(([x, y], i): Point => [lerp(x, full[i][0], v), lerp(y, full[i][1], v)]);
-      } else if (p > SQUARE_END) {
-        // Act 3: the camera pulls back, revealing the laptop around the website.
-        const v = easeInOut((p - SQUARE_END) / (1 - SQUARE_END));
-        const fw = full[1][0] - full[0][0];
-        const w = fw * (d.w / fw) ** v; // a steady zoom out
-        const k = (fw - w) / (fw - d.w || 1);
-        const cx = lerp((full[0][0] + full[1][0]) / 2, d.x + d.w / 2, k);
-        const cy = lerp((full[0][1] + full[3][1]) / 2, d.y + d.h / 2, k);
-        const h = (w * d.h) / d.w;
-        quad = p >= 1 ? end : corners({ x: cx - w / 2, y: cy - h / 2, w, h });
+      const s = sDive ** u;
+      const t: Point = [lerp(c0[0], centre[0], u), lerp(c0[1], centre[1], u)];
+      let quad = place(q0, c0, s, t);
+      // Over the second half of the dive, as the desk fades, ease from the photo's outline onto the fitted 3D pose.
+      const onPose = smoothstep(DIVE_END * 0.5, DIVE_END, p);
+      if (onPose > 0) {
+        // Act 2: a real 3D turn to face the viewer, while the camera pulls back to the laptop.
+        const v = easeInOut(clamp((p - DIVE_END) / (1 - DIVE_END)));
+        const pose: Pose = {
+          rx: lerp(start.rx, end.rx, v),
+          ry: lerp(start.ry, end.ry, v),
+          rz: lerp(start.rz, end.rz, v),
+          k: start.k * (end.k / start.k) ** v, // a steady zoom out
+          tx: lerp(start.tx, end.tx, v),
+          ty: lerp(start.ty, end.ty, v),
+        };
+        const turned = project(d.w, d.h, pose, P, centre);
+        quad = quad.map(([x, y], i): Point => [lerp(x, turned[i][0], onPose), lerp(y, turned[i][1], onPose)]);
       }
 
       // 3D transforms keep each layer rasterised once, so Safari never re-renders mid-zoom (no pops).
-      heroEl.style.transform = p > 0 ? `translate3d(${t[0] - s * aim[0]}px, ${t[1] - s * aim[1]}px, 0) scale3d(${s}, ${s}, 1)` : "";
-      // Once the website fills the view the photo is hidden behind it.
-      heroEl.style.visibility = p >= DIVE_END ? "hidden" : "";
-      // As the camera centres on the screen the photo may slide; soften its right edge if it comes into view.
-      const exposed = W - (t[0] + s * (W - aim[0]));
-      veil.style.width = exposed > 0 && p < DIVE_END ? `${exposed + 96}px` : "";
-      const copyFade = 1 - smoothstep(0, 0.18, p);
+      heroEl.style.transform = p > 0 ? `translate3d(${t[0] - s * c0[0]}px, ${t[1] - s * c0[1]}px, 0) scale3d(${s}, ${s}, 1)` : "";
+      // The desk fades to the page colour as the website comes to fill the view.
+      const photoFade = smoothstep(DIVE_END * 0.45, DIVE_END * 0.95, p);
+      heroEl.style.opacity = photoFade > 0 ? String(1 - photoFade) : "";
+      heroEl.style.visibility = photoFade >= 1 ? "hidden" : "";
+      const exposed = W - (t[0] + s * (W - c0[0]));
+      veil.style.width = exposed > 0 && photoFade < 1 ? `${exposed + 96}px` : "";
+      const copyFade = 1 - smoothstep(0, 0.16, p);
       copy.style.opacity = copyFade < 1 ? String(copyFade) : "";
       copy.style.pointerEvents = copyFade < 0.5 ? "none" : "";
 
       panel.style.transform = p >= 1 ? "" : `${rectToQuad(d.w, d.h, quad)} translate(${-d.x}px, ${-d.y}px)`;
-      // The bezel and keyboard come into view as the camera pulls back; the tabs once it has landed.
-      panel.style.setProperty("--zoom-ui", String(smoothstep(SQUARE_END, SQUARE_END + 0.12, p)));
-      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.85, 0.99, p)));
+      // The bezel and keyboard arrive only once the screen has nearly turned to face you; then the tabs.
+      panel.style.setProperty("--zoom-ui", String(smoothstep(0.78, 0.95, p)));
+      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.88, 0.99, p)));
       panel.style.setProperty("--glare", String(1 - smoothstep(0, DIVE_END, p)));
       panel.style.pointerEvents = p >= 1 ? "" : "none";
       const state = p >= 1 ? "done" : p > 0 ? "active" : "start";
