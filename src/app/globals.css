@@ -5193,3 +5193,12 @@ main .proof__list {
   text-transform: uppercase;
   color: var(--color-inverse-ink-2);
 }
+
+/* On dark bands the SaaS and booking accents need to be lighter to stay readable (≥ 3:1). */
+:root:has(.svc[data-current="saas"]) .inverse :is(.h1, .h2) .serif-em {
+  color: #a9b596;
+}
+
+:root:has(.svc[data-current="booking"]) .inverse :is(.h1, .h2) .serif-em {
+  color: #7fb3b8;
+}
