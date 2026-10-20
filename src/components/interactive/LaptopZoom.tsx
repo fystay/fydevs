@@ -77,23 +77,50 @@ type Box = { x: number; y: number; w: number; h: number };
 
 type Geometry = {
   q0: Point[]; // the screen in the photo, in stage pixels
-  c0: Point; // its centre
-  display: Box; // the showcase laptop's display, where the screen ends up
-  cf: Point; // the display's centre
-  sEnd: number; // how far the camera zooms: the photo's screen grows to the display's size
+  aim: Point; // the point on that screen the camera dives towards
+  sCover: number; // the zoom at which the screen fills the stage
+  full: Point[]; // the website squared up and filling the stage (16:10, cropped to the view)
+  display: Point[]; // the showcase laptop's display, where it ends up
+  W: number;
+  H: number;
+  d: Box; // the display's box in the showcase
 };
+
+/** The three acts of the scroll: dive into the screen, square it up while it fills the view, pull back. */
+const DIVE_END = 0.42;
+const SQUARE_END = 0.58;
+
+const corners = ({ x, y, w, h }: Box): Point[] => [
+  [x, y],
+  [x + w, y],
+  [x + w, y + h],
+  [x, y + h],
+];
+
+/** The quad scaled by s about point c, which is moved to t. */
+const place = (q: Point[], c: Point, s: number, t: Point) => q.map(([x, y]): Point => [t[0] + s * (x - c[0]), t[1] + s * (y - c[1])]);
+
+/** Whether the quad contains every corner of the w×h stage. */
+function covers(q: Point[], w: number, h: number) {
+  return corners({ x: 0, y: 0, w, h }).every(([x, y]) =>
+    q.every((a, i) => {
+      const b = q[(i + 1) % 4];
+      return (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]) >= 0;
+    }),
+  );
+}
 
 /** True while the zoom is still playing; the showcase holds its slideshow until it settles. */
 export const ZoomSettledContext = createContext(true);
 
 /**
- * Scroll-driven zoom into the hero laptop. While the visitor scrolls through a runway,
- * the hero stays pinned and the camera moves in on the laptop in the photo, bringing it
- * to the centre. The showcase sits over the hero in perspective, its laptop display
- * exactly on the photo's screen, so the website on screen never changes. As the photo
- * fades away the showcase laptop's bezel and keyboard take its place, and the screen
- * turns to face the viewer, settling exactly where the showcase section sits.
- * Scrolling then carries on with no swap.
+ * Scroll-driven zoom through the hero laptop. While the visitor scrolls through a runway,
+ * the hero stays pinned and the camera dives into the website on the laptop screen
+ * until it fills the view; the showcase sits over the hero in perspective, its laptop
+ * display exactly on the photo's screen, so the two move as one. With only the website
+ * in view it squares up to face the viewer (the photo's angle is never seen changing),
+ * then the camera pulls back to reveal the showcase laptop, settling exactly where the
+ * showcase section sits. Scrolling then carries on with no swap.
  *
  * Without JavaScript, or with reduced motion, nothing is pinned or transformed: the
  * hero and the showcase sit one after the other.
@@ -127,10 +154,39 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       panel.style.height = `${H}px`;
       root.style.setProperty("--zoom-h", `${H}px`);
       const q0 = screen.map(imageMapper(photo, layoutBox(photo, stage)));
-      const c0: Point = [q0.reduce((s, p) => s + p[0], 0) / 4, q0.reduce((s, p) => s + p[1], 0) / 4];
+      const centre: Point = [W / 2, H / 2];
+      // The smallest zoom at which the screen, aimed at point c and centred, fills the stage.
+      const coverZoom = (c: Point) => {
+        let lo = 1;
+        let hi = 80;
+        for (let i = 0; i < 30; i++) {
+          const mid = (lo + hi) / 2;
+          if (covers(place(q0, c, mid, centre), W, H)) hi = mid;
+          else lo = mid;
+        }
+        return hi;
+      };
+      // Dive towards the point on the screen that needs the least zoom (the screen is at an angle).
+      let aim: Point = q0[0];
+      let sCover = Infinity;
+      for (let a = 0.15; a <= 0.851; a += 0.05) {
+        for (let b = 0.15; b <= 0.851; b += 0.05) {
+          const top: Point = [lerp(q0[0][0], q0[1][0], a), lerp(q0[0][1], q0[1][1], a)];
+          const bottom: Point = [lerp(q0[3][0], q0[2][0], a), lerp(q0[3][1], q0[2][1], a)];
+          const c: Point = [lerp(top[0], bottom[0], b), lerp(top[1], bottom[1], b)];
+          const z = coverZoom(c);
+          if (z < sCover) {
+            sCover = z;
+            aim = c;
+          }
+        }
+      }
+      sCover *= 1.04;
       const box = layoutBox(display, panel);
-      const q0h = (Math.hypot(q0[3][0] - q0[0][0], q0[3][1] - q0[0][1]) + Math.hypot(q0[2][0] - q0[1][0], q0[2][1] - q0[1][1])) / 2;
-      geo = { q0, c0, display: box, cf: [box.x + box.w / 2, box.y + box.h / 2], sEnd: box.h / q0h };
+      // The website squared up and filling the stage, at the display's proportions.
+      const fw = Math.max(W, (H * box.w) / box.h) * 1.02;
+      const fh = (fw * box.h) / box.w;
+      geo = { q0, aim, sCover, full: corners({ x: (W - fw) / 2, y: (H - fh) / 2, w: fw, h: fh }), display: corners(box), W, H, d: box };
       progress = -1;
     };
 
@@ -145,42 +201,46 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       if (p === progress) return;
       progress = p;
 
-      const { q0, c0, display: d, cf, sEnd } = geo;
-      // The camera: zoom and centre on the laptop.
-      const u = easeInOut(p);
-      const s = sEnd ** u;
-      const t: Point = [lerp(c0[0], cf[0], u), lerp(c0[1], cf[1], u)];
-      // The photo hands over to the showcase laptop while the screen is still on the photo's
-      // screen; only once the photo has gone does the screen turn to face the viewer.
-      const handover = smoothstep(0.32, 0.58, p);
-      const turn = easeInOut(smoothstep(0.52, 1, p));
-      const flat: Point[] = [
-        [d.x, d.y],
-        [d.x + d.w, d.y],
-        [d.x + d.w, d.y + d.h],
-        [d.x, d.y + d.h],
-      ];
-      const corners = q0.map(([x, y], i): Point => [
-        lerp(t[0] + s * (x - c0[0]), flat[i][0], turn),
-        lerp(t[1] + s * (y - c0[1]), flat[i][1], turn),
-      ]);
+      const { q0, aim, sCover, full, display: end, W, H, d } = geo;
+      // Act 1: the camera dives into the website on the laptop screen until it fills the view.
+      // The photo and the screen move as one, so nothing on screen changes angle yet.
+      const u = easeInOut(clamp(p / DIVE_END));
+      const s = sCover ** u;
+      const t: Point = [lerp(aim[0], W / 2, u), lerp(aim[1], H / 2, u)];
+      const dived = place(q0, aim, s, t);
+      let quad = dived;
+      if (p > DIVE_END && p <= SQUARE_END) {
+        // Act 2: with only the website in view, it squares up to face the viewer.
+        const v = easeInOut((p - DIVE_END) / (SQUARE_END - DIVE_END));
+        quad = dived.map(([x, y], i): Point => [lerp(x, full[i][0], v), lerp(y, full[i][1], v)]);
+      } else if (p > SQUARE_END) {
+        // Act 3: the camera pulls back, revealing the laptop around the website.
+        const v = easeInOut((p - SQUARE_END) / (1 - SQUARE_END));
+        const fw = full[1][0] - full[0][0];
+        const w = fw * (d.w / fw) ** v; // a steady zoom out
+        const k = (fw - w) / (fw - d.w || 1);
+        const cx = lerp((full[0][0] + full[1][0]) / 2, d.x + d.w / 2, k);
+        const cy = lerp((full[0][1] + full[3][1]) / 2, d.y + d.h / 2, k);
+        const h = (w * d.h) / d.w;
+        quad = p >= 1 ? end : corners({ x: cx - w / 2, y: cy - h / 2, w, h });
+      }
 
       // 3D transforms keep each layer rasterised once, so Safari never re-renders mid-zoom (no pops).
-      heroEl.style.transform = p > 0 ? `translate3d(${t[0] - s * c0[0]}px, ${t[1] - s * c0[1]}px, 0) scale3d(${s}, ${s}, 1)` : "";
-      heroEl.style.opacity = handover > 0 ? String(1 - handover) : "";
-      heroEl.style.visibility = handover >= 1 ? "hidden" : "";
-      // As the laptop comes to the centre the photo moves left; soften its right edge as it comes into view.
-      const exposed = stage.clientWidth - (t[0] + s * (stage.clientWidth - c0[0]));
-      veil.style.width = exposed > 0 && handover < 1 ? `${exposed + 96}px` : "";
-      const copyFade = 1 - smoothstep(0, 0.22, p);
+      heroEl.style.transform = p > 0 ? `translate3d(${t[0] - s * aim[0]}px, ${t[1] - s * aim[1]}px, 0) scale3d(${s}, ${s}, 1)` : "";
+      // Once the website fills the view the photo is hidden behind it.
+      heroEl.style.visibility = p >= DIVE_END ? "hidden" : "";
+      // As the camera centres on the screen the photo may slide; soften its right edge if it comes into view.
+      const exposed = W - (t[0] + s * (W - aim[0]));
+      veil.style.width = exposed > 0 && p < DIVE_END ? `${exposed + 96}px` : "";
+      const copyFade = 1 - smoothstep(0, 0.18, p);
       copy.style.opacity = copyFade < 1 ? String(copyFade) : "";
       copy.style.pointerEvents = copyFade < 0.5 ? "none" : "";
 
-      panel.style.transform = p >= 1 ? "" : `${rectToQuad(d.w, d.h, corners)} translate(${-d.x}px, ${-d.y}px)`;
-      panel.style.setProperty("--zoom-ui", String(handover));
-      // The project tabs arrive only once the laptop has squared up, so their text is never slanted.
-      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.82, 0.99, p)));
-      panel.style.setProperty("--glare", String(1 - turn));
+      panel.style.transform = p >= 1 ? "" : `${rectToQuad(d.w, d.h, quad)} translate(${-d.x}px, ${-d.y}px)`;
+      // The bezel and keyboard come into view as the camera pulls back; the tabs once it has landed.
+      panel.style.setProperty("--zoom-ui", String(smoothstep(SQUARE_END, SQUARE_END + 0.12, p)));
+      panel.style.setProperty("--zoom-tabs", String(smoothstep(0.85, 0.99, p)));
+      panel.style.setProperty("--glare", String(1 - smoothstep(0, DIVE_END, p)));
       panel.style.pointerEvents = p >= 1 ? "" : "none";
       const state = p >= 1 ? "done" : p > 0 ? "active" : "start";
       if (root.dataset.zoom !== state) {
