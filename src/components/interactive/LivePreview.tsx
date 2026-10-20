@@ -1,19 +1,56 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * A look inside the laptop: a short clip of the site being browsed (a cursor visiting real
  * buttons, clicking and scrolling through the sections), rendered from the full-page capture.
- * Started by a tap, so it plays inline on phones; it loops until tapped again.
+ * Muted and inline, so it can start on its own on phones. It fills the progress bar it is
+ * given as it plays, and reports when it has finished.
  */
-export function LivePreview({ mp4, webm, poster, name }: { mp4: string; webm: string; poster: string; name: string }) {
+export function LivePreview({
+  mp4,
+  webm,
+  poster,
+  name,
+  paused,
+  progress,
+  onEnded,
+}: {
+  mp4: string;
+  webm: string;
+  poster: string;
+  name: string;
+  paused: boolean;
+  progress: RefObject<HTMLSpanElement | null>;
+  onEnded: () => void;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Started by the visitor's tap, so playback is allowed; muted keeps it inline on iOS.
-    ref.current?.play().catch(() => {});
-  }, [mp4]);
+    const video = ref.current;
+    if (!video) return;
+    if (paused) video.pause();
+    else video.play().catch(() => {});
+  }, [paused]);
+
+  // Keep the tab's progress bar in step with the clip.
+  useEffect(() => {
+    const bar = progress.current;
+    let frame = 0;
+    const tick = () => {
+      const video = ref.current;
+      if (video && bar && video.duration) {
+        bar.style.transform = `scaleX(${(video.currentTime / video.duration).toFixed(4)})`;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      if (bar) bar.style.transform = "";
+    };
+  }, [progress]);
 
   return (
     <video
@@ -21,10 +58,10 @@ export function LivePreview({ mp4, webm, poster, name }: { mp4: string; webm: st
       className="live"
       poster={poster}
       muted
-      loop
       playsInline
-      autoPlay
+      autoPlay={!paused}
       preload="auto"
+      onEnded={onEnded}
       aria-label={`A walkthrough of the ${name} website`}
     >
       {/* H.264 for Safari and most browsers; VP9 for browsers without it. */}

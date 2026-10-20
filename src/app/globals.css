@@ -3016,28 +3016,13 @@ main {
   background: var(--color-line-strong);
 }
 
+/* Filled by the walkthrough clip as it plays (LivePreview sets the scale). */
 .showcase__progress span {
   position: absolute;
   inset: 0;
   background: var(--color-accent);
   transform-origin: left;
-  animation: progress linear forwards;
-}
-
-@keyframes progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .showcase__progress span {
-    animation: none;
-    transform: none;
-  }
+  transform: scaleX(0);
 }
 
 .showcase__meta {

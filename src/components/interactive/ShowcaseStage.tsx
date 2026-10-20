@@ -2,14 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Project } from "@/lib/projects";
 import { ZoomSettledContext } from "./LaptopZoom";
 import { LivePreview } from "./LivePreview";
 
 type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "walkthrough">;
-
-const INTERVAL = 6000;
 
 /**
  * The laptop's base, drawn from directly above: keyboard and trackpad on a brushed
@@ -54,39 +52,75 @@ function LaptopBase() {
   );
 }
 
+const reducedQuery = "(prefers-reduced-motion: reduce)";
+const subscribeReduced = (onChange: () => void) => {
+  const mq = window.matchMedia(reducedQuery);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+
+/** Pause before the first clip once the laptop is in view, and between one site's clip and the next. */
+const FIRST_DELAY = 1000;
+const NEXT_DELAY = 500;
+
 /**
- * The homepage showcase: our real projects on a laptop, cross-fading between them.
- * Tabs, swipe (touch) and an autoplay that pauses on hover, focus, or on request.
+ * The homepage showcase: our real projects on a laptop. Once the laptop is in view, each
+ * site's walkthrough clip plays in turn and moves on to the next site when it finishes.
+ * The tabs jump to any site; tapping the screen or the button pauses and resumes. Clips
+ * hold still while the hero zoom is carrying the laptop in, and when it is out of view.
+ * With reduced motion nothing plays until the visitor asks.
  */
 export function ShowcaseStage({ items }: { items: Item[] }) {
   const [index, setIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const [reduced, setReduced] = useState(false);
+  // The visitor's choice, once made; until then reduced motion starts paused.
+  const [paused, setPaused] = useState<boolean | null>(null);
+  const reduced = useSyncExternalStore(
+    subscribeReduced,
+    () => window.matchMedia(reducedQuery).matches,
+    () => false,
+  );
+  const userPaused = paused ?? reduced;
+  const [inView, setInView] = useState(false);
+  // Whether the current site's clip has started (until then its screenshot shows).
+  const [clipOn, setClipOn] = useState(false);
+  const [started, setStarted] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(0);
-  // Tapping the screen opens a live look at the site: a cursor browsing the real page.
-  const [live, setLive] = useState(false);
 
-  const go = useCallback((i: number) => setIndex((i + items.length) % items.length), [items.length]);
+  const go = useCallback(
+    (i: number) => {
+      setIndex((i + items.length) % items.length);
+      setClipOn(false);
+    },
+    [items.length],
+  );
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    const el = stageRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
-  // Holds still while the hero zoom is carrying it onto the screen, so projects never cross-fade mid-move.
+  // Holds still while the hero zoom is carrying it onto the screen, so the screen matches the photo.
   const zoomSettled = useContext(ZoomSettledContext);
-  const playing = !reduced && !userPaused && !hovered && zoomSettled && !live;
+  const running = zoomSettled && inView && !userPaused;
 
+  // Start the current site's clip after a short pause.
   useEffect(() => {
-    if (!playing) return;
-    const t = window.setTimeout(() => go(index + 1), INTERVAL);
+    if (!running || clipOn) return;
+    const t = window.setTimeout(
+      () => {
+        setClipOn(true);
+        setStarted(true);
+      },
+      started ? NEXT_DELAY : FIRST_DELAY,
+    );
     return () => window.clearTimeout(t);
-  }, [playing, index, go]);
+  }, [running, clipOn, started, index]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") swipe.current = { x: e.clientX, y: e.clientY };
@@ -104,16 +138,12 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
   };
 
   const current = items[index];
+  const toggle = () => setPaused(!userPaused);
 
   return (
-    <div
-      className="showcase"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setHovered(true)}
-      onBlurCapture={() => setHovered(false)}
-    >
+    <div className="showcase">
       <div
+        ref={stageRef}
         className="laptop showcase__stage"
         role="group"
         aria-roledescription="carousel"
@@ -137,26 +167,30 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                     className={`showcase__img${i === index ? " is-active" : ""}`}
                   />
                 ))}
-                {live && (
+                {clipOn && zoomSettled && (
                   <LivePreview
                     key={current.slug}
                     {...current.walkthrough}
                     name={current.name}
+                    paused={!running}
+                    progress={progressRef}
+                    onEnded={() => go(index + 1)}
                   />
                 )}
-                <span className="laptop__hint" aria-hidden="true" hidden={live}>
+                <span className="laptop__hint" aria-hidden="true" hidden={!userPaused}>
                   <span className="on-touch">Tap</span>
-                  <span className="on-hover">Click</span> to explore
+                  <span className="on-hover">Click</span> to play
                 </span>
               </div>
-              {/* Covers the screen, so a tap anywhere on it starts or stops the live preview. */}
+              {/* Covers the screen, so a tap anywhere on it pauses or resumes the walkthrough. */}
               <button
                 type="button"
                 className="laptop__hit"
-                aria-pressed={live}
-                aria-label={live ? `Stop the ${current.name} preview` : `Preview the ${current.name} website in action`}
+                aria-label={
+                  userPaused ? `Play the ${current.name} walkthrough` : `Pause the ${current.name} walkthrough`
+                }
                 onClick={() => {
-                  if (Date.now() - swiped.current > 400) setLive((v) => !v);
+                  if (Date.now() - swiped.current > 400) toggle();
                 }}
               />
             </div>
@@ -178,15 +212,8 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
               <span className="showcase__tab-num">{String(i + 1).padStart(2, "0")}</span>
               <span className="showcase__tab-name">{p.name}</span>
               <span className="showcase__progress" aria-hidden="true">
-                {i === index && (
-                  <span
-                    key={`${index}-${playing}`}
-                    style={{
-                      animationDuration: `${INTERVAL}ms`,
-                      animationPlayState: playing ? "running" : "paused",
-                    }}
-                  />
-                )}
+                {/* Filled by the clip as it plays. */}
+                {i === index && <span ref={progressRef} key={index} />}
               </span>
             </button>
           ))}
@@ -207,24 +234,22 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
           >
             View live ↗
           </a>
-          {!reduced && (
-            <button
-              type="button"
-              className="showcase__pause"
-              onClick={() => setUserPaused((v) => !v)}
-              aria-label={userPaused ? "Play slideshow" : "Pause slideshow"}
-            >
-              {userPaused ? (
-                <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
-                  <path d="M0 0l10 6-10 6z" fill="currentColor" />
-                </svg>
-              ) : (
-                <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
-                  <path d="M0 0h3v12H0zM7 0h3v12H7z" fill="currentColor" />
-                </svg>
-              )}
-            </button>
-          )}
+          <button
+            type="button"
+            className="showcase__pause"
+            onClick={toggle}
+            aria-label={userPaused ? "Play the walkthroughs" : "Pause the walkthroughs"}
+          >
+            {userPaused ? (
+              <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
+                <path d="M0 0l10 6-10 6z" fill="currentColor" />
+              </svg>
+            ) : (
+              <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
+                <path d="M0 0h3v12H0zM7 0h3v12H7z" fill="currentColor" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </div>
