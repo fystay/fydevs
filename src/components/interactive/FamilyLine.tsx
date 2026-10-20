@@ -5,8 +5,10 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 const LEAD = "Every site here runs a family business. ";
 const LAST = "Ours.";
 const FULL = LEAD + LAST;
-// The line is fully typed this far through the pinned scroll; the rest is a short hold on it.
-const DONE_AT = 0.8;
+// The line is fully typed this far through the pinned scroll; the rest is a hold on it.
+const DONE_AT = 0.7;
+// On a fast scroll the letters catch up at this many per frame, so they arrive evenly.
+const MAX_STEP = 2;
 
 const subscribeMotion = (cb: () => void) => {
   const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -34,20 +36,29 @@ export function FamilyLine() {
     const el = ref.current;
     if (!el || reduced) return;
     let frame = 0;
-    const update = () => {
-      frame = 0;
-      // From the section's top reaching mid-screen (so the first words appear as it
-      // arrives) to the end of the pinned run.
+    let current = 0;
+    // How many letters the scroll position calls for: from the section's top reaching
+    // mid-screen (so the first words appear as it arrives) to most of the way through the pin.
+    const target = () => {
       const r = el.getBoundingClientRect();
       const lead = window.innerHeight / 2;
       const run = r.height - window.innerHeight + lead;
       const p = run > 0 ? Math.min(1, Math.max(0, (lead - r.top) / run)) : 1;
-      setShown(Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length));
+      return Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length);
+    };
+    // Step towards the target a few letters a frame, until it's reached.
+    const update = () => {
+      frame = 0;
+      const goal = target();
+      current += Math.max(-MAX_STEP, Math.min(MAX_STEP, goal - current));
+      setShown(current);
+      if (current !== goal) frame = requestAnimationFrame(update);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
-    update();
+    current = target();
+    setShown(current);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
