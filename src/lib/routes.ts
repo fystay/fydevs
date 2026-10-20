@@ -8,5 +8,6 @@ export const publicRoutes = [
   "/work",
   "/about",
   "/contact",
+  "/faq",
   "/privacy",
 ] as const;

@@ -11,8 +11,8 @@ const HIDDEN_ON = ["/contact", "/build"];
 /**
  * Phones and tablets: once the visitor has scrolled past the opening screen, a slim bar
  * slides up with the two next steps. It steps aside while anything that already offers
- * them is on screen (the hero zoom and showcase, call-to-action bands, the footer), so
- * it never doubles up or covers the content they're reading.
+ * them is on screen (the hero zoom and showcase, any button, call-to-action bands, the
+ * footer), so it never doubles up or covers a button.
  */
 export function StickyCta() {
   const pathname = usePathname();
@@ -36,7 +36,10 @@ export function StickyCta() {
       }
       schedule();
     });
-    document.querySelectorAll(".zoom, .cta-band, .site-footer, [data-cta-hide]").forEach((el) => io.observe(el));
+    // Any other call-to-action button on screen already offers the next step.
+    document
+      .querySelectorAll(".zoom, .cta-band, .site-footer, [data-cta-hide], main .btn")
+      .forEach((el) => io.observe(el));
     window.addEventListener("scroll", schedule, { passive: true });
     schedule();
     return () => {

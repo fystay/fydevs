@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
-import { Faq } from "@/components/Faq";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight } from "@/components/Icons";
-import { ScrollShot } from "@/components/interactive/ScrollShot";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
-import { Tilt } from "@/components/interactive/Tilt";
-import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
-import { PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
-import { carePlanCards } from "@/lib/plans";
+import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import workspace from "../../public/hero/fydevs-workspace.webp";
+import drJob from "../../public/work/app/dr-job.webp";
+import opBookings from "../../public/work/app/op-bookings.webp";
+import opToday from "../../public/work/app/op-today.webp";
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
 export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
@@ -31,71 +29,12 @@ const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
 
-// Short on purpose: the visuals do the selling; the detail lives on the service pages.
-const webBenefits = [
-  "Designed for your customers",
-  "Fast on every phone",
-  "Built to win enquiries",
-  "Easy to look after",
-];
-
-const saasBenefits = [
-  "Built around your workflow",
-  `Proven at ${evexec.name}, a working transfer business`,
-  "Fixed price, delivered in stages",
-  "Scoped before you commit",
-];
-
-const process = [
-  ["Enquiry", "Short form or instant estimate."],
-  ["Discovery call", "Your goals and your customers."],
-  ["Proposal & quote", "Written scope and fixed price."],
-  ["Design", "Key pages, refined with you."],
-  ["Build & test", "Every device, fully accessible."],
-  ["Launch & support", "Live, handed over, supported."],
-];
-
-/*
- * The homepage shows the points that tell the plans apart, taken word for word from each
- * plan's full list; every inclusion is on /websites.
- */
-const packageHighlights: Record<PackageId, string[]> = {
-  essential: ["Up to 5 pages", "Enquiry form", "Two rounds of design revisions"],
-  professional: ["Up to 12 pages", "Content management", "Three rounds of design revisions"],
-  premium: ["Up to 25 pages", "Extensive custom design and interaction", "Launch and 60 days of handover support"],
-};
-const careHighlights = 3;
-
-const packageOrder: PackageId[] = ["essential", "professional", "premium"];
-const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
-
-const plans: PlanCard[] = [
-  ...packageOrder.map(
-    (id): PlanCard => ({
-      id,
-      name: PACKAGES[id].name,
-      summary: PACKAGES[id].summary,
-      price: formatGBP(PACKAGES[id].from),
-      from: true,
-      includes: PACKAGES[id].includes.filter((item) => packageHighlights[id].includes(item)),
-      href: `/build?pages=${packagePages[id]}`,
-      cta: "Start a Project",
-    }),
-  ),
-  {
-    id: "saas",
-    name: "SaaS & bespoke software",
-    summary: "Booking systems, customer portals and web applications.",
-    price: "Custom quote",
-    includes: [
-      "Discovery call and written scope",
-      "Fixed price and payment schedule",
-      "Working software delivered in agreed stages",
-    ],
-    href: "/contact?topic=bespoke",
-    cta: "Build My SaaS",
-    variant: "inverse",
-  },
+// Four steps, a few words each: the detail lives on the service pages.
+const steps = [
+  ["Enquire", "Tell us what you need."],
+  ["Scope", "A fixed price, in writing."],
+  ["Build", "Designed and built with you."],
+  ["Launch", "Live, handed over, supported."],
 ];
 
 export default function HomePage() {
@@ -161,229 +100,175 @@ export default function HomePage() {
         </section>
       </LaptopZoom>
 
-      {/* Proof: facts anyone can check */}
-      <section className="proof" aria-label="At a glance">
-        <div className="container container--wide">
-          <ul role="list" className="proof__list">
-            <li>
-              <strong>4</strong>
-              <span>live projects you can visit</span>
-            </li>
-            <li>
-              <strong>{formatGBP(PACKAGES.essential.from)}</strong>
-              <span>websites from</span>
-            </li>
-            <li>
-              <strong>0</strong>
-              <span>templates used</span>
-            </li>
-            <li>
-              <strong>2</strong>
-              <span>software products built</span>
-            </li>
-          </ul>
-          {/* A plain fact, in our own voice: every project shown is a business our family runs. */}
-          <blockquote className="proof__note">
-            <p>
-              Every project here is a working business our family runs: an airport transfer firm, a massage studio, a
-              holiday-stays platform and a coaching business. <em>We build what we trust with our own livelihoods.</em>
-            </p>
-          </blockquote>
-          <p className="proof__more">
-            <Link href="/work" className="arrow-link">
-              Read the case studies <ArrowRight />
+      {/* One quiet, true line under the showcase. */}
+      <p className="container container--wide family-line">
+        Every site here runs a family business. <em>Ours.</em>
+      </p>
+
+      {/*
+        Below the showcase, one product per screen: a name, a few words, two buttons and a
+        big visual. Detail and full pricing live on the service pages.
+      */}
+      <section id="web-design" data-nav="/websites" className="tile" aria-labelledby="web-title">
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Websites</p>
+          <h2 id="web-title" className="tile__title">
+            Built to win <span className="serif-em">customers.</span>
+          </h2>
+          <p className="tile__line">Bespoke design, fast on every phone. From {formatGBP(PACKAGES.essential.from)}.</p>
+          <div className="tile__ctas">
+            <Link href="/contact?topic=website" className="btn btn--primary">
+              Start a Project
             </Link>
-          </p>
+            <Link href="/websites#packages" className="btn btn--secondary">
+              See prices
+            </Link>
+          </div>
+        </div>
+        <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+          <Link href="/work#boonma" className="duo" aria-label="Boonma, a website we designed and built">
+            <span className="duo__screen">
+              <Image src={boonma.desktop} alt="" sizes="(min-width: 64rem) 900px, 90vw" placeholder="blur" />
+            </span>
+            <span className="app-phone duo__phone">
+              <Image src={boonma.mobile} alt="" sizes="(min-width: 64rem) 200px, 22vw" placeholder="blur" />
+            </span>
+          </Link>
         </div>
       </section>
 
-      {/* Web design */}
-      <section id="web-design" data-nav="/websites" className="section" aria-labelledby="web-title">
-        <div className="container container--wide split split--media-wide service-split">
-          <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
-            <p className="eyebrow eyebrow--num">Web design & development</p>
-            <h2 id="web-title" className="h2">
-              A website that brings <span className="serif-em">you customers.</span>
-            </h2>
-            <p className="lede">Bespoke websites built to turn visitors into enquiries and sales.</p>
-            <ul role="list" className="benefits">
-              {webBenefits.map((title) => (
-                <li key={title}>
-                  <strong>{title}</strong>
-                </li>
-              ))}
-            </ul>
-            <div className="btn-row">
-              <Link href="/contact?topic=website" className="btn btn--primary">
-                Start a Project
-                <ArrowRight />
-              </Link>
-              <Link href="#pricing" className="btn btn--secondary">
-                See prices
-              </Link>
-            </div>
+      <section id="booking" data-nav="/booking-software" className="tile inverse" aria-labelledby="booking-title">
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Booking software</p>
+          <h2 id="booking-title" className="tile__title">
+            Run the office. <span className="serif-em">Run the road.</span>
+          </h2>
+          <p className="tile__line">Operator and driver apps, proven at {evexec.name}.</p>
+          <div className="tile__ctas">
+            <Link href="/contact?topic=booking-software" className="btn btn--primary">
+              Request a demo
+            </Link>
+            <Link href="/booking-software" className="btn btn--secondary">
+              Take the tour
+            </Link>
           </div>
-          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-            <Tilt max={4}>
-              <Link href="/work#boonma" className="media-panel scroll-trigger" style={{ display: "block" }}>
-                <ScrollShot
-                  src={boonma.page}
-                  host={boonma.host}
-                  alt="The Boonma website, designed and built by FY Devs"
-                  sizes="(min-width: 64rem) 640px, 90vw"
-                />
-              </Link>
-            </Tilt>
-            <p className="media-caption">Boonma, a client website.</p>
-          </div>
+        </div>
+        <div className="container container--wide tile__visual trio">
+          {[
+            [opToday, "The operator app's Today screen"],
+            [opBookings, "The operator app's bookings list"],
+            [drJob, "The driver app on a job, with flight details and directions"],
+          ].map(([src, alt], i) => (
+            <span key={i} className="app-phone" data-reveal style={{ "--d": i + 1 } as React.CSSProperties}>
+              <Image
+                src={src as StaticImageData}
+                alt={alt as string}
+                sizes="(min-width: 64rem) 260px, 30vw"
+                placeholder="blur"
+              />
+            </span>
+          ))}
         </div>
       </section>
 
-      {/* SaaS */}
-      <section id="saas" data-nav="/bespoke-systems" className="section inverse" aria-labelledby="saas-title">
-        <div className="container container--wide split split--media-wide service-split">
-          <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties} data-reveal>
-            <p className="eyebrow eyebrow--num">SaaS & software development</p>
-            <h2 id="saas-title" className="h2">
-              Software that runs <span className="serif-em">your business.</span>
+      <div className="tiles-2">
+        <section id="saas" data-nav="/bespoke-systems" className="tile tile--card" aria-labelledby="saas-title">
+          <div data-reveal>
+            <p className="tile__name">SaaS &amp; bespoke</p>
+            <h2 id="saas-title" className="tile__title tile__title--sm">
+              Built around <span className="serif-em">how you work.</span>
             </h2>
-            <p className="lede">
-              Booking systems, customer portals and web apps, from a team that runs its own platform.
-            </p>
-            <ul role="list" className="benefits">
-              {saasBenefits.map((title) => (
-                <li key={title}>
-                  <strong>{title}</strong>
-                </li>
-              ))}
-            </ul>
-            <div className="btn-row">
+            <p className="tile__line">Platforms, portals and web apps.</p>
+            <div className="tile__ctas">
               <Link href="/contact?topic=bespoke" className="btn btn--primary">
                 Build My SaaS
-                <ArrowRight />
               </Link>
-              <Link href="/booking-software" className="btn btn--secondary">
-                Booking software demo
+              <Link href="/bespoke-systems" className="btn btn--secondary">
+                Learn more
               </Link>
             </div>
           </div>
-          <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-            <Tilt max={4}>
-              <Link href="/work#fystay" className="media-panel scroll-trigger" style={{ display: "block" }}>
-                <ScrollShot
-                  src={fystay.page}
-                  host={fystay.host}
-                  alt="FYStay, the holiday stays platform built and run by FY Devs"
-                  sizes="(min-width: 64rem) 640px, 90vw"
-                />
+          <Link href="/work#fystay" className="tile__shot" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+            <Image
+              src={fystay.desktop}
+              alt="FYStay, the holiday stays platform we built and run"
+              sizes="(min-width: 64rem) 560px, 90vw"
+              placeholder="blur"
+            />
+          </Link>
+        </section>
+
+        <section id="care" data-nav="/websites" className="tile tile--card tile--dark" aria-labelledby="care-title">
+          <div data-reveal>
+            <p className="tile__name">Hosting &amp; care</p>
+            <h2 id="care-title" className="tile__title tile__title--sm">
+              Looked after, <span className="serif-em">every month.</span>
+            </h2>
+            <p className="tile__line">Hosting, backups and updates, handled.</p>
+            <div className="tile__ctas">
+              <Link href="/websites#care" className="btn btn--primary">
+                See plans
               </Link>
-            </Tilt>
-            <p className="media-caption">FYStay, our own platform.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" data-nav="/websites" className="section section--ruled" aria-labelledby="pricing-title">
-        <div className="container container--wide">
-          <div className="section-head section-head--split" data-reveal>
-            <div className="stack">
-              <p className="eyebrow">Pricing</p>
-              <h2 id="pricing-title" className="h2">
-                Clear <span className="serif-em">starting prices.</span>
-              </h2>
             </div>
-            <p className="muted">
-              Starting points for bespoke work, confirmed in writing before you commit.{" "}
-              <Link href="/websites#packages">Everything included</Link>.
-            </p>
           </div>
-        </div>
+          <p className="tile__figure" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+            <span>From</span> {formatGBP(CARE_PLANS.hosting.monthly)}
+            <span>/month</span>
+          </p>
+        </section>
+      </div>
 
-        <div data-reveal>
-          <PlanSwiper plans={plans} initial="professional" label="Starting prices" />
-        </div>
-
-        <div className="container container--wide">
-          <div className="estimate-prompt" data-reveal>
-            <p>
-              <strong>What would yours cost?</strong> Answer a few quick questions for an instant estimate.
-            </p>
+      {/* The price promise: the quickest route to a real number. */}
+      <section id="pricing" data-nav="/websites" className="price-strip" aria-labelledby="pricing-title">
+        <div className="container container--wide" data-reveal>
+          <h2 id="pricing-title" className="tile__title">
+            Your price, <span className="serif-em">before you commit.</span>
+          </h2>
+          <p className="tile__line">An instant estimate in two minutes.</p>
+          <div className="tile__ctas">
             <Link href="/build" className="btn btn--primary">
               Get my estimate
               <ArrowRight />
             </Link>
           </div>
-          <div className="mt-6">
+          <div className="price-strip__notice">
             <PricingNotice />
           </div>
-
-          {/* Ongoing services */}
-          <div id="ongoing" className="ongoing" data-reveal>
-            <div className="ongoing__intro">
-              <h3 className="h3">After launch: hosting and care</h3>
-              <p className="muted small">Optional monthly plans, priced separately from your build.</p>
-            </div>
-          </div>
-        </div>
-
-        <div data-reveal>
-          <PlanSwiper
-            plans={carePlanCards.map((plan) => ({ ...plan, includes: plan.includes?.slice(0, careHighlights) }))}
-            initial="care"
-            label="Hosting and care plans"
-          />
         </div>
       </section>
 
-      {/* Process */}
-      <section id="process" data-nav="/about" className="section" aria-labelledby="process-title">
+      <section id="process" data-nav="/about" className="tile" aria-labelledby="process-title">
+        <div className="container container--wide" data-reveal>
+          <h2 id="process-title" className="tile__title tile__title--sm">
+            Four steps. <span className="serif-em">No surprises.</span>
+          </h2>
+          <p className="tile__line">Nothing to pay until you approve the scope.</p>
+        </div>
         <div className="container container--wide">
-          <div className="section-head section-head--split" data-reveal>
-            <div className="stack">
-              <p className="eyebrow">Process</p>
-              <h2 id="process-title" className="h2">
-                From first message <span className="serif-em">to launch.</span>
-              </h2>
-            </div>
-            <p className="muted">Nothing to pay until you&apos;ve approved a written scope and price.</p>
-          </div>
-          <ol role="list" className="steps" aria-label="Our process, step by step" tabIndex={0}>
-            {process.map(([title, body], i) => (
+          <ol role="list" className="four-steps">
+            {steps.map(([title, body], i) => (
               <li key={title} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                <span>{String(i + 1).padStart(2, "0")}</span>
                 <h3>{title}</h3>
                 <p>{body}</p>
               </li>
             ))}
           </ol>
         </div>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" data-nav="/about" className="section section--ruled" aria-labelledby="faq-title">
-        <div className="container container--wide faq-layout">
-          <div className="section-head" data-reveal>
-            <p className="eyebrow">FAQ</p>
-            <h2 id="faq-title" className="h2">
-              Questions, <span className="serif-em">answered.</span>
-            </h2>
-            <p className="muted">
-              Anything else? <Link href="/contact?topic=other">Ask us directly</Link>.
-            </p>
-          </div>
-          <div data-reveal>
-            <Faq />
-          </div>
-        </div>
+        <p className="container container--wide four-steps__more">
+          <Link href="/faq" className="arrow-link">
+            Questions? <ArrowRight />
+          </Link>
+        </p>
       </section>
 
       <CtaBand
         title={
           <>
-            Ready to <span className="serif-em">start?</span>
+            Your business <span className="serif-em">could be next.</span>
           </>
         }
-        body="Tell us your goals, budget and timeline. We'll reply with honest advice and a clear next step."
+        body="Tell us what you need. Honest advice and a clear next step."
       >
         <Link href="/contact?topic=website" className="btn btn--primary">
           Start a Project

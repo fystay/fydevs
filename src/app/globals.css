@@ -5220,3 +5220,280 @@ main .proof__list {
 :root:has(.svc[data-current="booking"]) .inverse :is(.h1, .h2) .serif-em {
   color: #7fb3b8;
 }
+
+/* ==========================================================================
+   Homepage tiles: one product per screen, a few words, two buttons, a big
+   visual. (Layout borrowed from the best product sites; the look is ours.)
+   ========================================================================== */
+
+.family-line {
+  padding-block: var(--space-6) 0;
+  text-align: center;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  color: var(--color-ink-2);
+}
+
+.family-line em {
+  color: var(--color-accent);
+}
+
+.tile {
+  overflow: hidden;
+  padding-block: clamp(4.5rem, 3rem + 6vw, 8rem) 0;
+  text-align: center;
+}
+
+.tile__name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.inverse .tile__name,
+.tile--dark .tile__name {
+  color: var(--color-inverse-ink-2);
+}
+
+.tile__title {
+  max-width: 16ch;
+  margin: var(--space-3) auto 0;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(2.5rem, 1.5rem + 4.6vw, 5rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.tile__title--sm {
+  font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
+}
+
+.tile__title .serif-em {
+  font-family: inherit;
+  font-weight: 400;
+  color: var(--home-orange);
+}
+
+.tile--dark .tile__title .serif-em {
+  color: var(--home-orange);
+}
+
+.tile__line {
+  max-width: 34rem;
+  margin: var(--space-4) auto 0;
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  color: var(--color-ink-2);
+}
+
+.inverse .tile__line,
+.tile--dark .tile__line {
+  color: var(--color-inverse-ink-2);
+}
+
+.tile__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.tile__visual {
+  margin-top: clamp(3rem, 2rem + 4vw, 5rem);
+}
+
+/* Images settle into place as they arrive. */
+@media (prefers-reduced-motion: no-preference) {
+  .tile [data-reveal] img {
+    transform: scale(0.96);
+    transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tile [data-reveal].is-in img,
+  .tile [data-reveal]:not(.js-reveal *) img {
+    transform: none;
+  }
+}
+
+/* Websites: the site on a screen with its phone version in front. */
+.duo {
+  position: relative;
+  display: block;
+  max-width: 60rem;
+  margin-inline: auto;
+  padding-right: 9%;
+  padding-bottom: 6%;
+}
+
+.duo__screen {
+  display: block;
+  overflow: hidden;
+  padding: clamp(0.35rem, 0.2rem + 0.6vw, 0.7rem);
+  border-radius: clamp(0.8rem, 0.5rem + 1vw, 1.4rem);
+  background: linear-gradient(#232325, #121213);
+  box-shadow: 0 40px 80px -40px rgb(32 33 36 / 0.45);
+}
+
+.duo__screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: clamp(0.45rem, 0.3rem + 0.5vw, 0.8rem);
+}
+
+.duo .duo__phone {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(0.2rem, 0.1rem + 0.4vw, 0.45rem);
+  border-radius: clamp(1rem, 0.6rem + 1.6vw, 2.4rem);
+}
+
+.duo .duo__phone img {
+  border-radius: clamp(0.8rem, 0.5rem + 1.3vw, 2rem);
+}
+
+/* Booking software: three app screens, the middle one raised. */
+.trio {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(0.6rem, 0.2rem + 2vw, 2rem);
+  padding-bottom: clamp(3rem, 2rem + 4vw, 5rem);
+}
+
+.trio .app-phone {
+  display: block;
+  width: min(30%, 16rem);
+  margin: 0;
+  padding: clamp(0.2rem, 0.1rem + 0.4vw, 0.45rem);
+  border-radius: clamp(1.1rem, 0.6rem + 2vw, 2.4rem);
+}
+
+.trio .app-phone img {
+  border-radius: clamp(0.9rem, 0.5rem + 1.6vw, 2rem);
+}
+
+.trio .app-phone:nth-child(2) {
+  margin-bottom: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+}
+
+/* Two smaller tiles side by side on wider screens. */
+.tiles-2 {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+@media (min-width: 56rem) {
+  .tiles-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tile--card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-7);
+  padding: clamp(3rem, 2rem + 3vw, 4.5rem) clamp(1.25rem, 0.5rem + 3vw, 3rem) 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+}
+
+.tile--dark {
+  background: var(--color-inverse-bg);
+  color: var(--color-inverse-ink);
+}
+
+.tile__shot {
+  display: block;
+  overflow: hidden;
+  max-width: 34rem;
+  margin-inline: auto;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: 0 30px 60px -30px rgb(32 33 36 / 0.4);
+}
+
+.tile__shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tile__figure {
+  padding-bottom: clamp(3rem, 2rem + 3vw, 4.5rem);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(4.5rem, 3rem + 7vw, 8rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.tile__figure span {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-inverse-ink-2);
+}
+
+/* The price promise. */
+.price-strip {
+  padding-block: clamp(4.5rem, 3rem + 6vw, 8rem);
+  text-align: center;
+}
+
+.price-strip__notice {
+  max-width: 40rem;
+  margin: var(--space-7) auto 0;
+  text-align: left;
+}
+
+/* Four steps in a row. */
+.four-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-5);
+  margin-top: var(--space-8);
+  text-align: left;
+}
+
+@media (min-width: 56rem) {
+  .four-steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.four-steps li {
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--home-orange);
+}
+
+.four-steps span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-3);
+}
+
+.four-steps h3 {
+  margin-top: var(--space-2);
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 500;
+}
+
+.four-steps p {
+  margin-top: var(--space-1);
+  color: var(--color-ink-2);
+  font-size: var(--text-sm);
+}
+
+.four-steps__more {
+  padding-block: var(--space-8) clamp(4.5rem, 3rem + 6vw, 8rem);
+}
