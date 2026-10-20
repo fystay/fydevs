@@ -6,7 +6,9 @@ import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight } from "@/components/Icons";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
-import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
+import { PlanSwiper, type PlanCard } from "@/components/interactive/PlanSwiper";
+import { carePlanCards } from "@/lib/plans";
+import { CARE_PLANS, PACKAGES, formatGBP, type PackageId } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import workspace from "../../public/hero/fydevs-workspace.webp";
@@ -28,6 +30,47 @@ const LAPTOP_SCREEN: ScreenQuad = [
 const evexec = projectBySlug("ev-exec")!;
 const boonma = projectBySlug("boonma")!;
 const fystay = projectBySlug("fystay")!;
+
+/*
+ * The homepage shows the points that tell the plans apart, taken word for word from each
+ * plan's full list; every inclusion is on /websites.
+ */
+const packageHighlights: Record<PackageId, string[]> = {
+  essential: ["Up to 5 pages", "Enquiry form", "Two rounds of design revisions"],
+  professional: ["Up to 12 pages", "Content management", "Three rounds of design revisions"],
+  premium: ["Up to 25 pages", "Extensive custom design and interaction", "Launch and 60 days of handover support"],
+};
+const packageOrder: PackageId[] = ["essential", "professional", "premium"];
+const packagePages: Record<PackageId, string> = { essential: "1-5", professional: "6-12", premium: "13-25" };
+
+const plans: PlanCard[] = [
+  ...packageOrder.map(
+    (id): PlanCard => ({
+      id,
+      name: PACKAGES[id].name,
+      summary: PACKAGES[id].summary,
+      price: formatGBP(PACKAGES[id].from),
+      from: true,
+      includes: PACKAGES[id].includes.filter((item) => packageHighlights[id].includes(item)),
+      href: `/build?pages=${packagePages[id]}`,
+      cta: "Start a Project",
+    }),
+  ),
+  {
+    id: "saas",
+    name: "SaaS & bespoke software",
+    summary: "Booking systems, customer portals and web applications.",
+    price: "Custom quote",
+    includes: [
+      "Discovery call and written scope",
+      "Fixed price and payment schedule",
+      "Working software delivered in agreed stages",
+    ],
+    href: "/contact?topic=bespoke",
+    cta: "Build My SaaS",
+    variant: "inverse",
+  },
+];
 
 // Four steps, a few words each: the detail lives on the service pages.
 const steps = [
@@ -217,6 +260,33 @@ export default function HomePage() {
           </p>
         </section>
       </div>
+
+      {/* Starting prices and care plans, side by side for comparison. */}
+      <section id="plans" data-nav="/websites" className="tile" aria-labelledby="plans-title">
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Pricing</p>
+          <h2 id="plans-title" className="tile__title tile__title--sm">
+            Clear <span className="serif-em">starting prices.</span>
+          </h2>
+          <p className="tile__line">
+            Confirmed in writing before you commit. <Link href="/websites#packages">Everything included</Link>.
+          </p>
+        </div>
+        <div className="tile__visual tile__plans" data-reveal>
+          <PlanSwiper plans={plans} initial="professional" label="Starting prices" />
+        </div>
+        <div className="container container--wide tile__subhead" data-reveal>
+          <h3 className="h3">After launch: hosting and care</h3>
+          <p className="tile__line">Optional monthly plans, priced separately from your build.</p>
+        </div>
+        <div className="tile__plans" data-reveal>
+          <PlanSwiper
+            plans={carePlanCards.map((plan) => ({ ...plan, includes: plan.includes?.slice(0, 3) }))}
+            initial="care"
+            label="Hosting and care plans"
+          />
+        </div>
+      </section>
 
       {/* The price promise: the quickest route to a real number. */}
       <section id="pricing" data-nav="/websites" className="price-strip" aria-labelledby="pricing-title">

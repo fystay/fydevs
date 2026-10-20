@@ -5497,3 +5497,18 @@ main .proof__list {
 .four-steps__more {
   padding-block: var(--space-8) clamp(4.5rem, 3rem + 6vw, 8rem);
 }
+
+/* Pricing cards inside a tile stay left-aligned like everywhere else. */
+.tile__plans {
+  text-align: left;
+}
+
+.tile__subhead {
+  margin-top: var(--space-8);
+}
+
+.tile__subhead .h3 {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 500;
+}
