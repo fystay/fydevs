@@ -6438,28 +6438,33 @@ main .proof__list {
   color: #7fb3b8;
 }
 
-/* Booking software's hero: laid out like the other service pages' heroes (switcher in
-   the same place, so it stays put when switching services, copy on the left), with the
-   booking replay centred below. Doubled class to win over .tile, defined later. */
+/* Booking software's hero: the Make it yours configurator on the first screen. Laid out
+   like the other service heroes (switcher in the same place, so it stays put when
+   switching services, heading on the left), with a compact heading so as much of the
+   configurator as possible shows straight away. Doubled class to win over .tile. */
 .booking-hero.tile {
-  padding-block: var(--svc-top) clamp(3rem, 2rem + 4vw, 5rem);
+  padding-top: var(--svc-top);
   background: linear-gradient(to bottom, #e3eae8, var(--color-bg) 40rem);
   text-align: left;
 }
 
-.booking-hero :is(.tile__title, .tile__line) {
+.booking-hero__title.tile__title {
+  max-width: none;
   margin-inline: 0;
+  font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
 }
 
-.booking-hero .tile__ctas {
-  justify-content: flex-start;
+.booking-hero .booking-studio {
+  margin-top: clamp(1.25rem, 0.75rem + 2vw, 3rem);
 }
 
-.booking-hero .tile__visual {
-  text-align: center;
+@media (max-width: 55.99rem) {
+  .booking-hero .studio {
+    row-gap: var(--space-4);
+  }
 }
 
-.booking-hero__caption {
+.booking-caption {
   margin-top: var(--space-5);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
