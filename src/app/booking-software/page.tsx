@@ -1,9 +1,8 @@
 import { Archivo, Jost } from "next/font/google";
 import Link from "next/link";
-import { CtaBand, SectionHead } from "@/components/Blocks";
+import { CtaBand } from "@/components/Blocks";
 import { ArrowRight } from "@/components/Icons";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
-import { AppTour } from "@/components/interactive/AppTour";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { BookingStudio } from "@/components/interactive/BookingStudio";
 import { PhoneFan } from "@/components/interactive/PhoneFan";
@@ -22,88 +21,73 @@ export const metadata = pageMetadata(
 
 const evexec = projectBySlug("ev-exec")!;
 
-/* Shown, not described: the replay, the configurator and the real app screens do the selling. */
+/*
+ * Shown, not described, in the order a booking happens: the customer books (the hero
+ * replay), the office and drivers take it from there (the real apps), then the visitor
+ * makes it their own.
+ */
 export default function BookingSoftwarePage() {
   return (
     <>
-      {/* The hero: the office and driver apps on a fan of phones you can swipe round. */}
-      <section className="tile inverse booking-hero" aria-labelledby="hero-title">
+      <section className={`tile booking-hero ${jost.variable}`} aria-labelledby="hero-title">
         <div className="container container--wide">
           <ServiceSwitcher current="booking" />
           <h1 id="hero-title" className="tile__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-            Run the office. <span className="serif-em">Run the road.</span>
+            Booked in a minute. <span className="serif-em">In your app in a second.</span>
           </h1>
           <p className="tile__line rise" style={{ "--i": 2 } as React.CSSProperties}>
-            Operator and driver apps, proven at {evexec.name}.
+            Booking apps for any business, proven at {evexec.name}.
           </p>
           <div className="tile__ctas rise" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href="/contact?topic=booking-software" className="btn btn--primary">
               Request a demo
+              <ArrowRight />
             </Link>
-            <Link href="#flow" className="btn btn--secondary">
-              See it work
+            <Link href="#make-it-yours" className="btn btn--secondary">
+              Make it yours
             </Link>
           </div>
         </div>
         <div className="container container--wide tile__visual rise" style={{ "--i": 4 } as React.CSSProperties}>
-          <PhoneFan />
+          <BookingDemo />
+          <p className="booking-hero__caption">
+            Built for {evexec.name} · Example details · <Link href="/work#ev-exec">See the project</Link>
+          </p>
         </div>
       </section>
 
-      {/* The whole journey, played out: the customer books, the office is pinged. */}
-      <section id="flow" className={`section booking-flow ${jost.variable}`} aria-labelledby="flow-title">
-        <div className="container container--wide">
-          <SectionHead
-            eyebrow="The customer side"
-            title={
-              <span id="flow-title">
-                Booked in a minute. <span className="serif-em">In your app in a second.</span>
-              </span>
-            }
-          />
-          <BookingDemo />
-          <p className="media-caption booking-flow__caption">
-            Built by FY Devs for {evexec.name} · Example details · <Link href="/work#ev-exec">See the project</Link>
-          </p>
+      {/* Where the booking lands: the office's app and the drivers', swipeable. */}
+      <section id="apps" className="tile inverse" aria-labelledby="apps-title">
+        <div className="container container--wide" data-reveal>
+          <h2 id="apps-title" className="tile__title">
+            Run the office. <span className="serif-em">Run the road.</span>
+          </h2>
+          <p className="tile__line">Operator and driver apps. Real screens, example details.</p>
+        </div>
+        <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+          <PhoneFan />
         </div>
       </section>
 
       {/* Not just airports: the visitor restyles the app for their own business. */}
       <section
         id="make-it-yours"
-        className={`section section--ruled ${jost.variable} ${archivo.variable}`}
+        className={`tile ${jost.variable} ${archivo.variable}`}
         aria-labelledby="studio-title"
       >
-        <div className="container container--wide">
-          <SectionHead
-            eyebrow="Make it yours"
-            title={
-              <span id="studio-title">
-                Your business. <span className="serif-em">Your booking app.</span>
-              </span>
-            }
-          />
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">Make it yours</p>
+          <h2 id="studio-title" className="tile__title">
+            Your business. <span className="serif-em">Your booking app.</span>
+          </h2>
+        </div>
+        <div className="container container--wide booking-studio">
           <BookingStudio />
           <p className="studio__more">
             <Link href="/app-development" className="arrow-link">
               Something different in mind? App development <ArrowRight />
             </Link>
           </p>
-        </div>
-      </section>
-
-      {/* The real system: swipe from the office's app to the drivers'. */}
-      <section className="section inverse" aria-labelledby="tour-title">
-        <div className="container container--wide">
-          <SectionHead
-            eyebrow="Inside the apps"
-            title={
-              <span id="tour-title">
-                Built inside a real operation, <span className="serif-em">used every day.</span>
-              </span>
-            }
-          />
-          <AppTour />
         </div>
       </section>
 

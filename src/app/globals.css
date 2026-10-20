@@ -5159,95 +5159,6 @@ main .proof__list {
    App tour (components/interactive/AppTour): the booking software's screens
    ========================================================================== */
 
-/* The switch's light thumb slides with the strip as it is swiped (--p runs 0 to 1). */
-.app-tour__switch {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: 1fr 1fr;
-  margin-bottom: var(--space-7);
-  padding: 0.3rem;
-  border: 1px solid var(--color-inverse-line);
-  border-radius: var(--radius-pill);
-}
-
-.app-tour__switch::before {
-  content: "";
-  position: absolute;
-  inset: 0.3rem auto 0.3rem 0.3rem;
-  width: calc(50% - 0.3rem);
-  border-radius: var(--radius-pill);
-  background: var(--color-inverse-ink);
-  translate: calc(var(--p, 0) * 100%) 0;
-}
-
-.app-tour__switch button {
-  position: relative;
-  min-height: 2.75rem;
-  padding: 0.5rem 1.2rem;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-inverse-ink-2);
-  font: inherit;
-  font-weight: 550;
-  cursor: pointer;
-  transition: color var(--duration) var(--ease);
-}
-
-.app-tour__switch button[aria-pressed="true"] {
-  color: var(--color-inverse-bg);
-}
-
-/* One strip of six phones: operator first, then driver. Phones snap screen by screen;
-   wider screens show one app's three screens at a time and snap app by app. */
-.app-tour__screens {
-  position: relative;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min(72%, 17rem);
-  gap: var(--space-6);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-  padding-bottom: var(--space-2);
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.app-tour__screens[data-dragging] {
-  scroll-snap-type: none;
-  cursor: grabbing;
-}
-
-.app-tour__screens::-webkit-scrollbar {
-  display: none;
-}
-
-.app-tour__screens li {
-  scroll-snap-align: start;
-}
-
-@media (min-width: 48rem) {
-  .app-tour__screens {
-    grid-auto-columns: calc((100% - 2 * var(--space-6)) / 3);
-  }
-  .app-tour__screens li {
-    scroll-snap-align: none;
-  }
-  .app-tour__screens li.app-tour__first {
-    scroll-snap-align: start;
-  }
-}
-
-.app-tour__app {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .app-phone {
   max-width: 17rem;
   margin: 0 auto var(--space-5);
@@ -5266,38 +5177,12 @@ main .proof__list {
   border-radius: 2rem;
 }
 
-.app-tour__screens h3 {
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: 1.375rem;
-  font-weight: 500;
-}
-
-.app-tour__screens p {
-  margin-top: var(--space-1);
-  color: var(--color-inverse-ink-2);
-  font-size: var(--text-sm);
-}
-
-.app-tour__note {
-  margin-top: var(--space-6);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-inverse-ink-2);
-}
-
 /* ==========================================================================
    Booking replay (components/interactive/BookingDemo): EV Exec's booking flow on a
    customer's phone, ending as a notification in the operator app beside it.
    Everything inside a screen is sized in em, from a font size tied to the screen's
    width, so the phones scale as one picture.
    ========================================================================== */
-
-.booking-flow__caption {
-  margin-top: var(--space-6);
-  text-align: center;
-}
 
 .bd {
   display: grid;
@@ -6533,31 +6418,31 @@ main .proof__list {
   color: #7fb3b8;
 }
 
-/* Booking software's hero: a dark tile, the service switcher at the same height as on
-   the other service pages, centred over the title. */
+/* Booking software's hero: the booking replay under a centred headline, the service
+   switcher at the same height as on the other service pages. */
 .booking-hero {
-  padding-top: var(--svc-top);
+  padding-block: var(--svc-top) clamp(3rem, 2rem + 4vw, 5rem);
+  background: linear-gradient(to bottom, #e3eae8, var(--color-bg) 40rem);
 }
 
 .booking-hero .svc__list {
   justify-content: center;
 }
 
-.inverse .svc__link {
-  color: var(--color-inverse-ink-2);
+.booking-hero__caption {
+  margin-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
 }
 
-.inverse .svc__link:hover,
-.inverse .svc__link[aria-current="page"] {
-  color: var(--color-inverse-ink);
-}
-
-.inverse .svc[data-current="booking"] {
-  --svc-accent: #7fb3b8;
-}
-
-.inverse .svc__item:not(:last-child)::after {
-  color: var(--color-inverse-line);
+/* The configurator sits in a centred tile but reads left to right. */
+.booking-studio {
+  margin-top: clamp(3rem, 2rem + 4vw, 5rem);
+  padding-bottom: clamp(4.5rem, 3rem + 6vw, 8rem);
+  text-align: left;
 }
 
 /* ==========================================================================
