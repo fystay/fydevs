@@ -1,11 +1,16 @@
-import Image from "next/image";
+import { Archivo, Jost } from "next/font/google";
 import Link from "next/link";
 import { CtaBand, PageHero, SectionHead } from "@/components/Blocks";
 import { ArrowRight } from "@/components/Icons";
 import { AppTour } from "@/components/interactive/AppTour";
+import { BookingDemo } from "@/components/interactive/BookingDemo";
+import { BookingStudio } from "@/components/interactive/BookingStudio";
 import { pageMetadata } from "@/lib/metadata";
 import { projectBySlug } from "@/lib/projects";
-import evexecBooking from "../../../public/work/evexec-booking.webp";
+
+// The typefaces of the booking flows shown on this page: EV Exec's, and Alex K Bells' for the bold look.
+const jost = Jost({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-jost", display: "swap" });
+const archivo = Archivo({ subsets: ["latin"], weight: ["600", "800"], variable: "--font-archivo", display: "swap" });
 
 export const metadata = pageMetadata(
   "/booking-software",
@@ -65,37 +70,41 @@ export default function BookingSoftwarePage() {
         </div>
       </section>
 
-      <section className="section">
+      {/* The whole journey, played out: the customer books, the office is pinged. */}
+      <section className={`section booking-flow ${jost.variable}`} aria-labelledby="flow-title">
         <div className="container container--wide">
-          <div className="split">
-            <figure>
-              <div className="media-panel" style={{ background: "#0c1220" }}>
-                <Image
-                  src={evexecBooking}
-                  alt="EV Exec's online booking, step 1 of 3: choose to or from the airport, and one way or return"
-                  sizes="(min-width: 64rem) 520px, 90vw"
-                  placeholder="blur"
-                  style={{ width: "100%", height: "auto", borderRadius: "var(--radius-md)" }}
-                />
-              </div>
-              <figcaption className="media-caption">
-                {evexec.name}&apos;s customer booking flow on evexec.co.uk, designed and built by FY Devs.
-              </figcaption>
-            </figure>
-            <div className="stack" style={{ "--stack": "var(--space-5)" } as React.CSSProperties}>
-              <p className="eyebrow eyebrow--num">The customer side</p>
-              <h2 className="h2">Need a booking website too?</h2>
-              <p className="muted">
-                We also design the websites customers book through. {evexec.name}&apos;s takes bookings in three steps,
-                with flight numbers, extra stops and returns, and gives customers an account to manage them.
-              </p>
-              <p>
-                <Link href="/work#ev-exec" className="arrow-link">
-                  See the {evexec.name} project <ArrowRight />
-                </Link>
-              </p>
-            </div>
-          </div>
+          <SectionHead
+            eyebrow="The customer side"
+            title={
+              <span id="flow-title">
+                Booked in a minute. <span className="serif-em">In your app in a second.</span>
+              </span>
+            }
+          />
+          <BookingDemo />
+          <p className="media-caption booking-flow__caption">
+            {evexec.name}&apos;s booking website and operator app, both built by FY Devs. Customer details are examples.{" "}
+            <Link href="/work#ev-exec">See the project</Link>
+          </p>
+        </div>
+      </section>
+
+      {/* Not just airports: the visitor restyles the app for their own business. */}
+      <section
+        id="make-it-yours"
+        className={`section section--ruled ${jost.variable} ${archivo.variable}`}
+        aria-labelledby="studio-title"
+      >
+        <div className="container container--wide">
+          <SectionHead
+            eyebrow="Make it yours"
+            title={
+              <span id="studio-title">
+                Your business. <span className="serif-em">Your booking app.</span>
+              </span>
+            }
+          />
+          <BookingStudio />
         </div>
       </section>
 

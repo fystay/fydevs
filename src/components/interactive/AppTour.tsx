@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import drCalendar from "../../../public/work/app/dr-calendar.webp";
 import drJob from "../../../public/work/app/dr-job.webp";
 import drJobs from "../../../public/work/app/dr-jobs.webp";
@@ -61,30 +61,102 @@ export const APPS: Record<"operator" | "driver", { label: string; screens: Scree
   },
 };
 
-/** A tour of the operator and driver apps: pick an app, see its key screens on phones. */
+const KEYS = Object.keys(APPS) as (keyof typeof APPS)[];
+
+/**
+ * A tour of the operator and driver apps on one strip of phones: swipe (or drag) from the
+ * operator's screens across to the driver's. The switch above follows along, and tapping
+ * it jumps straight to that app.
+ */
 export function AppTour() {
-  const [app, setApp] = useState<keyof typeof APPS>("operator");
+  const track = useRef<HTMLUListElement>(null);
+  const [progress, setProgress] = useState(0);
+  const app = progress < 0.5 ? KEYS[0] : KEYS[1];
+
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    // 0 on the operator's first screen, 1 once the driver's first screen is reached.
+    const onScroll = () => {
+      const driver = el.querySelector<HTMLElement>(`[data-app="${KEYS[1]}"]`);
+      const end = Math.min(driver?.offsetLeft ?? 0, el.scrollWidth - el.clientWidth);
+      setProgress(end > 0 ? Math.min(1, el.scrollLeft / end) : 0);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const show = (key: keyof typeof APPS) => {
+    const el = track.current;
+    const first = el?.querySelector<HTMLElement>(`[data-app="${key}"]`);
+    // The strip is positioned, so offsetLeft is measured from its start.
+    if (el && first) el.scrollTo({ left: key === KEYS[0] ? 0 : first.offsetLeft, behavior: "smooth" });
+  };
+
+  // A mouse can drag the strip too; touch and trackpads scroll it natively.
+  const drag = useRef<{ x: number; left: number } | null>(null);
+
   return (
     <div className="app-tour">
-      <div className="app-tour__switch" role="group" aria-label="Choose an app">
-        {(Object.keys(APPS) as (keyof typeof APPS)[]).map((key) => (
-          <button key={key} type="button" aria-pressed={app === key} onClick={() => setApp(key)}>
+      <div
+        className="app-tour__switch"
+        role="group"
+        aria-label="Choose an app"
+        style={{ "--p": progress } as React.CSSProperties}
+      >
+        {KEYS.map((key) => (
+          <button key={key} type="button" aria-pressed={app === key} onClick={() => show(key)}>
             {APPS[key].label}
           </button>
         ))}
       </div>
-      <ul role="list" className="app-tour__screens" key={app} tabIndex={0} aria-label={`${APPS[app].label} screens`}>
-        {APPS[app].screens.map((s, i) => (
-          <li key={s.title} style={{ "--i": i } as React.CSSProperties}>
-            <figure className="app-phone">
-              <Image src={s.src} alt={s.alt} sizes="(min-width: 64rem) 300px, 70vw" placeholder="blur" />
-            </figure>
-            <h3>{s.title}</h3>
-            <p>{s.caption}</p>
-          </li>
-        ))}
+      <ul
+        ref={track}
+        role="list"
+        className="app-tour__screens"
+        tabIndex={0}
+        aria-label="Operator and driver app screens"
+        onPointerDown={(e) => {
+          if (e.pointerType !== "mouse" || !track.current) return;
+          drag.current = { x: e.clientX, left: track.current.scrollLeft };
+          track.current.dataset.dragging = "true";
+          track.current.setPointerCapture(e.pointerId);
+        }}
+        onPointerMove={(e) => {
+          if (drag.current && track.current)
+            track.current.scrollLeft = drag.current.left - (e.clientX - drag.current.x);
+        }}
+        onPointerUp={() => {
+          const el = track.current;
+          if (!drag.current || !el) return;
+          const moved = el.scrollLeft - drag.current.left;
+          drag.current = null;
+          delete el.dataset.dragging;
+          // Settle on the app the drag was heading towards.
+          if (Math.abs(moved) > 40) show(moved > 0 ? KEYS[1] : KEYS[0]);
+          else show(app);
+        }}
+      >
+        {KEYS.flatMap((key) =>
+          APPS[key].screens.map((s, i) => (
+            <li key={s.title} data-app={i === 0 ? key : undefined} className={i === 0 ? "app-tour__first" : undefined}>
+              <figure className="app-phone">
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  sizes="(min-width: 64rem) 300px, 70vw"
+                  placeholder="blur"
+                  draggable={false}
+                />
+              </figure>
+              <p className="app-tour__app">{APPS[key].label}</p>
+              <h3>{s.title}</h3>
+              <p>{s.caption}</p>
+            </li>
+          )),
+        )}
       </ul>
-      <p className="app-tour__note">Screens from the live system. Customer and driver details are examples.</p>
+      <p className="app-tour__note">Swipe for the driver app · Screens from the live system, details are examples</p>
     </div>
   );
 }

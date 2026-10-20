@@ -5123,16 +5123,29 @@ main .proof__list {
    App tour (components/interactive/AppTour): the booking software's screens
    ========================================================================== */
 
+/* The switch's light thumb slides with the strip as it is swiped (--p runs 0 to 1). */
 .app-tour__switch {
-  display: inline-flex;
-  gap: 0.25rem;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
   margin-bottom: var(--space-7);
   padding: 0.3rem;
   border: 1px solid var(--color-inverse-line);
   border-radius: var(--radius-pill);
 }
 
+.app-tour__switch::before {
+  content: "";
+  position: absolute;
+  inset: 0.3rem auto 0.3rem 0.3rem;
+  width: calc(50% - 0.3rem);
+  border-radius: var(--radius-pill);
+  background: var(--color-inverse-ink);
+  translate: calc(var(--p, 0) * 100%) 0;
+}
+
 .app-tour__switch button {
+  position: relative;
   min-height: 2.75rem;
   padding: 0.5rem 1.2rem;
   border: 0;
@@ -5142,56 +5155,61 @@ main .proof__list {
   font: inherit;
   font-weight: 550;
   cursor: pointer;
-  transition:
-    background-color var(--duration) var(--ease),
-    color var(--duration) var(--ease);
+  transition: color var(--duration) var(--ease);
 }
 
 .app-tour__switch button[aria-pressed="true"] {
-  background: var(--color-inverse-ink);
   color: var(--color-inverse-bg);
 }
 
-/* Phones swipe sideways; from tablets up the three screens sit side by side. */
+/* One strip of six phones: operator first, then driver. Phones snap screen by screen;
+   wider screens show one app's three screens at a time and snap app by app. */
 .app-tour__screens {
+  position: relative;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: min(72%, 17rem);
   gap: var(--space-6);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   padding-bottom: var(--space-2);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-tour__screens[data-dragging] {
+  scroll-snap-type: none;
+  cursor: grabbing;
 }
 
 .app-tour__screens::-webkit-scrollbar {
   display: none;
 }
 
-@media (min-width: 48rem) {
-  .app-tour__screens {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    overflow: visible;
-  }
-}
-
 .app-tour__screens li {
   scroll-snap-align: start;
 }
 
-@media (prefers-reduced-motion: no-preference) {
+@media (min-width: 48rem) {
+  .app-tour__screens {
+    grid-auto-columns: calc((100% - 2 * var(--space-6)) / 3);
+  }
   .app-tour__screens li {
-    animation: tour-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--i) * 90ms);
+    scroll-snap-align: none;
+  }
+  .app-tour__screens li.app-tour__first {
+    scroll-snap-align: start;
   }
 }
 
-@keyframes tour-in {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
+.app-tour__app {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .app-phone {
@@ -5231,6 +5249,1139 @@ main .proof__list {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-inverse-ink-2);
+}
+
+/* ==========================================================================
+   Booking replay (components/interactive/BookingDemo): EV Exec's booking flow on a
+   customer's phone, ending as a notification in the operator app beside it.
+   Everything inside a screen is sized in em, from a font size tied to the screen's
+   width, so the phones scale as one picture.
+   ========================================================================== */
+
+.booking-flow__caption {
+  margin-top: var(--space-6);
+  text-align: center;
+}
+
+.bd {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+}
+
+.bd__phones {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  transition: opacity 500ms var(--ease);
+}
+
+.bd__phones[data-fading="true"] {
+  opacity: 0;
+}
+
+.bd__phone {
+  flex: none;
+  margin: 0;
+}
+
+.bd__phone--customer {
+  z-index: 1;
+  width: min(62%, 19rem);
+  max-width: none;
+}
+
+.bd__phone--ops {
+  width: min(44%, 14.5rem);
+  max-width: none;
+  margin-left: -6%;
+  margin-bottom: 2.5rem;
+  rotate: 3deg;
+}
+
+.bd__screen {
+  position: relative;
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+  border-radius: 2rem;
+  container-type: inline-size;
+  background: #020813;
+}
+
+.bd__phone--ops .bd__screen {
+  border-radius: 1.6rem;
+}
+
+.bd__phone--ops .bd__screen > img {
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+.bd__pause {
+  min-height: 2.75rem;
+  padding: 0.4rem 1.1rem;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* The customer's screen, in EV Exec's own look. */
+.bd-ui {
+  --gold: #d5a538;
+  --line: #2f3742;
+  --card: rgb(255 255 255 / 0.04);
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 85% 8%, rgb(213 165 56 / 0.1), transparent 32%),
+    radial-gradient(circle at 25% 20%, rgb(48 99 160 / 0.18), transparent 35%),
+    #020813;
+  color: #fff;
+  font-family: var(--font-jost), "Jost", Arial, sans-serif;
+  font-size: calc(100cqw / 24.4);
+  line-height: 1.35;
+  text-align: left;
+}
+
+.bd-status {
+  position: relative;
+  z-index: 2;
+  background: #020813;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 2.9em;
+  padding: 0 1.9em;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.bd-status__icons {
+  width: 4em;
+  height: 0.75em;
+  border-radius: 0.2em;
+  background: linear-gradient(90deg, #fff 0 28%, transparent 28% 36%, #fff 36% 62%, transparent 62% 70%, #fff 70%);
+}
+
+.bd-head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.5em 1.25em 0.8em;
+  background: #020813;
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+}
+
+.bd-head img {
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+}
+
+.bd-head small {
+  display: block;
+  color: var(--gold);
+  font-size: 0.42em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bd-body {
+  padding: 0.6em 1.25em 2em;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bd-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.bd-top h3 {
+  font-family: inherit;
+  font-size: 1.4em;
+  white-space: nowrap;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.bd-top h3 em {
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.bd-steps {
+  display: flex;
+  gap: 0.9em;
+  font-size: 0.7em;
+  font-weight: 700;
+}
+
+.bd-steps li {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 1.6em;
+  border-radius: 0.3em;
+  background: #2a313c;
+  color: rgb(255 255 255 / 0.5);
+  transition: background-color 300ms, color 300ms;
+}
+
+.bd-steps li[data-state="on"],
+.bd-steps li[data-state="done"] {
+  background: var(--gold);
+  color: #06101c;
+}
+
+.bd-step {
+  animation: bd-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bd-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.5em);
+  }
+}
+
+.bd-label {
+  margin: 1.1em 0 0.5em;
+  color: rgb(255 255 255 / 0.4);
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bd-step h4 {
+  font-family: inherit;
+  font-size: 1.45em;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.bd-sub {
+  margin: 0.25em 0 0.9em;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.82em;
+}
+
+.bd-option,
+.bd-airport,
+.bd-card {
+  position: relative;
+  margin-bottom: 0.7em;
+  border: 1px solid var(--line);
+  border-radius: 0.5em;
+  background: var(--card);
+  transition:
+    border-color 300ms,
+    background-color 300ms;
+}
+
+.bd-option {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  padding: 1em;
+}
+
+.bd-option b,
+.bd-airport b {
+  display: block;
+  font-weight: 600;
+}
+
+.bd-option small,
+.bd-airport small {
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.8em;
+}
+
+.bd-option > span:nth-child(2) {
+  flex: 1;
+}
+
+.bd-icon {
+  display: grid;
+  place-items: center;
+  width: 2.6em;
+  height: 2.6em;
+  border: 1px solid var(--line);
+  border-radius: 0.4em;
+  background: #0b1424;
+  color: var(--gold);
+  rotate: -45deg;
+}
+
+.bd-icon--land {
+  rotate: 45deg;
+}
+
+.bd-radio {
+  width: 1.3em;
+  height: 1.3em;
+  border: 2px solid rgb(255 255 255 / 0.35);
+  border-radius: 50%;
+  transition:
+    border-color 300ms,
+    box-shadow 300ms;
+}
+
+.bd-option.is-on,
+.bd-airport.is-on {
+  border-color: var(--gold);
+  background: rgb(213 165 56 / 0.08);
+}
+
+.bd-option.is-on .bd-radio {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 0.25em #020813, inset 0 0 0 1em var(--gold);
+}
+
+.bd-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0.25em;
+  border: 1px solid var(--line);
+  border-radius: 0.5em;
+  font-size: 0.88em;
+  font-weight: 600;
+}
+
+.bd-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0.25em auto 0.25em 0.25em;
+  width: calc(50% - 0.25em);
+  border-radius: 0.3em;
+  background: var(--gold);
+  transition: translate 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bd-toggle[data-ret="true"]::before {
+  translate: 100% 0;
+}
+
+.bd-toggle span {
+  position: relative;
+  padding: 0.75em 0;
+  text-align: center;
+  transition: color 300ms;
+}
+
+.bd-toggle[data-ret="false"] span:first-child,
+.bd-toggle[data-ret="true"] span:last-child {
+  color: #06101c;
+}
+
+.bd-btn {
+  position: relative;
+  display: block;
+  margin-top: 1.1em;
+  padding: 1em;
+  border-radius: 0.4em;
+  background: #262d37;
+  color: rgb(255 255 255 / 0.6);
+  font-weight: 600;
+  text-align: center;
+  transition:
+    background-color 300ms,
+    color 300ms;
+}
+
+.bd-btn.is-on {
+  background: linear-gradient(180deg, #e2b752, #c99a2f);
+  color: #06101c;
+}
+
+.bd-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin-bottom: 0.4em;
+}
+
+.bd-titlebar .bd-label {
+  margin: 0 0 0.15em;
+}
+
+.bd-back {
+  display: grid;
+  place-items: center;
+  width: 2.6em;
+  height: 2.6em;
+  border: 1px solid var(--line);
+  border-radius: 0.4em;
+}
+
+.bd-airport {
+  padding: 0.85em 1em 0.85em 1.6em;
+}
+
+.bd-airport::before {
+  content: "";
+  position: absolute;
+  left: 0.8em;
+  top: 0.9em;
+  bottom: 0.9em;
+  width: 0.2em;
+  border-radius: 1em;
+  background: rgb(213 165 56 / 0.6);
+}
+
+.bd-card {
+  padding: 1em;
+}
+
+.bd-card__title {
+  display: block;
+  margin-bottom: 0.6em;
+  color: rgb(255 255 255 / 0.85);
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.bd-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.6em;
+}
+
+.bd-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 2.9em;
+  margin-bottom: 0.55em;
+  padding: 0 0.9em;
+  border: 1px solid var(--line);
+  border-radius: 0.4em;
+  background: rgb(255 255 255 / 0.03);
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: border-color 250ms;
+}
+
+.bd-input:last-child {
+  margin-bottom: 0;
+}
+
+.bd-input.is-focus {
+  border-color: var(--gold);
+}
+
+.bd-ph {
+  color: rgb(255 255 255 / 0.35);
+}
+
+.bd-caret {
+  width: 1px;
+  height: 1.2em;
+  margin-left: 1px;
+  background: var(--gold);
+  animation: bd-blink 1s steps(1) infinite;
+}
+
+@keyframes bd-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.bd-terms {
+  display: flex;
+  gap: 0.8em;
+  align-items: center;
+  margin: 0.8em 0 0.2em;
+  color: rgb(255 255 255 / 0.75);
+  font-size: 0.82em;
+}
+
+.bd-terms em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.bd-check {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.25em;
+  background: #fff;
+  color: #06101c;
+  font-weight: 700;
+  transition: background-color 250ms;
+}
+
+.bd-check.is-on {
+  background: var(--gold);
+}
+
+.bd-spin {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid rgb(6 16 28 / 0.25);
+  border-top-color: #06101c;
+  border-radius: 50%;
+  vertical-align: middle;
+  animation: bd-spin 700ms linear infinite;
+}
+
+@keyframes bd-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.bd-done {
+  padding-top: 2.5em;
+  text-align: center;
+}
+
+.bd-done__tick {
+  display: inline-grid;
+  place-items: center;
+  width: 3.6em;
+  height: 3.6em;
+  margin-bottom: 1em;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #06101c;
+  font-size: 1.3em;
+  font-weight: 700;
+  animation: bd-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes bd-pop {
+  from {
+    scale: 0.3;
+    opacity: 0;
+  }
+}
+
+.bd-summary {
+  margin-top: 1.4em;
+  text-align: left;
+}
+
+.bd-summary .bd-label:first-child {
+  margin-top: 0;
+}
+
+.bd-summary b {
+  font-weight: 600;
+  font-size: 0.92em;
+}
+
+/* A tap: a soft ring that grows and fades where the finger lands. */
+.bd-tap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.6em;
+  height: 2.6em;
+  margin: -1.3em 0 0 -1.3em;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.35);
+  pointer-events: none;
+  animation: bd-tap 520ms ease-out both;
+}
+
+@keyframes bd-tap {
+  from {
+    scale: 0.4;
+    opacity: 1;
+  }
+  to {
+    scale: 1.6;
+    opacity: 0;
+  }
+}
+
+/* The operator app: a notification drops in from the top. */
+.bd-ping {
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  right: 4%;
+  display: flex;
+  gap: 0.7em;
+  padding: 0.8em;
+  border-radius: 1.1em;
+  background: rgb(250 250 250 / 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.5);
+  color: #111;
+  font-family: var(--font-sans);
+  font-size: calc(100cqw / 18);
+  line-height: 1.3;
+  translate: 0 -140%;
+  transition: translate 650ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.bd-ping.is-in {
+  translate: 0 0;
+}
+
+.bd-ping img {
+  flex: none;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 0.55em;
+}
+
+.bd-ping > span {
+  display: grid;
+  min-width: 0;
+}
+
+.bd-ping__app {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bd-ping b {
+  font-weight: 650;
+}
+
+.bd-ping > span > span:last-child {
+  font-size: 0.88em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-step,
+  .bd-done__tick {
+    animation: none;
+  }
+  .bd-body,
+  .bd-ping {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Make it yours (components/interactive/BookingStudio): a booking app restyled live,
+   like a car configurator. The phone's screen is sized in em, like the booking replay.
+   ========================================================================== */
+
+/* Phones: the choices first and the app right under them, so both stay on screen together.
+   Wider screens: the app on the left, choices and features on the right. */
+.studio {
+  display: grid;
+  grid-template-areas: "controls" "stage" "features";
+  gap: var(--space-6);
+}
+
+@media (min-width: 56rem) {
+  .studio {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "stage controls" "stage features";
+    align-items: center;
+    column-gap: var(--space-7);
+  }
+}
+
+.studio__stage {
+  grid-area: stage;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.studio__phone {
+  width: min(56%, 19rem);
+  max-width: none;
+  margin: 0;
+}
+
+@media (min-width: 56rem) {
+  .studio__phone {
+    width: min(72%, 19rem);
+  }
+}
+
+.studio__screen {
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+  border-radius: 2rem;
+  container-type: inline-size;
+}
+
+.studio__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.studio__controls {
+  grid-area: controls;
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 56rem) {
+  .studio__controls {
+    gap: var(--space-6);
+  }
+}
+
+.studio__group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.studio__group legend {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.studio__group legend span {
+  margin-left: 0.5em;
+  color: var(--color-ink);
+}
+
+.studio__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.studio__chips button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+
+@media (max-width: 47.99rem) {
+  .studio__chips {
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+  .studio__chips button {
+    flex: none;
+    padding-inline: 0.8rem;
+    font-size: var(--text-xs);
+  }
+}
+
+.studio__chips button[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+/* Paint swatches, like choosing a car's colour. */
+.studio__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.studio__swatches button {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgb(255 255 255 / 0.45), transparent 45%),
+    var(--swatch);
+  box-shadow:
+    inset 0 -3px 6px rgb(0 0 0 / 0.25),
+    0 0 0 1px rgb(0 0 0 / 0.08);
+  cursor: pointer;
+  transition: box-shadow var(--duration) var(--ease), scale var(--duration) var(--ease);
+}
+
+.studio__swatches button[aria-pressed="true"] {
+  box-shadow:
+    inset 0 -3px 6px rgb(0 0 0 / 0.25),
+    0 0 0 3px var(--color-bg),
+    0 0 0 5px var(--color-ink);
+}
+
+.studio__swatches button:hover {
+  scale: 1.06;
+}
+
+.studio__features {
+  grid-area: features;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+.studio__features li {
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+.studio__features svg {
+  margin-bottom: var(--space-2);
+  color: var(--color-ink-2);
+}
+
+.studio__features span {
+  color: var(--color-ink-3);
+}
+
+/* The app on the phone: three looks, any accent. */
+.st-ui {
+  --bg: #0b1220;
+  --fg: #fff;
+  --muted: rgb(255 255 255 / 0.6);
+  --card: rgb(255 255 255 / 0.05);
+  --line: #2f3742;
+  --r: 0.55em;
+  --font: var(--font-jost), "Jost", Arial, sans-serif;
+  --head-weight: 600;
+  --head-case: none;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: calc(100cqw / 24.4);
+  line-height: 1.35;
+  text-align: left;
+  transition:
+    background-color 500ms var(--ease),
+    color 500ms var(--ease);
+}
+
+.st-ui[data-style="bold"] {
+  --bg: #f4f1ea;
+  --fg: #0b0b0b;
+  --muted: #555;
+  --card: #fff;
+  --line: #0b0b0b;
+  --r: 0;
+  --font: var(--font-archivo), "Archivo", Arial, sans-serif;
+  --head-weight: 800;
+  --head-case: uppercase;
+}
+
+.st-ui[data-style="soft"] {
+  --bg: #fff;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --card: #f3f3f5;
+  --line: transparent;
+  --r: 1.1em;
+  --font: var(--font-sans);
+  --head-weight: 650;
+}
+
+.st-ui *,
+.st-ui *::before {
+  transition:
+    background-color 500ms var(--ease),
+    border-color 500ms var(--ease),
+    color 500ms var(--ease),
+    border-radius 500ms var(--ease);
+}
+
+.st-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 2.9em;
+  padding: 0 1.9em;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.st-status__icons {
+  width: 4em;
+  height: 0.75em;
+  border-radius: 0.2em;
+  background: linear-gradient(
+    90deg,
+    currentColor 0 28%,
+    transparent 28% 36%,
+    currentColor 36% 62%,
+    transparent 62% 70%,
+    currentColor 70%
+  );
+}
+
+.st-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.4em 1.25em 1em;
+  border-bottom: 1px solid var(--line);
+  font-weight: var(--head-weight);
+  text-transform: var(--head-case);
+  letter-spacing: 0.02em;
+}
+
+.st-logo {
+  display: grid;
+  place-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: var(--r);
+  background: var(--a);
+  color: var(--on-a);
+  font-weight: 800;
+}
+
+.st-menu {
+  width: 1.3em;
+  height: 0.7em;
+  margin-left: auto;
+  border-block: 2px solid currentColor;
+}
+
+.st-body {
+  padding: 1.1em 1.25em;
+  animation: bd-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.st-kicker {
+  color: var(--muted);
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.st-body h4 {
+  margin: 0.2em 0 0.8em;
+  font-family: inherit;
+  font-size: 1.55em;
+  font-weight: var(--head-weight);
+  line-height: 1.1;
+  text-transform: var(--head-case);
+}
+
+.st-option,
+.st-line,
+.st-seg,
+.st-days span,
+.st-slots span,
+.st-pay span {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+
+.st-option {
+  display: grid;
+  margin-bottom: 0.6em;
+  padding: 0.85em 1em;
+}
+
+.st-option small,
+.st-line small {
+  color: var(--muted);
+  font-size: 0.82em;
+}
+
+.st-option.is-on,
+.st-line.is-on {
+  border-color: var(--a);
+  box-shadow: inset 0 0 0 1px var(--a);
+}
+
+.st-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0.2em 0 0.7em;
+  padding: 0.25em;
+  font-size: 0.88em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.st-seg--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.st-seg span {
+  padding: 0.6em 0;
+  border-radius: var(--r);
+}
+
+.st-seg .is-on,
+.st-days .is-on,
+.st-slots .is-on {
+  border-color: var(--a);
+  background: var(--a);
+  color: var(--on-a);
+}
+
+.st-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.6em;
+  padding: 0.85em 1em;
+}
+
+.st-days {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4em;
+  margin: 0.9em 0 0.6em;
+}
+
+.st-days span {
+  display: grid;
+  justify-items: center;
+  padding: 0.5em 0;
+  font-size: 0.75em;
+}
+
+.st-days b {
+  font-size: 1.35em;
+}
+
+.st-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4em;
+}
+
+.st-slots span {
+  padding: 0.65em 0;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.st-slots .is-off {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.st-pay {
+  display: flex;
+  gap: 0.4em;
+  margin-top: 0.8em;
+}
+
+.st-pay span {
+  flex: 1;
+  padding: 0.5em 0;
+  font-size: 0.72em;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* The app's tab bar along the bottom of the screen. */
+.st-tabs {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0.8em 1em 2em;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.7em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.st-tabs span {
+  display: grid;
+  justify-items: center;
+  gap: 0.35em;
+}
+
+.st-tabs i {
+  width: 1.8em;
+  height: 1.8em;
+  border: 2px solid currentColor;
+  border-radius: calc(var(--r) * 0.6);
+}
+
+.st-tabs .is-on {
+  color: var(--fg);
+}
+
+.st-tabs .is-on i {
+  border-color: var(--a);
+  background: var(--a);
+}
+
+.st-btn {
+  display: block;
+  margin-top: 1em;
+  padding: 1em;
+  border-radius: var(--r);
+  background: var(--a);
+  color: var(--on-a);
+  font-weight: 700;
+  text-align: center;
+  text-transform: var(--head-case);
+  letter-spacing: 0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-body {
+    animation: none;
+  }
+  .st-ui,
+  .st-ui *,
+  .st-ui *::before {
+    transition: none;
+  }
 }
 
 /* On dark bands the app and booking accents need to be lighter to stay readable (≥ 3:1). */
