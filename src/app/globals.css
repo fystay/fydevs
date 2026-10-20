@@ -6439,24 +6439,45 @@ main .proof__list {
 }
 
 /* Booking software's hero: laid out like the other service pages' heroes (switcher in
-   the same place, so it stays put when switching services, copy on the left), with the
-   booking replay centred below. Doubled class to win over .tile, defined later. */
+   the same place, so it stays put when switching services, copy on the left). The copy
+   is compact so the booking replay is on screen as soon as the page opens: right under
+   it on phones, beside it on desktop. Doubled class to win over .tile, defined later. */
 .booking-hero.tile {
   padding-block: var(--svc-top) clamp(3rem, 2rem + 4vw, 5rem);
   background: linear-gradient(to bottom, #e3eae8, var(--color-bg) 40rem);
   text-align: left;
 }
 
-.booking-hero :is(.tile__title, .tile__line) {
+.booking-hero .tile__title {
+  max-width: 15ch;
   margin-inline: 0;
+  font-size: clamp(2.125rem, 1.3rem + 3.2vw, 4.25rem);
+}
+
+.booking-hero .tile__line {
+  margin: var(--space-3) 0 0;
 }
 
 .booking-hero .tile__ctas {
   justify-content: flex-start;
+  margin-top: var(--space-5);
 }
 
-.booking-hero .tile__visual {
+.booking-hero__visual {
+  margin-top: var(--space-6);
   text-align: center;
+}
+
+@media (min-width: 64rem) {
+  .booking-hero__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: center;
+    gap: var(--space-7);
+  }
+  .booking-hero__visual {
+    margin-top: 0;
+  }
 }
 
 .booking-hero__caption {
