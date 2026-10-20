@@ -5,8 +5,8 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 const LEAD = "Every site here runs a family business. ";
 const LAST = "Ours.";
 const FULL = LEAD + LAST;
-const TYPE_MS = 42; // per character
-const PAUSE_MS = 650; // before "Ours."
+// The line is fully typed this far through the pinned scroll; the rest is a short hold on it.
+const DONE_AT = 0.8;
 
 const subscribeMotion = (cb: () => void) => {
   const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -15,9 +15,11 @@ const subscribeMotion = (cb: () => void) => {
 };
 
 /**
- * One true line, full screen, typed out when it scrolls into view. Every letter is laid
- * out from the start (hidden until typed), so the page never shifts as it types; screen
- * readers get the whole sentence at once.
+ * One true line, full screen. The section is taller than the screen and its line pins
+ * in place while the visitor scrolls through it, typing out in step with the scroll,
+ * so it plays at their pace and only while it's in front of them. Every letter is laid
+ * out from the start (hidden until typed), so nothing moves; screen readers get the
+ * whole sentence at once, and reduced motion shows it without pinning.
  */
 export function FamilyLine() {
   const reduced = useSyncExternalStore(
@@ -26,29 +28,32 @@ export function FamilyLine() {
     () => false,
   );
   const [shown, setShown] = useState(0);
-  const ref = useRef<HTMLParagraphElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || reduced) return;
-    let timer = 0;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
-        io.disconnect();
-        const step = (n: number) => {
-          setShown(n);
-          if (n >= FULL.length) return;
-          timer = window.setTimeout(() => step(n + 1), n === LEAD.length ? PAUSE_MS : TYPE_MS);
-        };
-        step(1);
-      },
-      { threshold: 0.6 },
-    );
-    io.observe(el);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      // From the section's top reaching mid-screen (so the first words appear as it
+      // arrives) to the end of the pinned run.
+      const r = el.getBoundingClientRect();
+      const lead = window.innerHeight / 2;
+      const run = r.height - window.innerHeight + lead;
+      const p = run > 0 ? Math.min(1, Math.max(0, (lead - r.top) / run)) : 1;
+      setShown(Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length));
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
-      io.disconnect();
-      window.clearTimeout(timer);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, [reduced]);
 
@@ -67,15 +72,17 @@ export function FamilyLine() {
     });
 
   return (
-    <section className="family-line" data-cta-hide>
-      <p className="visually-hidden">{FULL}</p>
-      <p ref={ref} className="container container--wide family-line__text" aria-hidden="true">
-        {letters(LEAD, 0)}
-        <em>
-          {letters(LAST, LEAD.length)}
-          {!typing && caret}
-        </em>
-      </p>
+    <section ref={ref} className="family-line" data-pinned={!reduced || undefined} data-cta-hide>
+      <div className="family-line__stage">
+        <p className="visually-hidden">{FULL}</p>
+        <p className="container container--wide family-line__text" aria-hidden="true">
+          {letters(LEAD, 0)}
+          <em>
+            {letters(LAST, LEAD.length)}
+            {!typing && caret}
+          </em>
+        </p>
+      </div>
     </section>
   );
 }

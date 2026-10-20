@@ -6671,12 +6671,28 @@ main .proof__list {
    visual. (Layout borrowed from the best product sites; the look is ours.)
    ========================================================================== */
 
-/* The family line: a full screen of large type, typed out as it arrives (FamilyLine). */
+/*
+ * The family line: a full screen of large type (FamilyLine). Pinned, the section is
+ * two screens tall and its stage sticks while the line types out with the scroll.
+ */
 .family-line {
+  background: var(--color-bg);
+}
+
+.family-line[data-pinned] {
+  height: 200svh;
+}
+
+.family-line__stage {
   display: grid;
   place-items: center;
   min-height: 100svh;
-  background: var(--color-bg);
+}
+
+.family-line[data-pinned] .family-line__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
 }
 
 .family-line__text {
