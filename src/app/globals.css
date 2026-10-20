@@ -2776,11 +2776,15 @@ main {
 }
 
 /*
- * The laptop is a real 3D object: the lid (bezel and display) stands upright and the base
- * hinges back from its bottom edge, seen from just above. The camera's distance scales with
- * the laptop's width, so it looks the same at every size.
+ * The laptop: the lid (bezel and display) stands upright and the base hinges back from its
+ * bottom edge, seen from just above. The camera's distance scales with the laptop's width,
+ * so it looks the same at every size.
+ *
+ * While the hero zoom turns it, the laptop is a true 3D object. At rest it is drawn flat,
+ * with the base given the same perspective by its own transform: iPhone Safari doesn't
+ * draw video inside a 3D scene, and the walkthrough clips play at rest.
  */
-.laptop__view {
+.zoom[data-zoom="active"] .laptop__view {
   perspective: 520cqw;
   perspective-origin: 50% 35%;
 }
@@ -2794,6 +2798,9 @@ main {
 
 .laptop__body {
   position: relative;
+}
+
+.zoom[data-zoom="active"] .laptop__body {
   transform-style: preserve-3d;
 }
 
@@ -2931,6 +2938,14 @@ main {
   height: auto;
   aspect-ratio: 1000 / 640;
   transform-origin: 50% 0;
+  /*
+   * The 3D view's perspective, reproduced on the base alone. The camera looks at 35% of the
+   * laptop's height (32.35cqw above the hinge), so the projection is shifted to centre there.
+   */
+  transform: translateY(-32.35cqw) perspective(520cqw) translateY(32.35cqw) rotateX(82deg);
+}
+
+.zoom[data-zoom="active"] .laptop__base {
   transform: rotateX(82deg);
 }
 

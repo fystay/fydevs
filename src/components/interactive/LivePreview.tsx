@@ -16,6 +16,7 @@ export function LivePreview({
   paused,
   progress,
   onEnded,
+  onBlocked,
 }: {
   mp4: string;
   webm: string;
@@ -24,6 +25,8 @@ export function LivePreview({
   paused: boolean;
   progress: RefObject<HTMLSpanElement | null>;
   onEnded: () => void;
+  /** The browser refused to start it (e.g. iPhone Low Power Mode blocks videos starting on their own). */
+  onBlocked: () => void;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -31,7 +34,12 @@ export function LivePreview({
     const video = ref.current;
     if (!video) return;
     if (paused) video.pause();
-    else video.play().catch(() => {});
+    else
+      video.play().catch((e: DOMException) => {
+        if (e.name === "NotAllowedError") onBlocked();
+      });
+    // Only a change of paused state should start or stop the clip.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused]);
 
   // Keep the tab's progress bar in step with the clip.
@@ -59,7 +67,6 @@ export function LivePreview({
       poster={poster}
       muted
       playsInline
-      autoPlay={!paused}
       preload="auto"
       onEnded={onEnded}
       aria-label={`A walkthrough of the ${name} website`}

@@ -62,6 +62,8 @@ const subscribeReduced = (onChange: () => void) => {
 /** Pause before the first clip once the laptop is in view, and between one site's clip and the next. */
 const FIRST_DELAY = 1000;
 const NEXT_DELAY = 500;
+/** How long each screenshot shows when clips can't start on their own. */
+const STILL_INTERVAL = 6000;
 
 /**
  * The homepage showcase: our real projects on a laptop. Once the laptop is in view, each
@@ -84,6 +86,9 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
   // Whether the current site's clip has started (until then its screenshot shows).
   const [clipOn, setClipOn] = useState(false);
   const [started, setStarted] = useState(false);
+  // The browser won't start clips on its own (iPhone Low Power Mode): cycle the screenshots
+  // instead, and play a clip only when the visitor taps.
+  const [blocked, setBlocked] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
@@ -111,7 +116,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
 
   // Start the current site's clip after a short pause.
   useEffect(() => {
-    if (!running || clipOn) return;
+    if (!running || clipOn || blocked) return;
     const t = window.setTimeout(
       () => {
         setClipOn(true);
@@ -120,7 +125,13 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
       started ? NEXT_DELAY : FIRST_DELAY,
     );
     return () => window.clearTimeout(t);
-  }, [running, clipOn, started, index]);
+  }, [running, clipOn, started, index, blocked]);
+
+  useEffect(() => {
+    if (!running || !blocked || clipOn) return;
+    const t = window.setTimeout(() => go(index + 1), STILL_INTERVAL);
+    return () => window.clearTimeout(t);
+  }, [running, blocked, clipOn, index, go]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") swipe.current = { x: e.clientX, y: e.clientY };
@@ -175,9 +186,13 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                     paused={!running}
                     progress={progressRef}
                     onEnded={() => go(index + 1)}
+                    onBlocked={() => {
+                      setBlocked(true);
+                      setClipOn(false);
+                    }}
                   />
                 )}
-                <span className="laptop__hint" aria-hidden="true" hidden={!userPaused}>
+                <span className="laptop__hint" aria-hidden="true" hidden={!userPaused && !blocked}>
                   <span className="on-touch">Tap</span>
                   <span className="on-hover">Click</span> to play
                 </span>
@@ -187,10 +202,18 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                 type="button"
                 className="laptop__hit"
                 aria-label={
-                  userPaused ? `Play the ${current.name} walkthrough` : `Pause the ${current.name} walkthrough`
+                  userPaused || (blocked && !clipOn)
+                    ? `Play the ${current.name} walkthrough`
+                    : `Pause the ${current.name} walkthrough`
                 }
                 onClick={() => {
-                  if (Date.now() - swiped.current > 400) toggle();
+                  if (Date.now() - swiped.current <= 400) return;
+                  if (blocked && !clipOn) {
+                    // A tap counts as permission to play; from here clips carry on as normal.
+                    setBlocked(false);
+                    setPaused(false);
+                    setClipOn(true);
+                  } else toggle();
                 }}
               />
             </div>
