@@ -46,8 +46,8 @@ function imageMapper(img: HTMLImageElement, box: { x: number; y: number; w: numb
   return ([ix, iy]: Point): Point => [box.x + (ix * box.w) / nw, box.y + (iy * box.h) / nh];
 }
 
-/** CSS matrix3d that maps a w×h box onto the quad (projective transform). */
-function rectToQuad(w: number, h: number, [p0, p1, p2, p3]: Point[]) {
+/** The projective transform taking a w×h box onto the quad, as [a, b, c, d, e, f, g, h]. */
+function homography(w: number, h: number, [p0, p1, p2, p3]: Point[]) {
   const [x0, y0] = p0;
   const [x1, y1] = p1;
   const [x2, y2] = p2;
@@ -65,8 +65,27 @@ function rectToQuad(w: number, h: number, [p0, p1, p2, p3]: Point[]) {
   const b = x3 - x0 + hh * x3;
   const d = y1 - y0 + g * y1;
   const e = y3 - y0 + hh * y3;
-  const m = [a / w, d / w, 0, g / w, b / h, e / h, 0, hh / h, 0, 0, 1, 0, x0, y0, 0, 1];
+  // x' = (a·x + b·y + c) / (g·x + h·y + 1), and likewise y' with d, e, f; x and y in the box.
+  return [a / w, b / h, x0, d / w, e / h, y0, g / w, hh / h];
+}
+
+/** CSS matrix3d that maps a w×h box onto the quad. */
+function rectToQuad(w: number, h: number, quad: Point[]) {
+  const [a, b, c, d, e, f, g, hh] = homography(w, h, quad);
+  const m = [a, d, 0, g, b, e, 0, hh, 0, 0, 1, 0, c, f, 0, 1];
   return `matrix3d(${m.map((n) => +n.toFixed(6)).join(",")})`;
+}
+
+/** The point in the w×h box that the quad's transform takes to (x, y). */
+function unproject(w: number, h: number, quad: Point[], [x, y]: Point): Point {
+  const [a, b, c, d, e, f, g, hh] = homography(w, h, quad);
+  // Solve (a - g·x)u + (b - hh·x)v = x - c and (d - g·y)u + (e - hh·y)v = y - f.
+  const m11 = a - g * x;
+  const m12 = b - hh * x;
+  const m21 = d - g * y;
+  const m22 = e - hh * y;
+  const det = m11 * m22 - m12 * m21;
+  return det ? [((x - c) * m22 - m12 * (y - f)) / det, (m11 * (y - f) - (x - c) * m21) / det] : [w / 2, h / 2];
 }
 
 type Geometry = {
@@ -78,10 +97,19 @@ type Geometry = {
   pCover: number; // progress from which the screen covers the whole stage
   pw: number;
   ph: number;
+  // The project preview (the showcase's tray) enlarged to fill the laptop screen at the start.
+  trayW: number;
+  startW: number; // its width on screen at the start
+  k0: number; // its starting enlargement
+  trayCentre: Point; // in the content column
+  origin: string;
 };
 
 /** Progress through the camera move (zoom and centring), finished a little before the end. */
 const ZOOM_END = 0.8;
+
+/** The quad's average width (of its top and bottom edges). */
+const span = (q: Point[]) => (Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]) + Math.hypot(q[2][0] - q[3][0], q[2][1] - q[3][1])) / 2;
 
 /** Whether the quad contains every corner of the w×h stage. */
 function covers(q: Point[], w: number, h: number) {
@@ -126,7 +154,10 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     const heroEl = stage?.querySelector<HTMLElement>(".hero-ed");
     const photo = heroEl?.querySelector<HTMLImageElement>(".hero-ed__photo");
     const copy = heroEl?.querySelector<HTMLElement>(".hero-ed__layout");
-    if (!root || !stage || !panel || !heroEl || !photo || !copy) return;
+    const column = panel?.querySelector<HTMLElement>(".zoom__column");
+    const content = column?.firstElementChild as HTMLElement | null;
+    const tray = content?.querySelector<HTMLElement>(".showcase__stage");
+    if (!root || !stage || !panel || !heroEl || !photo || !copy || !column || !content || !tray) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let geo: Geometry | null = null;
@@ -197,7 +228,32 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
           break;
         }
       }
-      geo = { q0, c0, cf, final, sEnd, pCover, pw, ph };
+      // The preview fills most of the screen at the start (on phones it is enlarged to do so),
+      // centred, with the tabs below it hidden; it settles to its place as the screen turns.
+      const t = layoutBox(tray, column);
+      const c = layoutBox(content, column);
+      const fill = Math.min((0.72 * ph) / t.h, (0.86 * pw) / t.w);
+      // Wide screens already show the preview large; only enlarge it where that makes a real difference.
+      const k0 = fill > 1.1 ? fill : 1;
+      const trayCentre: Point = [t.x + t.w / 2, t.y + t.h / 2];
+      geo = {
+        q0,
+        c0,
+        cf,
+        final,
+        sEnd,
+        pCover,
+        pw,
+        ph,
+        trayW: t.w,
+        startW: k0 * t.w * (span(q0) / pw),
+        k0,
+        trayCentre,
+        origin: `${trayCentre[0] - c.x}px ${trayCentre[1] - c.y}px`,
+      };
+      content.style.transformOrigin = geo.origin;
+      // Clip the enlarged preview to the screen (only needed while it is enlarged).
+      panel.style.overflow = k0 > 1 ? "hidden" : "";
       panel.style.width = `${pw}px`;
       panel.style.height = `${ph}px`;
       panel.style.setProperty("--col-x", `${-left}px`);
@@ -219,7 +275,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       if (p === progress) return;
       progress = p;
 
-      const { q0, c0, final, pCover, pw, ph } = geo;
+      const { q0, c0, final, pCover, pw, ph, trayW, startW, k0, trayCentre } = geo;
       const cam = camera(p, geo);
       const onScreen = place(q0, c0, cam);
       // Turning to face the viewer happens only while the screen fills the stage.
@@ -235,13 +291,31 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       copy.style.pointerEvents = copyFade < 0.5 ? "none" : "";
 
       panel.style.transform = p >= 1 ? `translate(${final[0][0]}px, ${final[0][1]}px)` : rectToQuad(pw, ph, corners);
-      panel.style.opacity = String(smoothstep(0, 0.06, p));
+      // The preview's size on screen grows steadily from where it starts to where it ends,
+      // so its enlargement inside the screen eases off as the camera closes in.
+      const scaleOnScreen = span(corners) / pw;
+      const wantW = startW * (trayW / startW) ** easeInOut(p);
+      const k = p >= 1 ? 1 : clamp(wantW / (trayW * scaleOnScreen), 1, k0);
+      const m = k0 > 1 ? (k0 - k) / (k0 - 1) : 1;
+      // Keep the preview centred in the view: at the start on the screen's centre, then on whichever
+      // part of the screen is in the middle of the view (the screen is seen at an angle).
+      const W = stage.clientWidth;
+      const H = stage.clientHeight;
+      const colX = (pw - W) / 2;
+      const colY = (ph - H) / 2;
+      const inView = unproject(pw, ph, corners, [W / 2, H / 2]);
+      const follow = smoothstep(0.12, 0.55, p);
+      const aim: Point = [lerp(W / 2, inView[0] - colX, follow), lerp(H / 2, inView[1] - colY, follow)];
+      const shift: Point = [(aim[0] - trayCentre[0]) * (1 - m), (aim[1] - trayCentre[1]) * (1 - m)];
+      content.style.transform = k > 1 || m < 1 ? `translate3d(${shift[0]}px, ${shift[1]}px, 0) scale(${k})` : "";
+      panel.style.setProperty("--zoom-ui", String(smoothstep(pCover, 1, p)));
       panel.style.setProperty("--glare", String((1 - turn) * (1 - smoothstep(0.3, 0.9, p / Math.max(pCover, 0.01)) * 0.6)));
       panel.style.pointerEvents = p >= 1 ? "" : "none";
       const state = p >= 1 ? "done" : p > 0 ? "active" : "start";
       if (root.dataset.zoom !== state) {
         root.dataset.zoom = state;
-        setSettled(state !== "active");
+        // The slideshow only runs once the zoom has landed, so the screen never changes project mid-scroll.
+        setSettled(state === "done");
       }
     };
 
@@ -270,6 +344,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       window.addEventListener("scroll", schedule, { passive: true });
       ro = new ResizeObserver(remeasure);
       ro.observe(stage);
+      ro.observe(tray);
       panel.addEventListener("focusin", onFocusIn);
       if (!photo.complete) photo.addEventListener("load", remeasure, { once: true });
     };
@@ -280,7 +355,7 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       panel.removeEventListener("focusin", onFocusIn);
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
-      for (const el of [heroEl, copy, panel]) el.removeAttribute("style");
+      for (const el of [heroEl, copy, panel, content]) el.removeAttribute("style");
       delete root.dataset.zoom;
       setSettled(true);
     };

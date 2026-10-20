@@ -1909,10 +1909,22 @@ main {
   z-index: 2;
   top: 0;
   left: 0;
-  opacity: 0;
   transform-origin: 0 0;
   background: var(--color-bg);
   backface-visibility: hidden;
+  animation: zoom-screen-on 600ms ease both;
+}
+
+/* The photo's screen already shows the same preview; the live one settles over it as the page loads. */
+@keyframes zoom-screen-on {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The project tabs below the preview appear as the screen turns to face you. */
+.zoom.is-zoom .showcase__bar {
+  opacity: var(--zoom-ui, 1);
 }
 
 /* Glass: a soft reflection and the room's warm light, gone by the time the screen faces you. */
@@ -1939,7 +1951,6 @@ main {
   width: var(--col-w);
   height: var(--col-h);
   padding-bottom: 3%;
-  overflow: hidden;
 }
 
 .zoom.is-zoom .showcase-section {

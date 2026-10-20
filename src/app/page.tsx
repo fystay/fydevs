@@ -103,7 +103,7 @@ export default function HomePage() {
             <div className="hero-ed__visual">
               <Image
                 src={workspace}
-                alt="A FY Devs desk: a laptop showing our portfolio of EV Exec, Boonma, FYStay and Alex K Bells, beside a FY Devs mug, notebook and business cards."
+                alt="A FY Devs desk: a laptop showing the EV Exec website we built, beside a FY Devs mug, notebook and business cards."
                 sizes="(min-width: 64rem) 75vw, 100vw"
                 placeholder="blur"
                 preload
