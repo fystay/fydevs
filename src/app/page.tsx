@@ -120,11 +120,17 @@ export default function HomePage() {
             </Link>
             .
           </p>
-          <p className="tile__more">
+          <p className="tile__more tile__more--pair">
             <Link href="/pricing" className="arrow-link">
               See prices <ArrowRight />
             </Link>
+            <Link href="/build" className="arrow-link">
+              Your price in 2 minutes <ArrowRight />
+            </Link>
           </p>
+          <div className="tile__notice">
+            <PricingNotice compact />
+          </div>
         </div>
         <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
           <Link href="/work#boonma" className="duo" aria-label="Boonma, a website we designed and built">
@@ -179,9 +185,9 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          {/* The App development hero in miniature: a spreadsheet turning into an app. */}
+          {/* The App development hero's finished app (it plays in full on that page). */}
           <div className="tile__sta" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-            <SheetToApp />
+            <SheetToApp still />
           </div>
         </section>
 
@@ -204,24 +210,6 @@ export default function HomePage() {
           </p>
         </section>
       </div>
-
-      {/* The price promise: the quickest route to a real number. */}
-      <section id="pricing" data-nav="/websites" className="price-strip" aria-labelledby="pricing-title">
-        <div className="container container--wide" data-reveal>
-          <h2 id="pricing-title" className="tile__title">
-            Your price, <span className="serif-em">before you commit.</span>
-          </h2>
-          <p className="tile__line">An instant estimate in two minutes.</p>
-          <p className="tile__more">
-            <Link href="/build" className="arrow-link">
-              Instant estimate <ArrowRight />
-            </Link>
-          </p>
-          <div className="price-strip__notice">
-            <PricingNotice compact />
-          </div>
-        </div>
-      </section>
 
       <section id="process" data-nav="/about" className="tile" aria-labelledby="process-title">
         <div className="container container--wide" data-reveal>

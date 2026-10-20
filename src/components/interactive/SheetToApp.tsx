@@ -30,7 +30,8 @@ const subscribeMotion = (cb: () => void) => {
   return () => mq.removeEventListener("change", cb);
 };
 
-export function SheetToApp() {
+/** `still` shows the finished app with no animation or Replay (for pages that already have plenty moving). */
+export function SheetToApp({ still = false }: { still?: boolean }) {
   const reduced = useSyncExternalStore(
     subscribeMotion,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -43,7 +44,7 @@ export function SheetToApp() {
   // Start once it's properly in view; each replay bumps `run` and starts again.
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced) return;
+    if (!el || reduced || still) return;
     let timer = 0;
     const io = new IntersectionObserver(
       ([e]) => {
@@ -58,9 +59,9 @@ export function SheetToApp() {
       io.disconnect();
       window.clearTimeout(timer);
     };
-  }, [reduced, run]);
+  }, [reduced, still, run]);
 
-  const shown = reduced ? "app" : state;
+  const shown = reduced || still ? "app" : state;
 
   return (
     <div className="sta" ref={ref} data-state={shown}>
@@ -116,7 +117,7 @@ export function SheetToApp() {
           </div>
         </div>
       </div>
-      {!reduced && (
+      {!reduced && !still && (
         <button
           type="button"
           className="sta__replay"

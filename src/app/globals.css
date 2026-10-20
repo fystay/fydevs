@@ -7096,19 +7096,6 @@ main .proof__list {
   color: var(--color-inverse-ink-2);
 }
 
-/* The price promise. */
-.price-strip {
-  padding-block: clamp(4.5rem, 3rem + 6vw, 8rem);
-  text-align: center;
-}
-
-.price-strip__notice {
-  max-width: 40rem;
-  margin: var(--space-7) auto 0;
-  text-align: left;
-}
-
-/* Four steps in a row. */
 /* The four steps as a timeline: one continuous orange rule with a step on each stretch.
    Phones swipe through them one card at a time, the next one peeking in; wider screens
    show all four. */
@@ -7386,9 +7373,29 @@ main .proof__list {
   }
 }
 
-/* The homepage's App development card shows the same spreadsheet-to-app. */
+/* The homepage's App development card shows the finished app from that page's hero,
+   sized so the card stays close to the Hosting card beside it. */
 .tile__sta {
   padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
+.tile__sta .sta__phone {
+  width: min(52%, 13rem);
+}
+
+/* Two quiet links side by side, and the price notice under them (Websites tile). */
+.tile__more--pair {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-6);
+}
+
+.tile__notice {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+  text-align: left;
 }
 
 .apps-tile__body {

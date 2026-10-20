@@ -38,10 +38,11 @@ export function FamilyLine() {
     let frame = 0;
     let current = 0;
     // How many letters the scroll position calls for: from the section's top reaching
-    // mid-screen (so the first words appear as it arrives) to most of the way through the pin.
+    // near the top of the screen (the line is then close to centre, so no stray fragment shows
+    // low on the screen) to most of the way through the pin.
     const target = () => {
       const r = el.getBoundingClientRect();
-      const lead = window.innerHeight / 2;
+      const lead = window.innerHeight * 0.15;
       const run = r.height - window.innerHeight + lead;
       const p = run > 0 ? Math.min(1, Math.max(0, (lead - r.top) / run)) : 1;
       return Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length);
