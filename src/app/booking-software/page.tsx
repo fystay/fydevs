@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PageHero, SectionHead } from "@/components/Blocks";
-import { BrowserFrame } from "@/components/Devices";
 import { ArrowRight } from "@/components/Icons";
+import { AppTour } from "@/components/interactive/AppTour";
 import { pageMetadata } from "@/lib/metadata";
 import { projectBySlug } from "@/lib/projects";
 import evexecBooking from "../../../public/work/evexec-booking.webp";
@@ -16,11 +16,11 @@ export const metadata = pageMetadata(
 const evexec = projectBySlug("ev-exec")!;
 
 const demoAgenda = [
-  ["The current feature set", "A walkthrough of the operator and driver applications as they work today."],
-  ["Fit with your operation", "How your bookings, vehicles and drivers are organised, and where the software fits."],
-  ["Devices and set-up", "Which devices your team would use, and what's needed to get started."],
-  ["Pricing and terms", "Subscription pricing and terms, which we confirm individually while the product is in its early release."],
-  ["Onboarding and support", "How we'd bring your team on board and what support looks like afterwards."],
+  ["The apps, live", "The operator and driver apps as they work today."],
+  ["Fit with your operation", "Your bookings, vehicles and drivers, and where the software fits."],
+  ["Devices and set-up", "What your team would use and what's needed to start."],
+  ["Pricing and terms", "Confirmed individually while the product is in early release."],
+  ["Onboarding and support", "How we'd bring your team on board, and support after."],
 ];
 
 export default function BookingSoftwarePage() {
@@ -29,7 +29,11 @@ export default function BookingSoftwarePage() {
       <PageHero
         service="booking"
         eyebrow="Booking software"
-        title={<>Booking software, <span className="serif-em">proven on the road.</span></>}
+        title={
+          <>
+            Booking software, <span className="serif-em">proven on the road.</span>
+          </>
+        }
         lede={`Driver and operator applications developed for ${evexec.name}, an executive airport transfer business on the Fylde Coast. If you run a taxi or transfer firm, we'd like to show you how they work.`}
       >
         <div className="btn-row">
@@ -43,47 +47,21 @@ export default function BookingSoftwarePage() {
         </div>
       </PageHero>
 
-      <section className="section inverse">
+      {/* The product, shown rather than described */}
+      <section className="section inverse" aria-labelledby="tour-title">
         <div className="container container--wide">
-          <div className="split split--media-wide">
-            <div className="stack" style={{ "--stack": "var(--space-6)" } as React.CSSProperties}>
-              <p className="eyebrow eyebrow--num">Origin</p>
-              <h2 className="h2">Built inside a real operation, not in the abstract.</h2>
-              <p className="muted">
-                The software was developed for {evexec.name} and shaped by how a transfer business actually runs day to
-                day. That&apos;s the standard we hold it to: it has to work for the people doing the job.
-              </p>
-              <div className="grid-2" style={{ rowGap: "var(--space-6)" }}>
-                <div className="feature">
-                  <h3 className="h3">For operators</h3>
-                  <p className="muted small">
-                    For the people who run the business: the office, the controllers and the owners who keep work
-                    organised and moving.
-                  </p>
-                </div>
-                <div className="feature">
-                  <h3 className="h3">For drivers</h3>
-                  <p className="muted small">
-                    For the people on the road, designed around airport and transfer work rather than a generic job
-                    list.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <figure>
-              <div className="media-panel">
-                <BrowserFrame
-                  src={evexec.desktop}
-                  host={evexec.host}
-                  alt="The EV Exec website: premium airport transfers and private hire"
-                  sizes="(min-width: 64rem) 640px, 90vw"
-                />
-              </div>
-              <figcaption className="media-caption">
-                {evexec.name}, the transfer business the software was developed for. Its website is also our work.
-              </figcaption>
-            </figure>
-          </div>
+          <SectionHead
+            eyebrow="Inside the apps"
+            title={
+              <span id="tour-title">
+                Built inside a real operation, <span className="serif-em">used every day.</span>
+              </span>
+            }
+            split
+          >
+            <p>One app for the office, one for the drivers, shaped by how {evexec.name} runs day to day.</p>
+          </SectionHead>
+          <AppTour />
         </div>
       </section>
 
@@ -108,9 +86,8 @@ export default function BookingSoftwarePage() {
               <p className="eyebrow eyebrow--num">The customer side</p>
               <h2 className="h2">Need a booking website too?</h2>
               <p className="muted">
-                We also design the websites customers book through. {evexec.name}&apos;s site takes bookings in three
-                steps (journey, addresses, then trip details including flight numbers, extra stops and returns) and
-                gives customers an account to manage them.
+                We also design the websites customers book through. {evexec.name}&apos;s takes bookings in three steps,
+                with flight numbers, extra stops and returns, and gives customers an account to manage them.
               </p>
               <p>
                 <Link href="/work#ev-exec" className="arrow-link">
@@ -124,7 +101,14 @@ export default function BookingSoftwarePage() {
 
       <section id="fit" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="Product or bespoke?" title={<>Two routes, <span className="serif-em">depending on how you work.</span></>} />
+          <SectionHead
+            eyebrow="Product or bespoke?"
+            title={
+              <>
+                Two routes, <span className="serif-em">depending on how you work.</span>
+              </>
+            }
+          />
           <div className="grid-2">
             <div className="card stack" style={{ "--stack": "var(--space-4)" } as React.CSSProperties}>
               <p className="eyebrow">The product</p>
@@ -158,7 +142,15 @@ export default function BookingSoftwarePage() {
 
       <section id="demo" className="section section--ruled">
         <div className="container container--wide">
-          <SectionHead eyebrow="The demo" title={<>What we&apos;ll <span className="serif-em">cover together.</span></>} split>
+          <SectionHead
+            eyebrow="The demo"
+            title={
+              <>
+                What we&apos;ll <span className="serif-em">cover together.</span>
+              </>
+            }
+            split
+          >
             <p>
               We&apos;d rather show you the software working than list features on a page. There&apos;s no obligation,
               and we&apos;ll tell you plainly if it isn&apos;t the right fit.
@@ -177,7 +169,11 @@ export default function BookingSoftwarePage() {
       </section>
 
       <CtaBand
-        title={<>See it <span className="serif-em">working.</span></>}
+        title={
+          <>
+            See it <span className="serif-em">working.</span>
+          </>
+        }
         body="Tell us a little about your operation and we'll arrange a demo at a time that suits you."
       >
         <Link href="/contact?topic=booking-software" className="btn btn--primary">
