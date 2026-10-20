@@ -3,7 +3,7 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { CtaBand, PricingNotice } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
-import { ArrowRight } from "@/components/Icons";
+import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
@@ -78,11 +78,12 @@ export default function HomePage() {
                     <ArrowRight />
                   </Link>
                   <Link href="/build" className="btn btn--secondary">
+                    <Stopwatch />
                     Instant estimate
                   </Link>
                 </div>
                 <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
-                  An indicative price in two minutes.
+                  Indicative price · about 2 minutes
                 </p>
               </div>
             </div>

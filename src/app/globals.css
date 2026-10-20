@@ -5498,14 +5498,70 @@ main .proof__list {
   padding-block: var(--space-8) clamp(4.5rem, 3rem + 6vw, 8rem);
 }
 
-/* Hero: the second button sits on the photo, so it gets a soft frosted backing. */
-.hero-ed .btn--secondary {
-  border-color: rgb(28 28 28 / 0.18);
-  background: rgb(255 255 255 / 0.55);
+/* Hero call to action: a weighted primary and a frosted second button that sits on the photo. */
+.hero-ed .btn-row {
+  gap: 0.6rem;
 }
 
+.hero-ed .btn {
+  min-height: 3rem;
+  padding-inline: 1.1rem;
+  letter-spacing: -0.005em;
+}
+
+/* Small phones: just enough tighter that both buttons stay on one row. */
+@media (max-width: 24.4rem) {
+  .hero-ed .btn-row {
+    gap: 0.45rem;
+  }
+  .hero-ed .btn {
+    gap: 0.35rem;
+    padding-inline: 0.85rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 40rem) {
+  .hero-ed .btn {
+    min-height: 3.25rem;
+    padding-inline: 1.4rem;
+    font-size: 1rem;
+  }
+}
+
+.hero-ed .btn--primary {
+  box-shadow:
+    0 10px 24px -12px rgb(28 28 28 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.12);
+}
+
+.hero-ed .btn--primary svg {
+  transition: transform var(--duration) var(--ease);
+}
+
+.hero-ed .btn--primary:hover svg {
+  transform: translateX(3px);
+}
+
+.hero-ed .btn--secondary {
+  border: 1px solid rgb(28 28 28 / 0.14);
+  background: rgb(255 255 255 / 0.62);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px -14px rgb(28 28 28 / 0.35);
+}
+
+.hero-ed .btn--secondary:hover {
+  background: rgb(255 255 255 / 0.85);
+}
+
+/* A quiet caption in the same spaced capitals as the service labels above. */
 .hero-ed .hero-note {
   max-width: none;
-  margin-top: calc(var(--space-2) * -1);
-  font-size: var(--text-xs);
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
 }
