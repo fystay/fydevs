@@ -7494,17 +7494,14 @@ main .proof__list {
   }
 }
 
-/* The homepage's App development tile shows the finished app from that page's hero,
-   rising from the tile's bottom edge: cut off just below the jobs, so no empty screen shows. */
+/* The homepage's App development tile shows the finished app from that page's hero, whole. */
 .tile__sta {
-  --w: clamp(12rem, 9rem + 10vw, 15rem);
-  height: calc(var(--w) * 1.4);
   margin-top: clamp(3rem, 2rem + 4vw, 5rem);
-  overflow: hidden;
+  padding-bottom: clamp(4.5rem, 3rem + 6vw, 8rem);
 }
 
 .tile__sta .sta__phone {
-  width: var(--w);
+  width: min(52%, 13rem);
 }
 
 /* Websites tile: the two prices side by side, a hairline between, then two quiet links. */
