@@ -6858,18 +6858,83 @@ main .proof__list {
   }
 }
 
-/* Websites: the site on a screen with its phone version in front. */
-.duo {
-  position: relative;
-  display: block;
-  max-width: 60rem;
-  margin-inline: auto;
-  padding-right: 9%;
-  padding-bottom: 6%;
+/* Websites: one site on a screen and a phone, redrawn for each business picked
+   (components/interactive/SiteStyler). Each business is a set of variables; everything
+   inside a screen is sized in em from that screen's width, so the picture scales as one. */
+.ss {
+  --bg: #2a1d17;
+  --ink: #f6ead8;
+  --muted: rgb(246 234 216 / 0.7);
+  --a: #e07a3f;
+  --on-a: #1a0f0a;
+  --card: rgb(255 255 255 / 0.06);
+  --h-font: var(--font-playfair), var(--font-serif);
+  --h-weight: 500;
+  --h-transform: none;
+  --h-spacing: -0.02em;
+  --r: 0.5em;
+  --photo: radial-gradient(circle at 68% 72%, #f2a65a 0 10%, transparent 34%), linear-gradient(160deg, #6a4430, #24180f 75%);
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+  padding-bottom: clamp(3rem, 2rem + 4vw, 5rem);
 }
 
-.duo__screen {
-  display: block;
+.ss[data-site="salon"] {
+  --bg: #f8ebe6;
+  --ink: #3b1f2b;
+  --muted: #7a5a66;
+  --a: #8a3a5c;
+  --on-a: #fff;
+  --card: #fff;
+  --h-font: var(--font-newsreader), var(--font-serif);
+  --h-weight: 400;
+  --h-spacing: -0.01em;
+  --r: 1.4em;
+  --photo: radial-gradient(circle at 30% 30%, #fbd3d9 0 18%, transparent 50%), linear-gradient(140deg, #e9b7c4, #b98aa8 80%);
+}
+
+.ss[data-site="trades"] {
+  --bg: #fff;
+  --ink: #0f1b2d;
+  --muted: #4b5668;
+  --a: #f5c400;
+  --on-a: #0f1b2d;
+  --card: #eef1f5;
+  --h-font: var(--font-archivo), system-ui, sans-serif;
+  --h-weight: 800;
+  --h-transform: uppercase;
+  --h-spacing: -0.01em;
+  --r: 0.15em;
+  --photo: repeating-linear-gradient(-45deg, transparent 0 1.2em, rgb(245 196 0 / 0.85) 1.2em 1.8em), linear-gradient(#18273f, #0f1b2d);
+}
+
+.ss[data-site="clinic"] {
+  --bg: #eef3ef;
+  --ink: #1f3a33;
+  --muted: #557069;
+  --a: #2f6f62;
+  --on-a: #fff;
+  --card: #fff;
+  --h-font: var(--font-jost), system-ui, sans-serif;
+  --h-weight: 600;
+  --h-spacing: -0.01em;
+  --r: 0.8em;
+  --photo: radial-gradient(circle at 60% 40%, #f4f8f5 0 14%, transparent 40%), linear-gradient(170deg, #b9d3c7, #7fa596 85%);
+}
+
+.ss-duo {
+  position: relative;
+  width: 100%;
+  max-width: 60rem;
+  padding-right: 12%;
+  padding-bottom: 8%;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+
+.ss-screen {
   overflow: hidden;
   padding: clamp(0.35rem, 0.2rem + 0.6vw, 0.7rem);
   border-radius: clamp(0.8rem, 0.5rem + 1vw, 1.4rem);
@@ -6877,26 +6942,230 @@ main .proof__list {
   box-shadow: 0 40px 80px -40px rgb(32 33 36 / 0.45);
 }
 
-.duo__screen img {
-  display: block;
-  width: 100%;
-  height: auto;
+.ss-url {
+  margin: 0 auto clamp(0.3rem, 0.2rem + 0.4vw, 0.6rem);
+  width: fit-content;
+  max-width: 70%;
+  padding: 0.2em 1.4em;
+  border-radius: 1em;
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.7);
+  font-size: clamp(0.5rem, 0.4rem + 0.35vw, 0.75rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-view {
+  overflow: hidden;
+  container-type: inline-size;
+  background: var(--bg);
+  color: var(--ink);
+  transition:
+    background-color 500ms var(--ease),
+    color 500ms var(--ease);
+}
+
+.ss-view--desktop {
+  aspect-ratio: 16 / 9;
   border-radius: clamp(0.45rem, 0.3rem + 0.5vw, 0.8rem);
 }
 
-.duo .duo__phone {
+.ss-view--mobile {
+  aspect-ratio: 9 / 19;
+  border-radius: clamp(0.8rem, 0.5rem + 1.3vw, 2rem);
+}
+
+.ss .ss-phone {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 24%;
+  width: 30%;
   max-width: none;
   margin: 0;
   padding: clamp(0.2rem, 0.1rem + 0.4vw, 0.45rem);
   border-radius: clamp(1rem, 0.6rem + 1.6vw, 2.4rem);
 }
 
-.duo .duo__phone img {
-  border-radius: clamp(0.8rem, 0.5rem + 1.3vw, 2rem);
+.ss-site {
+  display: grid;
+  align-content: start;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100%;
+  text-align: left;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.ss-view--desktop .ss-site {
+  gap: 1.6em;
+  padding: 1.4em 2.6em;
+  font-size: calc(100cqw / 60);
+}
+
+.ss-view--mobile .ss-site {
+  gap: 0.9em;
+  padding: 2.6em 1.2em 1.2em;
+  font-size: calc(100cqw / 16);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ss-site {
+    animation: ss-in 600ms var(--ease) both;
+  }
+}
+
+@keyframes ss-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+
+.ss-nav {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  color: var(--muted);
+}
+
+.ss-logo {
+  min-width: 0;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+  font-family: var(--h-font);
+  font-size: 1.35em;
+  font-weight: var(--h-weight);
+  text-transform: var(--h-transform);
+  letter-spacing: var(--h-spacing);
+  white-space: nowrap;
+}
+
+.ss-menu {
+  width: 1.3em;
+  height: 0.6em;
+  border-block: 2px solid var(--ink);
+}
+
+.ss-title {
+  display: block;
+  font-family: var(--h-font);
+  font-size: 3.6em;
+  font-weight: var(--h-weight);
+  line-height: 1.02;
+  letter-spacing: var(--h-spacing);
+  text-transform: var(--h-transform);
+}
+
+.ss-view--mobile .ss-title {
+  font-size: 1.7em;
+}
+
+/* Bold capitals run wide: a size down, so the phone's headline still fits. */
+.ss[data-site="trades"] .ss-title {
+  font-size: 3em;
+}
+
+.ss[data-site="trades"] .ss-view--mobile .ss-title {
+  font-size: 1.35em;
+}
+
+.ss[data-site="trades"] .ss-view--mobile .ss-logo {
+  font-size: 1.1em;
+}
+
+.ss-line {
+  display: block;
+  margin-top: 0.6em;
+  color: var(--muted);
+  font-size: 1.15em;
+}
+
+.ss-view--mobile .ss-line {
+  margin-top: -0.3em;
+  font-size: 0.85em;
+}
+
+.ss-btn {
+  display: inline-block;
+  justify-self: start;
+  margin-top: 1.1em;
+  padding: 0.75em 1.4em;
+  border-radius: var(--r);
+  background: var(--a);
+  color: var(--on-a);
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 500ms var(--ease);
+}
+
+.ss-view--mobile .ss-btn {
+  margin-top: 0;
+  font-size: 0.85em;
+}
+
+.ss-btn--sm {
+  margin-top: 0;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+}
+
+.ss-photo {
+  display: block;
+  border-radius: var(--r);
+  background: var(--photo);
+}
+
+.ss-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 2.4em;
+}
+
+.ss-hero .ss-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.ss-view--mobile > .ss-site > .ss-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.ss-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2em;
+}
+
+.ss-view--mobile .ss-cards {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6em;
+  font-size: 0.75em;
+}
+
+.ss-cards span {
+  display: grid;
+  gap: 0.6em;
+  padding: 0.6em;
+  border-radius: var(--r);
+  background: var(--card);
+  font-weight: 600;
+}
+
+.ss-cards .ss-photo {
+  aspect-ratio: 16 / 7;
+}
+
+.ss-pick {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ss-pick .studio__chips {
+  justify-content: center;
 }
 
 /* Booking software: the app screens as a fan, one in front and its neighbours tucked behind. */
@@ -7326,13 +7595,6 @@ main .proof__list {
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-2) var(--space-6);
-}
-
-.tile__notice {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-5);
-  text-align: left;
 }
 
 .apps-tile__body {

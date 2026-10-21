@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CtaBand, PricingNotice } from "@/components/Blocks";
+import { CtaBand } from "@/components/Blocks";
 import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
@@ -9,8 +9,9 @@ import { FamilyLine } from "@/components/interactive/FamilyLine";
 import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { SheetToApp } from "@/components/interactive/SheetToApp";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
+import { SiteStyler } from "@/components/interactive/SiteStyler";
 import { WebStages } from "@/components/WebStages";
-import { jost } from "@/lib/fonts";
+import { archivo, jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
@@ -28,7 +29,6 @@ const LAPTOP_SCREEN: ScreenQuad = [
 ];
 
 const evexec = projectBySlug("ev-exec")!;
-const boonma = projectBySlug("boonma")!;
 
 export default function HomePage() {
   return (
@@ -96,7 +96,12 @@ export default function HomePage() {
         Below the showcase, one product per screen: a name, a few words, one link and a
         big visual. Detail and full pricing live on the service pages.
       */}
-      <section id="web-design" data-nav="/websites" className="tile" aria-labelledby="web-title">
+      <section
+        id="web-design"
+        data-nav="/websites"
+        className={`tile ${jost.variable} ${archivo.variable}`}
+        aria-labelledby="web-title"
+      >
         <div className="container container--wide" data-reveal>
           <p className="tile__name">Websites</p>
           <h2 id="web-title" className="tile__title">
@@ -117,19 +122,9 @@ export default function HomePage() {
               Your price in 2 minutes <ArrowRight />
             </Link>
           </p>
-          <div className="tile__notice">
-            <PricingNotice compact />
-          </div>
         </div>
         <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-          <Link href="/work#boonma" className="duo" aria-label="Boonma, a website we designed and built">
-            <span className="duo__screen">
-              <Image src={boonma.desktop} alt="" sizes="(min-width: 64rem) 900px, 90vw" placeholder="blur" />
-            </span>
-            <span className="app-phone duo__phone">
-              <Image src={boonma.mobile} alt="" sizes="(min-width: 64rem) 200px, 22vw" placeholder="blur" />
-            </span>
-          </Link>
+          <SiteStyler />
         </div>
       </section>
 
