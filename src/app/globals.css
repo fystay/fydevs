@@ -6777,7 +6777,10 @@ main .proof__list {
 /* The owners of EV Exec and Boonma, quoted under the family line: phones swipe from one to
    the next (the second peeking in); wider screens show both side by side. */
 .owner-quotes {
-  padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(4.5rem, 3rem + 6vw, 8rem);
+  position: relative; /* drawn over the family line's empty lower screen, below its text */
+  z-index: 1;
+  margin-top: -28svh;
+  padding-block: 0 clamp(4.5rem, 3rem + 6vw, 8rem);
 }
 
 .owner-quotes__row {
@@ -7586,6 +7589,49 @@ main .proof__list {
 
 .tile__sta .sta__phone {
   width: min(52%, 13rem);
+}
+
+/* On the still phone, slightly bigger text and the tab bar at the foot fill its screen. */
+.tile__sta .sta__screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.tile__sta .sta__screen > * {
+  font-size: calc(100cqw / 20);
+}
+
+.sta__tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto;
+  padding: 0.7em 0.6em 1.4em;
+  border-top: 1px solid #ececec;
+  color: #8a8a8a;
+  font-size: 0.8em;
+}
+
+.sta__tabs span {
+  display: grid;
+  justify-items: center;
+  gap: 0.3em;
+}
+
+.sta__tabs i {
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 0.45em;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.sta__tabs .is-on {
+  color: var(--a);
+  font-weight: 600;
+}
+
+.sta__tabs .is-on i {
+  opacity: 1;
 }
 
 /* Websites tile: the two prices side by side, a hairline between, then two quiet links. */

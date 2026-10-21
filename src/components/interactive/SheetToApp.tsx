@@ -114,6 +114,17 @@ export function SheetToApp({ still = false }: { still?: boolean }) {
                 </span>
               </div>
             ))}
+            {/* The still version (homepage) shows the app's tab bar, filling the screen as a real app does. */}
+            {still && (
+              <div className="sta__tabs">
+                {["Jobs", "Calendar", "Invoices"].map((t, i) => (
+                  <span key={t} className={i === 0 ? "is-on" : undefined}>
+                    <i />
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
