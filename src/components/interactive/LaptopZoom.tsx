@@ -225,12 +225,71 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
       window.scrollTo({ top: root.getBoundingClientRect().top + window.scrollY - top + run, behavior: "instant" });
     };
 
+    /*
+     * Never left halfway: when scrolling stops mid-move, the page glides on to the landed
+     * showcase (or back to the hero, if the visitor was heading up), so a short swipe goes
+     * from the photo almost straight to the websites. It waits while a finger is down, and
+     * any new touch, wheel or key cancels the glide.
+     */
+    let lastY = window.scrollY;
+    let heading = 1;
+    let touching = false;
+    let idle = 0;
+    let glide = 0;
+    const stopGlide = () => {
+      if (glide) cancelAnimationFrame(glide);
+      glide = 0;
+    };
+    const glideTo = (target: number) => {
+      const from = window.scrollY;
+      const distance = target - from;
+      if (Math.abs(distance) < 2) return;
+      const duration = Math.min(700, 300 + Math.abs(distance) * 0.4);
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const t = clamp((now - t0) / duration);
+        window.scrollTo({ top: from + distance * easeInOut(t), behavior: "instant" });
+        glide = t < 1 ? requestAnimationFrame(step) : 0;
+      };
+      glide = requestAnimationFrame(step);
+    };
+    const settle = () => {
+      idle = 0;
+      if (touching || glide || !geo || progress <= 0 || progress >= 1) return;
+      const top = parseFloat(getComputedStyle(stage).top) || 0;
+      const startY = root.getBoundingClientRect().top + window.scrollY - top;
+      const zoomRun = root.offsetHeight - stage.offsetHeight - geo.slack;
+      glideTo(heading > 0 ? startY + zoomRun : startY);
+    };
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (!glide && y !== lastY) heading = Math.sign(y - lastY);
+      lastY = y;
+      schedule();
+      window.clearTimeout(idle);
+      idle = window.setTimeout(settle, 120);
+    };
+    const onTouchStart = () => {
+      touching = true;
+      stopGlide();
+    };
+    const onTouchEnd = () => {
+      touching = false;
+      window.clearTimeout(idle);
+      idle = window.setTimeout(settle, 120);
+    };
+
     let ro: ResizeObserver | null = null;
     const enable = () => {
       root.classList.add("is-zoom");
       measure();
       render();
-      window.addEventListener("scroll", schedule, { passive: true });
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+      window.addEventListener("touchend", onTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      window.addEventListener("wheel", stopGlide, { passive: true });
+      window.addEventListener("keydown", stopGlide);
       ro = new ResizeObserver(remeasure);
       ro.observe(stage);
       ro.observe(display);
@@ -240,7 +299,14 @@ export function LaptopZoom({ hero, screen, children }: { hero: ReactNode; screen
     };
     const disable = () => {
       root.classList.remove("is-zoom");
-      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+      window.removeEventListener("wheel", stopGlide);
+      window.removeEventListener("keydown", stopGlide);
+      window.clearTimeout(idle);
+      stopGlide();
       ro?.disconnect();
       panel.removeEventListener("focusin", onFocusIn);
       if (frame) cancelAnimationFrame(frame);
