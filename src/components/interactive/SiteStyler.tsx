@@ -1,17 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ArrowRight } from "../Icons";
 
 /*
  * Bespoke, shown: one website on a screen and a phone, redrawn for each business the
  * visitor picks (tap a chip or swipe the picture). While it's on screen it cycles on its
- * own until the visitor takes over. Every business, name and line shown is an example.
+ * own until the visitor takes over, and the button under it then names their pick and
+ * carries it to the enquiry form. Every business, name and line shown is an example.
  */
 
 const SITES = [
   {
     id: "cafe",
     kind: "Café",
+    brief: "a website for my café",
     name: "Oak & Ember",
     host: "oakandember.co.uk",
     title: "Wood-fired, all day.",
@@ -23,6 +27,7 @@ const SITES = [
   {
     id: "salon",
     kind: "Salon",
+    brief: "a website for my salon",
     name: "Bloom Studio",
     host: "bloomstudio.co.uk",
     title: "Hair that feels like you.",
@@ -34,6 +39,7 @@ const SITES = [
   {
     id: "trades",
     kind: "Electrician",
+    brief: "a website for my electrical business",
     name: "Spark & Co",
     host: "sparkandco.co.uk",
     title: "Safe. Certified. On time.",
@@ -45,6 +51,7 @@ const SITES = [
   {
     id: "clinic",
     kind: "Physio",
+    brief: "a website for my physio clinic",
     name: "Calm Physio",
     host: "calmphysio.co.uk",
     title: "Move freely again.",
@@ -116,6 +123,10 @@ export function SiteStyler() {
   const root = useRef<HTMLDivElement>(null);
   const start = useRef<number | null>(null);
   const site = SITES[i];
+  // Only once the visitor has picked does the button name their business (not while it cycles).
+  const href = auto
+    ? "/contact?topic=website"
+    : `/contact?topic=website&brief=${encodeURIComponent(`I'd like ${site.brief}.`)}`;
 
   const pick = (n: number) => {
     setAuto(false);
@@ -142,7 +153,7 @@ export function SiteStyler() {
   }, [auto]);
 
   return (
-    <div className="ss" data-site={site.id} ref={root}>
+    <div className="ss" data-site={site.id} ref={root} data-cta-hide>
       <div
         className="ss-duo"
         aria-hidden="true"
@@ -175,6 +186,10 @@ export function SiteStyler() {
           ))}
         </div>
       </fieldset>
+      <Link href={href} className="btn btn--primary">
+        {auto ? "Start my website" : `Start my ${site.kind.toLowerCase()} website`}
+        <ArrowRight />
+      </Link>
     </div>
   );
 }

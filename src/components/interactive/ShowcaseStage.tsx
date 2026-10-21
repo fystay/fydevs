@@ -268,7 +268,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
             target="_blank"
             rel="noopener noreferrer"
             className="showcase__link"
-            aria-label={`View the ${current.name} website live (opens in a new tab)`}
+            aria-label={`View live: the ${current.name} website (opens in a new tab)`}
           >
             View live ↗
           </a>

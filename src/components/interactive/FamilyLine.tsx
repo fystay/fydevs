@@ -9,6 +9,9 @@ const FULL = LEAD + LAST;
 const DONE_AT = 0.7;
 // On a fast scroll the letters catch up at this many per frame, so they arrive evenly.
 const MAX_STEP = 2;
+// Once the line is on screen it also types on its own, a letter this often, so a visitor
+// who pauses there never faces a blank screen; whichever is further ahead, time or scroll, wins.
+const STEP_MS = 32;
 
 const subscribeMotion = (cb: () => void) => {
   const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -31,12 +34,15 @@ export function FamilyLine() {
   );
   const [shown, setShown] = useState(0);
   const ref = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced) return;
+    const text = textRef.current;
+    if (!el || !text || reduced) return;
     let frame = 0;
     let current = 0;
+    let since = 0;
     // How many letters the scroll position calls for: from the section's top reaching
     // near the top of the screen (the line is then close to centre, so no stray fragment shows
     // low on the screen) to most of the way through the pin.
@@ -45,7 +51,13 @@ export function FamilyLine() {
       const lead = window.innerHeight * 0.15;
       const run = r.height - window.innerHeight + lead;
       const p = run > 0 ? Math.min(1, Math.max(0, (lead - r.top) / run)) : 1;
-      return Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length);
+      const byScroll = Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length);
+      // The clock starts once the line is well up the screen, and resets once it has left below.
+      const t = text.getBoundingClientRect();
+      if (r.top > window.innerHeight) since = 0;
+      else if (!since && (t.top + t.bottom) / 2 < window.innerHeight * 0.82) since = performance.now();
+      const byTime = since ? Math.floor((performance.now() - since) / STEP_MS) : 0;
+      return Math.min(FULL.length, Math.max(byScroll, byTime));
     };
     // Step towards the target a few letters a frame, until it's reached.
     const update = () => {
@@ -53,13 +65,14 @@ export function FamilyLine() {
       const goal = target();
       current += Math.max(-MAX_STEP, Math.min(MAX_STEP, goal - current));
       setShown(current);
-      if (current !== goal) frame = requestAnimationFrame(update);
+      if (current !== goal || (since && current < FULL.length)) frame = requestAnimationFrame(update);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
     current = target();
     setShown(current);
+    schedule();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {
@@ -71,7 +84,8 @@ export function FamilyLine() {
 
   const count = reduced ? FULL.length : shown;
   const typing = count < FULL.length;
-  const caret = <span key="caret" className="family-line__caret" data-typing={typing || undefined} />;
+  // No caret blinking on an empty line: it arrives with the first letter.
+  const caret = count > 0 ? <span key="caret" className="family-line__caret" data-typing={typing || undefined} /> : null;
   // The caret sits right after the last typed letter, ahead of the hidden ones.
   const letters = (text: string, offset: number) =>
     [...text].flatMap((ch, i) => {
@@ -80,14 +94,14 @@ export function FamilyLine() {
           {ch}
         </span>
       );
-      return offset + i === count ? [caret, letter] : [letter];
+      return offset + i === count && caret ? [caret, letter] : [letter];
     });
 
   return (
     <section ref={ref} className="family-line" data-pinned={!reduced || undefined} data-cta-hide>
       <div className="family-line__stage">
         <p className="visually-hidden">{FULL}</p>
-        <p className="container container--wide family-line__text" aria-hidden="true">
+        <p ref={textRef} className="container container--wide family-line__text" aria-hidden="true">
           {letters(LEAD, 0)}
           <em>
             {letters(LAST, LEAD.length)}

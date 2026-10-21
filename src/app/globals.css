@@ -1950,6 +1950,12 @@ main {
   transform-origin: 0 0;
 }
 
+/* Once the desk has faded, the hero is hidden, but its headline stays readable to screen
+   readers (unseen, as the hero itself is at zero opacity by then): it's the page's h1. */
+.zoom.is-zoom .hero-ed__title {
+  visibility: visible;
+}
+
 /* Desktop: the hero fills the pinned stage. Phones and tablets keep their own height. */
 @media (min-width: 64rem) {
   .zoom.is-zoom .hero-ed {
