@@ -6782,8 +6782,7 @@ main .proof__list {
   color: var(--color-ink-3);
 }
 
-.inverse .tile__name,
-.tile--dark .tile__name {
+.inverse .tile__name {
   color: var(--color-inverse-ink-2);
 }
 
@@ -6807,10 +6806,6 @@ main .proof__list {
   color: var(--home-orange);
 }
 
-.tile--dark .tile__title .serif-em {
-  color: var(--home-orange);
-}
-
 .tile__line {
   max-width: 34rem;
   margin: var(--space-4) auto 0;
@@ -6818,8 +6813,7 @@ main .proof__list {
   color: var(--color-ink-2);
 }
 
-.inverse .tile__line,
-.tile--dark .tile__line {
+.inverse .tile__line {
   color: var(--color-inverse-ink-2);
 }
 
@@ -7298,73 +7292,6 @@ main .proof__list {
   }
 }
 
-/* Two smaller tiles side by side on wider screens. */
-/* Phones: the two run edge to edge like every other tile. Wider screens: two cards side by side. */
-.tiles-2 {
-  display: grid;
-}
-
-@media (max-width: 55.99rem) {
-  .tiles-2 .tile--card {
-    border-radius: 0;
-  }
-}
-
-@media (min-width: 56rem) {
-  .tiles-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
-    padding: var(--space-3);
-  }
-}
-
-.tile--card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-7);
-  padding: clamp(3rem, 2rem + 3vw, 4.5rem) clamp(1.25rem, 0.5rem + 3vw, 3rem) 0;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-sunken);
-}
-
-.tile--dark {
-  background: var(--color-inverse-bg);
-  color: var(--color-inverse-ink);
-}
-
-.tile__shot {
-  display: block;
-  overflow: hidden;
-  max-width: 34rem;
-  margin-inline: auto;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  box-shadow: 0 30px 60px -30px rgb(32 33 36 / 0.4);
-}
-
-.tile__shot img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.tile__figure {
-  padding-bottom: clamp(3rem, 2rem + 3vw, 4.5rem);
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: clamp(4.5rem, 3rem + 7vw, 8rem);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.tile__figure span {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-inverse-ink-2);
-}
-
 /* Hero call to action: a weighted primary and a frosted second button that sits on the photo. */
 .hero-ed .btn-row {
   gap: 0.6rem;
@@ -7490,18 +7417,6 @@ main .proof__list {
   }
 }
 
-/* A price in a tile's line links to the full pricing. */
-.tile__price {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: rgb(28 28 28 / 0.3);
-  text-underline-offset: 0.2em;
-}
-
-.tile__price:hover {
-  text-decoration-color: currentColor;
-}
-
 /* The hero's estimate link answers a press the way the buttons do. */
 .hero-estimate > span[aria-hidden] {
   transition: transform var(--duration) var(--ease);
@@ -7579,17 +7494,61 @@ main .proof__list {
   }
 }
 
-/* The homepage's App development card shows the finished app from that page's hero,
-   sized so the card stays close to the Hosting card beside it. */
+/* The homepage's App development tile shows the finished app from that page's hero,
+   rising from the tile's bottom edge: cut off just below the jobs, so no empty screen shows. */
 .tile__sta {
-  padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+  --w: clamp(12rem, 9rem + 10vw, 15rem);
+  height: calc(var(--w) * 1.4);
+  margin-top: clamp(3rem, 2rem + 4vw, 5rem);
+  overflow: hidden;
 }
 
 .tile__sta .sta__phone {
-  width: min(52%, 13rem);
+  width: var(--w);
 }
 
-/* Two quiet links side by side, and the price notice under them (Websites tile). */
+/* Websites tile: the two prices side by side, a hairline between, then two quiet links. */
+.price-pair {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
+.price-pair > div {
+  padding-inline: clamp(1.25rem, 0.5rem + 3vw, 2.5rem);
+}
+
+.price-pair > div + div {
+  border-left: 1px solid var(--color-line-strong);
+}
+
+.price-pair dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.price-pair dd {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(2.25rem, 1.75rem + 2vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.price-pair dd span {
+  margin-left: 0.15em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+/* Two quiet links side by side, under the prices (Websites tile). */
 .tile__more--pair {
   display: flex;
   flex-wrap: wrap;

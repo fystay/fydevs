@@ -107,13 +107,21 @@ export default function HomePage() {
           <h2 id="web-title" className="tile__title">
             Built to win <span className="serif-em">customers.</span>
           </h2>
-          <p className="tile__line">
-            Bespoke design, fast on every phone.{" "}
-            <Link href="/pricing" className="tile__price">
-              From {formatGBP(PACKAGES.essential.from)}
-            </Link>
-            .
-          </p>
+          <p className="tile__line">Bespoke design, fast on every phone.</p>
+          {/* Both prices in one place: the website, and the care that keeps it running. */}
+          <dl className="price-pair">
+            <div>
+              <dt>Website from</dt>
+              <dd>{formatGBP(PACKAGES.essential.from)}</dd>
+            </div>
+            <div>
+              <dt>Hosting &amp; care</dt>
+              <dd>
+                {formatGBP(CARE_PLANS.hosting.monthly)}
+                <span>/month</span>
+              </dd>
+            </div>
+          </dl>
           <p className="tile__more tile__more--pair">
             <Link href="/pricing" className="arrow-link">
               See prices <ArrowRight />
@@ -152,48 +160,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="tiles-2">
-        <section id="apps" data-nav="/app-development" className="tile tile--card" aria-labelledby="apps-title">
-          <div data-reveal>
-            <p className="tile__name">App development</p>
-            <h2 id="apps-title" className="tile__title tile__title--sm">
-              Built around <span className="serif-em">how you work.</span>
-            </h2>
-            <p className="tile__line">Web and mobile apps, portals and tools.</p>
-            <div className="tile__ctas">
-              <Link href="/contact?topic=bespoke" className="btn btn--primary">
-                Build My App
-              </Link>
-              <Link href="/app-development" className="btn btn--secondary">
-                Learn more
-              </Link>
-            </div>
+      <section id="apps" data-nav="/app-development" className="tile" aria-labelledby="apps-title">
+        <div className="container container--wide" data-reveal>
+          <p className="tile__name">App development</p>
+          <h2 id="apps-title" className="tile__title">
+            Built around <span className="serif-em">how you work.</span>
+          </h2>
+          <p className="tile__line">Web and mobile apps, portals and tools.</p>
+          <div className="tile__ctas">
+            <Link href="/contact?topic=bespoke" className="btn btn--primary">
+              Build My App
+            </Link>
+            <Link href="/app-development" className="btn btn--secondary">
+              Learn more
+            </Link>
           </div>
-          {/* The App development hero's finished app (it plays in full on that page). */}
-          <div className="tile__sta" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-            <SheetToApp still />
-          </div>
-        </section>
-
-        <section id="care" data-nav="/websites" className="tile tile--card tile--dark" aria-labelledby="care-title">
-          <div data-reveal>
-            <p className="tile__name">Hosting &amp; care</p>
-            <h2 id="care-title" className="tile__title tile__title--sm">
-              Looked after, <span className="serif-em">every month.</span>
-            </h2>
-            <p className="tile__line">Hosting, backups and updates, handled.</p>
-            <div className="tile__ctas">
-              <Link href="/pricing#care" className="btn btn--primary">
-                See plans
-              </Link>
-            </div>
-          </div>
-          <p className="tile__figure" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-            <span>From</span> {formatGBP(CARE_PLANS.hosting.monthly)}
-            <span>/month</span>
-          </p>
-        </section>
-      </div>
+        </div>
+        {/* The App development hero's finished app (it plays in full on that page). */}
+        <div className="tile__sta" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+          <SheetToApp still />
+        </div>
+      </section>
 
       <section id="process" data-nav="/about" className="tile" aria-labelledby="process-title">
         <div className="container container--wide" data-reveal>
