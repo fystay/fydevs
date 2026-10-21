@@ -6725,6 +6725,60 @@ main .proof__list {
   color: var(--color-accent);
 }
 
+/* A line that types itself in once (components/TypedLine): each letter appears on its own
+   delay and the caret rides along, then blinks a few times on the last letter and goes. */
+.typed {
+  --step: 34ms;
+}
+
+.typed > span {
+  position: relative;
+}
+
+.typed > span::after {
+  content: "";
+  position: absolute;
+  top: 0.12em;
+  bottom: 0.02em;
+  right: -0.03em;
+  width: 0.05em;
+  background: currentColor;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .typed > span {
+    animation: typed-in var(--step) linear both;
+    animation-delay: calc(var(--start) + var(--n) * var(--step));
+  }
+  .typed > span::after {
+    animation: typed-caret var(--step) steps(1);
+    animation-delay: calc(var(--start) + var(--n) * var(--step));
+  }
+  .typed > span:last-child::after {
+    animation: family-caret 1s steps(1) 3;
+    animation-delay: calc(var(--start) + var(--n) * var(--step));
+  }
+  /* Scrolling on before it's finished shows the line whole, so it never meets the laptop zoom half-typed. */
+  .zoom:is([data-zoom="active"], [data-zoom="done"]) .typed > span,
+  .zoom:is([data-zoom="active"], [data-zoom="done"]) .typed > span::after {
+    animation: none;
+  }
+}
+
+@keyframes typed-in {
+  from {
+    visibility: hidden;
+  }
+}
+
+@keyframes typed-caret {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
 /* Laid out from the start, shown as typed, so nothing moves. */
 .family-line__hidden {
   visibility: hidden;
