@@ -92,6 +92,22 @@ export default function HomePage() {
       {/* One true line, full screen after the showcase, typed out as it arrives. */}
       <FamilyLine />
 
+      {/* EV Exec's owner, in their own words (approved by them), right after the line that says it's ours. */}
+      <section className="owner-quote">
+        <figure className="container container--wide" data-reveal>
+          <blockquote>
+            <p>
+              {"\u201C"}Customers book their airport transfer on their phone in a minute, and I get the job straight
+              away. It runs the business while I{"\u2019"}m driving.{"\u201D"}
+            </p>
+          </blockquote>
+          <figcaption>
+            <Image src={evexec.logo} alt="" width={36} height={36} />
+            Owner, {evexec.name}
+          </figcaption>
+        </figure>
+      </section>
+
       {/*
         Below the showcase, one product per screen: a name, a few words, one link and a
         big visual. Detail and full pricing live on the service pages.

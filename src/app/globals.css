@@ -6774,6 +6774,40 @@ main .proof__list {
   }
 }
 
+/* EV Exec's owner, quoted under the family line: one sentence, large, then who said it. */
+.owner-quote {
+  padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(4.5rem, 3rem + 6vw, 8rem);
+  text-align: center;
+}
+
+.owner-quote blockquote p {
+  max-width: 30ch;
+  margin-inline: auto;
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.75rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.owner-quote figcaption {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.owner-quote figcaption img {
+  border-radius: 0.5rem;
+}
+
 .tile {
   overflow: hidden;
   padding-block: clamp(4.5rem, 3rem + 6vw, 8rem) 0;

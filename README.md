@@ -584,7 +584,7 @@ npm run build && npm start
 ### Before launch
 
 - Review the case-study wording in `src/lib/projects.ts` (challenge and solution are framed from each live site, not from client interviews) and the FAQ answers in `src/lib/faq.ts`, especially payments and ownership.
-- Add genuine client testimonials, with permission, if you have them. None are shown, so none are invented.
+- One testimonial is shown, on the homepage: EV Exec's owner, in words they approved as their own. Add more only when they are a real person's own words, given with permission; none are invented.
 
 - Confirm package, care-plan and estimator prices and VAT treatment.
 - Configure email delivery and send a test enquiry.
