@@ -2228,7 +2228,7 @@ main {
 .tag--accent {
   border-color: transparent;
   background: var(--color-accent-soft);
-  color: var(--color-accent);
+  color: color-mix(in srgb, var(--color-accent) 85%, black); /* a shade darker: ≥ 4.5:1 on the tint */
   font-weight: 550;
 }
 
@@ -7616,7 +7616,7 @@ main .proof__list {
   margin-top: auto;
   padding: 0.7em 0.6em 1.4em;
   border-top: 1px solid #ececec;
-  color: #8a8a8a;
+  color: #6b6b6b; /* 5.3:1 on white */
   font-size: 0.8em;
 }
 
