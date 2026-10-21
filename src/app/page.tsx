@@ -30,6 +30,20 @@ const LAPTOP_SCREEN: ScreenQuad = [
 
 const evexec = projectBySlug("ev-exec")!;
 
+// Each owner's own words, approved by them; keep them true to how the business runs today.
+const OWNER_QUOTES = [
+  {
+    project: evexec,
+    quote:
+      "Customers book their airport transfer on their phone in a minute, and I get the job straight away. It runs the business while I\u2019m driving.",
+  },
+  {
+    project: projectBySlug("boonma")!,
+    quote:
+      "Clients find a treatment, see the price and book a time, all from their phone. It feels like our studio.",
+  },
+];
+
 export default function HomePage() {
   return (
     <>
@@ -92,20 +106,23 @@ export default function HomePage() {
       {/* One true line, full screen after the showcase, typed out as it arrives. */}
       <FamilyLine />
 
-      {/* EV Exec's owner, in their own words (approved by them), right after the line that says it's ours. */}
-      <section className="owner-quote">
-        <figure className="container container--wide" data-reveal>
-          <blockquote>
-            <p>
-              {"\u201C"}Customers book their airport transfer on their phone in a minute, and I get the job straight
-              away. It runs the business while I{"\u2019"}m driving.{"\u201D"}
-            </p>
-          </blockquote>
-          <figcaption>
-            <Image src={evexec.logo} alt="" width={36} height={36} />
-            Owner, {evexec.name}
-          </figcaption>
-        </figure>
+      {/* The owners of EV Exec and Boonma, in their own words (approved by them), right after the line that says they're ours. Phones swipe between them. */}
+      <section className="owner-quotes" aria-label="From the owners">
+        <div className="container container--wide" data-reveal>
+          <div className="owner-quotes__row" tabIndex={0}>
+            {OWNER_QUOTES.map(({ project, quote }) => (
+              <figure key={project.slug}>
+                <blockquote>
+                  <p>{`\u201C${quote}\u201D`}</p>
+                </blockquote>
+                <figcaption>
+                  <Image src={project.logo} alt="" width={36} height={36} />
+                  Owner, {project.name}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/*

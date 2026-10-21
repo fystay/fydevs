@@ -6774,26 +6774,60 @@ main .proof__list {
   }
 }
 
-/* EV Exec's owner, quoted under the family line: one sentence, large, then who said it. */
-.owner-quote {
+/* The owners of EV Exec and Boonma, quoted under the family line: phones swipe from one to
+   the next (the second peeking in); wider screens show both side by side. */
+.owner-quotes {
   padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(4.5rem, 3rem + 6vw, 8rem);
-  text-align: center;
 }
 
-.owner-quote blockquote p {
-  max-width: 30ch;
-  margin-inline: auto;
+.owner-quotes__row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 86%;
+  gap: var(--space-5);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+@media (max-width: 55.99rem) {
+  .owner-quotes__row {
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+}
+
+.owner-quotes__row::-webkit-scrollbar {
+  display: none;
+}
+
+.owner-quotes figure {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 56rem) {
+  .owner-quotes__row {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2.5rem, 1rem + 4vw, 5rem);
+    overflow: visible;
+  }
+}
+
+.owner-quotes blockquote p {
   font-family: var(--font-playfair), var(--font-serif);
-  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.75rem);
+  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
   font-style: italic;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.22;
   letter-spacing: -0.015em;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
-.owner-quote figcaption {
-  display: inline-flex;
+.owner-quotes figcaption {
+  display: flex;
   align-items: center;
   gap: var(--space-3);
   margin-top: var(--space-5);
@@ -6804,7 +6838,7 @@ main .proof__list {
   color: var(--color-ink-3);
 }
 
-.owner-quote figcaption img {
+.owner-quotes figcaption img {
   border-radius: 0.5rem;
 }
 
