@@ -4929,6 +4929,15 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --color-accent-soft: #d9e4e3;
 }
 
+/* The header takes the top of each service page's hero colour, so the two read as one band. */
+:root:has(.svc[data-current="apps"]) .site-header:not([data-open="true"]) {
+  background: rgb(232 234 222 / 0.86); /* #e8eade, sage */
+}
+
+:root:has(.svc[data-current="booking"]) .site-header:not([data-open="true"]) {
+  background: rgb(227 234 232 / 0.86); /* #e3eae8, pale blue-teal */
+}
+
 .page-hero:has(.svc[data-current="apps"]) {
   background: linear-gradient(to bottom, #e8eade, var(--color-bg));
 }

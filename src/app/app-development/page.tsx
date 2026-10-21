@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaBand, PageHero } from "@/components/Blocks";
@@ -12,6 +13,9 @@ import opBookings from "../../../public/work/app/op-bookings.webp";
 
 const evexec = projectBySlug("ev-exec")!;
 const fystay = projectBySlug("fystay")!;
+
+// Phones' browser bar takes the hero's sage, to match the header.
+export const viewport: Viewport = { themeColor: "#E8EADE" };
 
 export const metadata = pageMetadata(
   "/app-development",

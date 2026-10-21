@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import Link from "next/link";
 import { CtaBand } from "@/components/Blocks";
 import { ArrowRight } from "@/components/Icons";
@@ -8,6 +9,9 @@ import { PhoneFan } from "@/components/interactive/PhoneFan";
 import { archivo, jost } from "@/lib/fonts";
 import { pageMetadata } from "@/lib/metadata";
 import { projectBySlug } from "@/lib/projects";
+
+// Phones' browser bar takes the hero's pale blue-teal, to match the header.
+export const viewport: Viewport = { themeColor: "#E3EAE8" };
 
 export const metadata = pageMetadata(
   "/booking-software",
