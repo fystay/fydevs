@@ -6699,7 +6699,7 @@ main .proof__list {
 }
 
 .family-line[data-pinned] {
-  height: 250svh;
+  height: 200svh;
 }
 
 .family-line__stage {

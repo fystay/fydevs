@@ -32,18 +32,27 @@ export function FamilyLine() {
   );
   const [shown, setShown] = useState(0);
   const ref = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced) return;
+    const text = textRef.current;
+    if (!el || !text || reduced) return;
     let frame = 0;
     let current = 0;
-    // How many letters the scroll position calls for: from the section's top reaching
-    // near the top of the screen (the line is then close to centre, so no stray fragment shows
-    // low on the screen) to most of the way through the pin.
+    // Where the line sits below the section's top, measured while the section is still below
+    // the pin (its layout differs between phones and desktops).
+    let offset = 0;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      const t = text.getBoundingClientRect();
+      if (r.top > 0 || !offset) offset = (t.top + t.bottom) / 2 - r.top;
+    };
+    // How many letters the scroll position calls for: from the line's middle passing 85% down
+    // the screen (it's coming into view, so it never sits there empty) to partway through the pin.
     const target = () => {
       const r = el.getBoundingClientRect();
-      const lead = window.innerHeight * 0.15;
+      const lead = Math.max(0, window.innerHeight * 0.85 - offset);
       const run = r.height - window.innerHeight + lead;
       const p = run > 0 ? Math.min(1, Math.max(0, (lead - r.top) / run)) : 1;
       return Math.round((Math.min(p, DONE_AT) / DONE_AT) * FULL.length);
@@ -59,13 +68,18 @@ export function FamilyLine() {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const onResize = () => {
+      measure();
+      schedule();
+    };
+    measure();
     current = target();
     setShown(current);
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", onResize);
       if (frame) cancelAnimationFrame(frame);
     };
   }, [reduced]);
@@ -89,7 +103,7 @@ export function FamilyLine() {
     <section ref={ref} className="family-line" data-pinned={!reduced || undefined} data-cta-hide>
       <div className="family-line__stage">
         <p className="visually-hidden">{FULL}</p>
-        <p className="container container--wide family-line__text" aria-hidden="true">
+        <p ref={textRef} className="container container--wide family-line__text" aria-hidden="true">
           {letters(LEAD, 0)}
           <em>
             {letters(LAST, LEAD.length)}
