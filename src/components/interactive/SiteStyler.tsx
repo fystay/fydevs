@@ -1,14 +1,32 @@
 "use client";
 
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import barberCut from "../../../public/styler/barber-cut.webp";
+import barberFade from "../../../public/styler/barber-fade.webp";
+import barberHero from "../../../public/styler/barber-hero.webp";
+import barberShave from "../../../public/styler/barber-shave.webp";
+import cafeHero from "../../../public/styler/cafe-hero.webp";
+import cafePlates from "../../../public/styler/cafe-plates.webp";
+import cafeSourdough from "../../../public/styler/cafe-sourdough.webp";
+import cafeWine from "../../../public/styler/cafe-wine.webp";
+import clinicHero from "../../../public/styler/clinic-hero.webp";
+import clinicKnee from "../../../public/styler/clinic-knee.webp";
+import clinicRehab from "../../../public/styler/clinic-rehab.webp";
+import clinicSports from "../../../public/styler/clinic-sports.webp";
+import tradesFuse from "../../../public/styler/trades-fuse.webp";
+import tradesHero from "../../../public/styler/trades-hero.webp";
+import tradesRewires from "../../../public/styler/trades-rewires.webp";
+import tradesTesting from "../../../public/styler/trades-testing.webp";
 import { ArrowRight } from "../Icons";
 
 /*
  * Bespoke, shown: one website on a screen and a phone, redrawn for each business the
  * visitor picks (tap a chip or swipe the picture). While it's on screen it cycles on its
  * own until the visitor takes over, and the button under it then names their pick and
- * carries it to the enquiry form. Every business, name and line shown is an example.
+ * carries it to the enquiry form. Every business, name and line shown is an example; the
+ * photos are Unsplash stock (free licence), cropped to their frames in public/styler.
  */
 
 const SITES = [
@@ -22,19 +40,29 @@ const SITES = [
     line: "Breakfast till late, in the heart of Leeds.",
     cta: "Book a table",
     nav: ["Menu", "Visit", "Events"],
-    cards: ["Sourdough", "Small plates", "Natural wine"],
+    photo: cafeHero,
+    cards: [
+      ["Sourdough", cafeSourdough],
+      ["Small plates", cafePlates],
+      ["Natural wine", cafeWine],
+    ],
   },
   {
-    id: "salon",
-    kind: "Salon",
-    brief: "a website for my salon",
-    name: "Bloom Studio",
-    host: "bloomstudio.co.uk",
-    title: "Hair that feels like you.",
-    line: "Cuts, colour and care in Chester.",
-    cta: "Book an appointment",
-    nav: ["Services", "Team", "Prices"],
-    cards: ["Cut & finish", "Balayage", "Treatments"],
+    id: "barber",
+    kind: "Barber",
+    brief: "a website for my barbershop",
+    name: "Blade & Co",
+    host: "bladeandco.co.uk",
+    title: "Sharp cuts. Hot towels.",
+    line: "Walk-ins and bookings in Sheffield.",
+    cta: "Book a cut",
+    nav: ["Cuts", "Barbers", "Prices"],
+    photo: barberHero,
+    cards: [
+      ["Cut & style", barberCut],
+      ["Skin fade", barberFade],
+      ["Hot towel shave", barberShave],
+    ],
   },
   {
     id: "trades",
@@ -46,7 +74,12 @@ const SITES = [
     line: "Electricians across Greater Manchester.",
     cta: "Get a free quote",
     nav: ["Services", "Areas", "Reviews"],
-    cards: ["Rewires", "EV chargers", "Testing"],
+    photo: tradesHero,
+    cards: [
+      ["Rewires", tradesRewires],
+      ["Fuse boards", tradesFuse],
+      ["Testing", tradesTesting],
+    ],
   },
   {
     id: "clinic",
@@ -58,11 +91,25 @@ const SITES = [
     line: "Same-week physiotherapy in Bristol.",
     cta: "Book online",
     nav: ["Treatments", "About", "Fees"],
-    cards: ["Back & neck", "Sports injury", "Pilates"],
+    photo: clinicHero,
+    cards: [
+      ["Sports injury", clinicSports],
+      ["Rehab", clinicRehab],
+      ["Knee pain", clinicKnee],
+    ],
   },
 ] as const;
 
 type Site = (typeof SITES)[number];
+
+/** A photo filling its frame (the frame sets the shape; the crop is in the file). */
+function Photo({ src, sizes }: { src: StaticImageData; sizes: string }) {
+  return (
+    <span className="ss-photo">
+      <Image src={src} alt="" sizes={sizes} />
+    </span>
+  );
+}
 
 function Desktop({ site }: { site: Site }) {
   return (
@@ -80,12 +127,12 @@ function Desktop({ site }: { site: Site }) {
           <span className="ss-line">{site.line}</span>
           <span className="ss-btn">{site.cta}</span>
         </div>
-        <i className="ss-photo" />
+        <Photo src={site.photo} sizes="(min-width: 56rem) 400px, 40vw" />
       </div>
       <div className="ss-cards">
-        {site.cards.map((c) => (
+        {site.cards.map(([c, img]) => (
           <span key={c}>
-            <i className="ss-photo" />
+            <Photo src={img} sizes="(min-width: 56rem) 240px, 25vw" />
             {c}
           </span>
         ))}
@@ -101,14 +148,14 @@ function Mobile({ site }: { site: Site }) {
         <b className="ss-logo">{site.name}</b>
         <i className="ss-menu" />
       </div>
-      <i className="ss-photo" />
+      <Photo src={site.photo} sizes="(min-width: 56rem) 260px, 30vw" />
       <b className="ss-title">{site.title}</b>
       <span className="ss-line">{site.line}</span>
       <span className="ss-btn">{site.cta}</span>
       <div className="ss-cards">
-        {site.cards.slice(0, 2).map((c) => (
+        {site.cards.slice(0, 2).map(([c, img]) => (
           <span key={c}>
-            <i className="ss-photo" />
+            <Photo src={img} sizes="(min-width: 56rem) 120px, 15vw" />
             {c}
           </span>
         ))}
