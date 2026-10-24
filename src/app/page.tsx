@@ -91,7 +91,7 @@ export default function HomePage() {
                 <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
                   <Stopwatch size={14} />
                   Instant estimate <span className="hero-estimate__time">· 2 min</span>
-                  <span aria-hidden="true">→</span>
+                  <ArrowRight className="hero-estimate__arrow" />
                 </Link>
               </div>
             </div>

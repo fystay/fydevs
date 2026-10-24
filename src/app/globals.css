@@ -7552,13 +7552,15 @@ main .proof__list {
   }
 }
 
-/* The hero's estimate link answers a press the way the buttons do. */
-.hero-estimate > span[aria-hidden] {
+/* The hero's estimate link answers a press the way the buttons do. Its arrow is the same
+   icon as Start a Project's, in the link's own colour. */
+.hero-estimate__arrow {
+  flex: none;
   transition: transform var(--duration) var(--ease);
 }
 
-.hero-estimate:hover > span[aria-hidden],
-.hero-estimate:active > span[aria-hidden] {
+.hero-estimate:hover > .hero-estimate__arrow,
+.hero-estimate:active > .hero-estimate__arrow {
   transform: translateX(3px);
 }
 
