@@ -4918,6 +4918,45 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   }
 }
 
+/*
+ * Titles: a hand-drawn brush stroke under the italic words that carry each title's message.
+ * Drawn as a background on each line of the italic (so a wrapped phrase gets one per line and
+ * nothing reflows), in the page's accent: terracotta, sage on App development, teal on Booking
+ * software, and a lighter shade of each on dark bands.
+ */
+:root {
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 10 C 45 4, 110 2, 197 6' stroke='%23d45b32' stroke-opacity='0.6' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+:root:has(.svc[data-current="apps"]) {
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 10 C 45 4, 110 2, 197 6' stroke='%2356624a' stroke-opacity='0.6' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+:root:has(.svc[data-current="booking"]) {
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 10 C 45 4, 110 2, 197 6' stroke='%232f5d62' stroke-opacity='0.6' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+:root:has(.svc[data-current="apps"]) .inverse {
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 10 C 45 4, 110 2, 197 6' stroke='%23a9b596' stroke-opacity='0.6' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+:root:has(.svc[data-current="booking"]) .inverse {
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 10 C 45 4, 110 2, 197 6' stroke='%237fb3b8' stroke-opacity='0.6' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+main :is(h1, h2) .serif-em {
+  padding-bottom: 0.1em;
+  background: var(--brush) left bottom / 100% 0.22em no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Where the italic sits on its own line, the stroke runs under the words, not the column. */
+main :is(.hero-ed__title, .booking-hero .tile__title) .serif-em {
+  width: fit-content;
+  margin-bottom: -0.1em; /* its room for the stroke, given back so nothing below moves */
+}
+
 /* Each service page takes its own accent across the site's markers, links and states. */
 :root:has(.svc[data-current="apps"]) {
   --color-accent: #56624a; /* olive (5.5:1 on the background) */
