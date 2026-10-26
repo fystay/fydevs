@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { primaryNav, type NavItem, type NavLink, type NavMenu } from "@/lib/site";
-import { ArrowRight } from "./Icons";
+import { Stopwatch } from "./Icons";
 import { Logo } from "./Logo";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -430,13 +430,8 @@ export function Header() {
           </nav>
 
           <div className="header-cta" onMouseEnter={() => hoverItem(null)}>
-            <Link
-              href="/contact?topic=website"
-              className="btn btn--primary btn--sm"
-              onClick={closeIfSamePage}
-              transitionTypes={NAV}
-            >
-              Start a Project
+            <Link href="/build" className="btn btn--primary btn--sm" onClick={closeIfSamePage} transitionTypes={NAV}>
+              Get my price
             </Link>
           </div>
 
@@ -549,14 +544,14 @@ export function Header() {
             ))}
           </ul>
           <Link
-            href="/contact?topic=website"
+            href="/build"
             className="btn btn--primary mm-cta"
             onClick={closeIfSamePage}
             transitionTypes={NAV}
             style={{ "--i": primaryNav.length } as React.CSSProperties}
           >
-            Start a Project
-            <ArrowRight />
+            <Stopwatch />
+            Get my price
           </Link>
         </nav>
 

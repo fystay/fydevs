@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight } from "./Icons";
+import { Stopwatch } from "./Icons";
 
 /** Pages that already are the next step, so the bar would only get in the way. */
 const HIDDEN_ON = ["/contact", "/build"];
@@ -57,12 +57,12 @@ export function StickyCta() {
 
   return (
     <div className="sticky-cta" data-show={show} inert={!show}>
-      <Link href="/contact?topic=website" className="btn btn--primary">
-        Start a Project
-        <ArrowRight />
+      <Link href="/build" className="btn btn--primary">
+        <Stopwatch />
+        Get my price
       </Link>
-      <Link href="/build" className="btn btn--secondary">
-        Instant estimate
+      <Link href="/contact?topic=website" className="btn btn--secondary">
+        Talk to us
       </Link>
     </div>
   );

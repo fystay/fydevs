@@ -1845,11 +1845,6 @@ main {
     width: 2.25rem;
     height: 2.25rem;
   }
-  /* Keeps the last lines of copy on the wall, clear of the laptop screen on the right. */
-  .hero-ed .hero-note {
-    max-width: 12.5rem;
-    font-size: 0.8125rem;
-  }
 }
 
 
@@ -7450,57 +7445,6 @@ main .proof__list {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-ink-3);
-}
-
-/* Phones: the estimate is a slim link under Start a Project; from tablets up it is the second button. */
-.hero-estimate {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  justify-self: start;
-  width: max-content;
-  min-height: 2.75rem;
-  border-bottom: 1px solid rgb(28 28 28 / 0.3);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--color-ink);
-  transition: border-color var(--duration) var(--ease);
-}
-
-.hero-estimate span {
-  color: var(--color-ink-3);
-}
-
-.hero-estimate:hover {
-  border-bottom-color: var(--color-ink);
-}
-
-/* Phones: the link stays short, clear of the laptop in the photo (the estimate page says how long). */
-@media (max-width: 39.99rem) {
-  .hero-estimate__time {
-    display: none;
-  }
-}
-
-@media (max-width: 39.99rem) {
-  .hero-ed .hero-estimate-btn,
-  .hero-ed .hero-note {
-    display: none;
-  }
-}
-
-@media (min-width: 40rem) {
-  .hero-estimate {
-    display: none;
-  }
-}
-
-/* The hero's estimate link answers a press the way the buttons do. */
-.hero-estimate:active {
-  opacity: 0.75;
 }
 
 /* ==========================================================================

@@ -51,23 +51,19 @@ export default function HomePage() {
             <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
               Bespoke, mobile-first, priced in the open.
             </p>
+            {/* The lowest-risk step first (a price in two minutes), a person second. */}
             <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
-              <Link href="/contact?topic=website" className="btn btn--primary">
-                Start a Project
-              </Link>
-              <Link href="/build" className="btn btn--secondary hero-estimate-btn">
+              <Link href="/build" className="btn btn--primary">
                 <Stopwatch />
-                Instant estimate
+                Get my price
+              </Link>
+              <Link href="/contact?topic=website" className="btn btn--secondary">
+                Talk to us
               </Link>
             </div>
             <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
-              Indicative price · about 2 minutes
+              Free · no obligation · about 2 minutes
             </p>
-            {/* Phones: a slim link in place of the second button, so the work below comes into view sooner. */}
-            <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
-              <Stopwatch size={14} />
-              Instant estimate <span className="hero-estimate__time">· 2 min</span>
-            </Link>
           </div>
         </div>
         <div aria-label="Recent work" className="container container--wide showcase-section">
@@ -127,12 +123,9 @@ export default function HomePage() {
               </dd>
             </div>
           </dl>
-          <p className="tile__more tile__more--pair">
+          <p className="tile__more">
             <Link href="/pricing" className="arrow-link">
-              See prices <ArrowRight />
-            </Link>
-            <Link href="/build" className="arrow-link">
-              Your price in 2 minutes <ArrowRight />
+              See all prices <ArrowRight />
             </Link>
           </p>
         </div>
@@ -155,8 +148,8 @@ export default function HomePage() {
           </h2>
           <p className="tile__line">Proven every day at {evexec.name}.</p>
           <p className="tile__more">
-            <Link href="/booking-software" className="arrow-link">
-              See it work <ArrowRight />
+            <Link href="/booking-software#make-it-yours" className="arrow-link">
+              Try the booking demo <ArrowRight />
             </Link>
           </p>
         </div>
@@ -174,10 +167,10 @@ export default function HomePage() {
           <p className="tile__line">Web and mobile apps, portals and tools.</p>
           <div className="tile__ctas">
             <Link href="/contact?topic=bespoke" className="btn btn--primary">
-              Build My App
+              Plan my app
             </Link>
             <Link href="/app-development" className="btn btn--secondary">
-              Learn more
+              See how it works
             </Link>
           </div>
         </div>
@@ -212,12 +205,12 @@ export default function HomePage() {
           </>
         }
       >
-        <Link href="/contact?topic=website" className="btn btn--primary">
-          Start a Project
-        </Link>
-        <Link href="/build" className="btn btn--secondary">
+        <Link href="/build" className="btn btn--primary">
           <Stopwatch />
-          Instant estimate
+          Get my price
+        </Link>
+        <Link href="/contact?topic=website" className="btn btn--secondary">
+          Talk to us
         </Link>
       </CtaBand>
     </>
