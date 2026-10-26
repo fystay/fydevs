@@ -77,7 +77,6 @@ export default function HomePage() {
                 <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
                   <Link href="/contact?topic=website" className="btn btn--primary">
                     Start a Project
-                    <ArrowRight />
                   </Link>
                   <Link href="/build" className="btn btn--secondary hero-estimate-btn">
                     <Stopwatch />
@@ -91,7 +90,6 @@ export default function HomePage() {
                 <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
                   <Stopwatch size={14} />
                   Instant estimate <span className="hero-estimate__time">· 2 min</span>
-                  <ArrowRight className="hero-estimate__arrow" />
                 </Link>
               </div>
             </div>
