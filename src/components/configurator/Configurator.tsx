@@ -437,7 +437,7 @@ function ConfiguratorInner({ params, inBrowser }: { params: ConfiguratorParams; 
                 </fieldset>
                 <p className="fine">
                   Domain names, business email, paid licences and third-party subscriptions are not included in any
-                  plan. <Link href="/websites#care">See what&apos;s covered</Link>.
+                  plan. <Link href="/pricing#care">See what&apos;s covered</Link>.
                 </p>
               </>
             )}

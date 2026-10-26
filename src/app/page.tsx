@@ -8,10 +8,9 @@ import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { FamilyLine } from "@/components/interactive/FamilyLine";
 import { SheetToApp } from "@/components/interactive/SheetToApp";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
-import { SiteStyler } from "@/components/interactive/SiteStyler";
 import { WebStages } from "@/components/WebStages";
-import { archivo, jost } from "@/lib/fonts";
-import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
+import { WebsitesTile } from "@/components/WebsitesTile";
+import { jost } from "@/lib/fonts";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 
@@ -97,42 +96,7 @@ export default function HomePage() {
         Below the showcase, one product per screen: a name, a few words, one link and a
         big visual. Detail and full pricing live on the service pages.
       */}
-      <section
-        id="web-design"
-        data-nav="/websites"
-        className={`tile ${jost.variable} ${archivo.variable}`}
-        aria-labelledby="web-title"
-      >
-        <div className="container container--wide" data-reveal>
-          <p className="tile__name">Websites</p>
-          <h2 id="web-title" className="tile__title">
-            Built to win <span className="serif-em">customers.</span>
-          </h2>
-          <p className="tile__line">Bespoke design, fast on every phone.</p>
-          {/* Both prices in one place: the website, and the care that keeps it running. */}
-          <dl className="price-pair">
-            <div>
-              <dt>Website from</dt>
-              <dd>{formatGBP(PACKAGES.essential.from)}</dd>
-            </div>
-            <div>
-              <dt>Hosting &amp; care</dt>
-              <dd>
-                {formatGBP(CARE_PLANS.hosting.monthly)}
-                <span>/month</span>
-              </dd>
-            </div>
-          </dl>
-          <p className="tile__more">
-            <Link href="/pricing" className="arrow-link">
-              See all prices <ArrowRight />
-            </Link>
-          </p>
-        </div>
-        <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
-          <SiteStyler />
-        </div>
-      </section>
+      <WebsitesTile id="web-design" navLink="/websites" />
 
       {/* Booking software, shown working: a customer books, the office is pinged. */}
       <section
