@@ -314,8 +314,7 @@ main {
   color: var(--color-ink-2);
 }
 
-.section-head .eyebrow::before,
-.eyebrow--num::before {
+.section-head .eyebrow::before {
   counter-increment: section;
   content: counter(section, decimal-leading-zero) " /";
   color: var(--color-ink-3);
@@ -426,8 +425,7 @@ main {
   color: var(--color-inverse-ink-2);
 }
 
-.inverse .section-head .eyebrow::before,
-.inverse .eyebrow--num::before {
+.inverse .section-head .eyebrow::before {
   color: var(--color-inverse-ink-2);
   opacity: 0.7;
 }
@@ -579,8 +577,6 @@ main {
   height: var(--header-h);
 }
 
-
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -700,8 +696,6 @@ main {
 .menu-toggle[aria-expanded="true"] .menu-toggle__bars span:last-child {
   transform: translateY(-4.25px) rotate(-45deg);
 }
-
-/* ---------- Menus (Apple-style) ---------- */
 
 /* Shared menu contents: large primary links, then small grouped links. */
 .menu__primary a {
@@ -1184,19 +1178,6 @@ main {
   padding-block: clamp(3.5rem, 2rem + 6vw, 7.5rem) clamp(4rem, 2rem + 6vw, 7rem);
 }
 
-.hero__grid {
-  display: grid;
-  gap: var(--space-8);
-  align-items: center;
-}
-
-@media (min-width: 64rem) {
-  .hero__grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: var(--space-9);
-  }
-}
-
 .hero h1 {
   max-width: 14ch;
 }
@@ -1240,51 +1221,6 @@ main {
 .card--raised {
   background: var(--color-surface-raised);
   box-shadow: var(--shadow-md);
-}
-
-.path-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  min-height: 100%;
-  text-decoration: none;
-  transition:
-    border-color var(--duration) var(--ease),
-    background-color var(--duration) var(--ease);
-}
-
-.path-card:hover {
-  border-color: var(--color-line-strong);
-  background: var(--color-surface-raised);
-}
-
-.path-card__foot {
-  margin-top: auto;
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--color-line);
-}
-
-.path-card--dark {
-  background: var(--color-inverse-bg);
-  border-color: var(--color-inverse-bg);
-  color: var(--color-inverse-ink);
-}
-
-.path-card--dark:hover {
-  background: #2a2b2f;
-  border-color: #2a2b2f;
-}
-
-.path-card--dark .muted {
-  color: var(--color-inverse-ink-2);
-}
-
-.path-card--dark .path-card__foot {
-  border-color: var(--color-inverse-line);
-}
-
-.path-card--dark .arrow-link {
-  border-color: var(--color-inverse-line);
 }
 
 /* Numbered editorial list (principles, process) */
@@ -1374,20 +1310,6 @@ main {
   gap: var(--space-5);
 }
 
-.package__price {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-
-.package__price strong {
-  font-weight: 600;
-  font-size: var(--text-2xl);
-  font-weight: 400;
-  letter-spacing: var(--tracking-tight);
-  font-variant-numeric: tabular-nums;
-}
-
 .package .checks {
   padding-top: var(--space-5);
   border-top: 1px solid var(--color-line);
@@ -1397,10 +1319,6 @@ main {
   .package > .stack:first-child {
     min-height: 5.5rem;
   }
-}
-
-.package--featured {
-  border-color: var(--color-ink);
 }
 
 /* Notices */
@@ -1615,12 +1533,6 @@ main {
   color: #6f231d;
 }
 
-.form-status--success {
-  border-color: #c9ddd0;
-  background: #e8f1eb;
-  color: #1f4a33;
-}
-
 .form-status strong {
   display: block;
   margin-bottom: var(--space-1);
@@ -1635,9 +1547,6 @@ main {
 }
 .mt-6 {
   margin-top: var(--space-6);
-}
-.mt-7 {
-  margin-top: var(--space-7);
 }
 .mt-8 {
   margin-top: var(--space-8);
@@ -1716,50 +1625,6 @@ main {
   color: var(--hx-cream);
 }
 
-.hero-ed__links {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-4);
-}
-
-/* Circular arrow link. */
-.circle-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-  min-height: 2.75rem;
-  font-size: 1.0625rem;
-  font-weight: 500;
-  color: var(--color-ink);
-  text-decoration: none;
-}
-
-.circle-link__icon {
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border: 1.5px solid var(--hx-accent);
-  border-radius: 50%;
-  color: var(--color-accent);
-  transition:
-    background-color var(--duration) var(--ease),
-    color var(--duration) var(--ease),
-    transform var(--duration) var(--ease);
-}
-
-.circle-link:hover .circle-link__icon,
-.circle-link:focus-visible .circle-link__icon {
-  background: var(--hx-accent);
-  color: var(--hx-cream);
-  transform: translateX(3px);
-}
-
-.circle-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
-}
-
 /*
  * The desk photo sits behind the copy, starting just below the service switcher. Its top
  * is a plain sunlit wall, so the headline and buttons sit on the wall and the desk,
@@ -1770,26 +1635,6 @@ main {
   --hx-wall: #dfcfbc;
   --hx-wall-lit: #ede3d5; /* behind the headline: keeps the accent at 3.1:1 */
   --hx-photo-top: calc(var(--svc-top) + 2.75rem);
-}
-
-.hero-ed__visual {
-  position: absolute;
-  z-index: 0;
-  inset: var(--hx-photo-top) 0 0 0;
-  background: linear-gradient(to bottom, var(--hx-wall-lit) 30%, var(--hx-wall) 75%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 94%, transparent);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 94%, transparent);
-}
-
-/* Phones: the whole photo, anchored to the bottom; the copy sits on its wall. */
-.hero-ed__photo {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
 }
 
 /*
@@ -1835,28 +1680,10 @@ main {
     padding-inline: 1.1rem;
     font-size: 0.9375rem;
   }
-  .hero-ed__links {
-    gap: var(--space-2);
-  }
-  .hero-ed .circle-link {
-    font-size: 0.9375rem;
-  }
-  .hero-ed .circle-link__icon {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
 }
-
 
 /* Tablets: a desk-height crop of the photo rather than the whole tall image. */
 @media (min-width: 40rem) and (max-width: 63.99rem) {
-  .hero-ed__photo {
-    height: 62vw;
-    object-fit: cover;
-    object-position: 60% 82%;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 25%);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 25%);
-  }
   .hero-ed__copy {
     padding-bottom: 54vw;
   }
@@ -1886,28 +1713,6 @@ main {
   .hero-ed .lede {
     max-width: 36rem;
     font-size: clamp(1.1875rem, 0.8rem + 0.6vw, 1.4375rem);
-  }
-  .hero-ed__visual {
-    background: linear-gradient(to right, var(--hx-wall-lit) 30%, var(--hx-wall) 70%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 88%, transparent);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 7rem, #000 88%, transparent);
-  }
-  .hero-ed__photo {
-    top: 0;
-    left: auto;
-    right: 0;
-    width: min(74%, 64rem); /* no wider than the photo itself, so it stays sharp */
-    height: 100%;
-    object-fit: cover;
-    object-position: 62% 58%;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40%);
-    mask-image: linear-gradient(to right, transparent 0, #000 40%);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero-ed__photo {
-    animation: hero-photo-in 1200ms var(--ease) both;
   }
 }
 
@@ -1992,98 +1797,6 @@ main {
   background: var(--color-surface-sunken);
   padding: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
   overflow: hidden;
-}
-
-/* The website is the subject: full width on small screens, never covered by the phone. */
-.stage__browser {
-  width: 100%;
-}
-
-.stage .stage__browser {
-  border: 1px solid var(--color-line-strong);
-  border-radius: clamp(0.625rem, 0.4rem + 0.6vw, 0.875rem);
-  background: var(--color-surface-raised);
-  box-shadow:
-    0 1px 2px rgb(32 33 36 / 0.06),
-    0 10px 24px -14px rgb(32 33 36 / 0.22),
-    0 40px 80px -40px rgb(32 33 36 / 0.32);
-}
-
-.stage .stage__bar {
-  height: clamp(1.6rem, 1.3rem + 0.8vw, 2.25rem);
-  padding-inline: clamp(0.6rem, 0.4rem + 0.6vw, 1rem);
-  background: var(--color-bg);
-  border-bottom-color: var(--color-line-strong);
-}
-
-.stage .stage__dots i {
-  width: clamp(6px, 4px + 0.25vw, 9px);
-  height: clamp(6px, 4px + 0.25vw, 9px);
-  background: var(--color-line-strong);
-}
-
-.stage .stage__url {
-  max-width: 22rem;
-  border: 1px solid var(--color-line);
-  background: var(--color-surface-raised);
-  color: var(--color-ink-2);
-}
-
-.stage__phone {
-  display: none;
-  position: absolute;
-}
-
-
-@media (min-width: 48rem) {
-  .stage__browser {
-    width: 82%;
-  }
-  .stage__phone {
-    display: block;
-    width: 14%;
-    right: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
-    bottom: clamp(0.5rem, 0.1rem + 2vw, 3.5rem);
-  }
-}
-
-.stage-caption {
-  font-family: var(--font-mono);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-3) var(--space-6);
-  margin-top: var(--space-4);
-  font-size: 0.75rem;
-  color: var(--color-ink-2);
-}
-
-.stage-caption ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
-}
-
-.stage-caption a {
-  text-decoration: none;
-  color: var(--color-ink);
-}
-
-.stage-caption a:hover {
-  text-decoration: underline;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .stage__browser,
-  .stage__phone {
-    animation: rise 900ms var(--ease) both;
-  }
-  .stage__phone--a {
-    animation-delay: 120ms;
-  }
-  .stage__phone--b {
-    animation-delay: 220ms;
-  }
 }
 
 /* Editorial project rows: large media, concise text, alternating sides. */
@@ -2197,187 +1910,10 @@ main {
   font-weight: 550;
 }
 
-/* Compact work grid (homepage): one wide feature plus smaller tiles. */
-.work-grid {
-  display: grid;
-  gap: var(--space-5);
-}
-
-@media (min-width: 48rem) {
-  .work-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .work-grid > :first-child {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 64rem) {
-  .work-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .work-grid > :first-child {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-}
-
-.work-tile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  text-decoration: none;
-}
-
-.work-tile__media {
-  position: relative;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-sunken);
-  padding: clamp(0.875rem, 0.5rem + 1.5vw, 1.75rem);
-  overflow: hidden;
-  flex: 1;
-  display: grid;
-  align-items: start;
-}
-
-.work-tile__media figure {
-  transition: transform var(--duration-slow) var(--ease);
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .work-tile:hover .work-tile__media figure {
-    transform: translateY(-4px);
-  }
-}
-
-.work-tile__caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-4);
-}
-
-.work-tile__caption h3 {
-  font-size: var(--text-lg);
-  font-weight: 550;
-  letter-spacing: -0.01em;
-}
-
-.work-tile__caption p {
-  font-size: var(--text-sm);
-  color: var(--color-ink-3);
-  text-align: right;
-}
-
-/* Two-column service index with ruled rows. */
-.service-index {
-  display: grid;
-  gap: var(--space-8);
-}
-
-@media (min-width: 64rem) {
-  .service-index {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-9);
-  }
-}
-
-.service-index__col > header {
-  display: grid;
-  gap: var(--space-3);
-  padding-bottom: var(--space-5);
-}
-
-.service-index ul {
-  border-top: 1px solid var(--color-ink);
-}
-
-.service-index li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-1);
-  padding-block: var(--space-4);
-  border-bottom: 1px solid var(--color-line);
-}
-
-@media (min-width: 40rem) {
-  .service-index li {
-    grid-template-columns: 12rem minmax(0, 1fr);
-    gap: var(--space-5);
-  }
-}
-
-.service-index li strong {
-  font-weight: 550;
-}
-
-.service-index li span {
-  color: var(--color-ink-2);
-  font-size: var(--text-sm);
-}
-
 /* Dark product band. */
-.product-band {
-  overflow: hidden;
-}
 
-.product-band__grid {
-  display: grid;
-  gap: var(--space-8);
-  align-items: center;
-}
-
-@media (min-width: 64rem) {
-  .product-band__grid {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: var(--space-9);
-  }
-}
-
-.product-band .browser-on-dark,
 .inverse figure[class*="browser"] {
   border-color: var(--color-inverse-line);
-}
-
-.product-list {
-  display: grid;
-  gap: 0;
-  border-top: 1px solid var(--color-inverse-line);
-}
-
-.product-list > li {
-  display: grid;
-  gap: var(--space-2);
-  padding-block: var(--space-5);
-  border-bottom: 1px solid var(--color-inverse-line);
-}
-
-.product-list a {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-1) var(--space-4);
-  align-items: center;
-  text-decoration: none;
-}
-
-.product-list a strong {
-  font-weight: 550;
-}
-
-.product-list a span {
-  grid-column: 1;
-  font-size: var(--text-sm);
-  color: var(--color-inverse-ink-2);
-}
-
-.product-list a svg {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  transition: transform var(--duration) var(--ease);
-}
-
-.product-list a:hover svg {
-  transform: translateX(4px);
 }
 
 .inverse .arrow-link {
@@ -2411,60 +1947,6 @@ main {
   color: var(--color-inverse-ink-2);
 }
 
-/* Pricing on the homepage: packages beside the quick estimate. */
-.pricing-split {
-  display: grid;
-  gap: var(--space-7);
-  align-items: start;
-}
-
-@media (min-width: 64rem) {
-  .pricing-split {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: var(--space-8);
-  }
-}
-
-.price-rows {
-  border-top: 1px solid var(--color-ink);
-}
-
-.price-rows > li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-1) var(--space-5);
-  align-items: baseline;
-  padding-block: var(--space-5);
-  border-bottom: 1px solid var(--color-line);
-}
-
-.price-rows h3 {
-  font-size: var(--text-lg);
-  font-weight: 550;
-  letter-spacing: -0.01em;
-}
-
-.price-rows p {
-  grid-column: 1 / -1;
-  color: var(--color-ink-2);
-  font-size: var(--text-sm);
-}
-
-.price-rows .price {
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-size: var(--text-xl);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.price-rows .price small {
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  color: var(--color-ink-3);
-  margin-right: 0.35em;
-}
-
 /* Media + text split used on inner pages. */
 .split {
   display: grid;
@@ -2476,139 +1958,6 @@ main {
   .split {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-9);
-  }
-  .split--media-wide {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  }
-}
-
-.media-panel {
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-sunken);
-  padding: clamp(1rem, 0.5rem + 3vw, 3rem);
-}
-
-.inverse .media-panel {
-  background: #2a2b2f;
-}
-
-.media-caption {
-  margin-top: var(--space-3);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-ink-3);
-}
-
-.inverse .media-caption {
-  color: var(--color-inverse-ink-2);
-}
-
-/* Editorial work index (homepage). */
-.work-index {
-  border-top: 1px solid var(--color-ink);
-}
-
-.work-index li {
-  border-bottom: 1px solid var(--color-line);
-}
-
-.work-index__row {
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
-  gap: var(--space-2) var(--space-4);
-  align-items: center;
-  padding-block: var(--space-4);
-  text-decoration: none;
-}
-
-.work-index__thumb {
-  grid-row: span 2;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--color-surface-sunken);
-}
-
-.work-index__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  transition: transform var(--duration-slow) var(--ease);
-}
-
-.work-index__name {
-  font-weight: 600;
-  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
-  letter-spacing: -0.035em;
-  line-height: 1.05;
-}
-
-.work-index__meta {
-  grid-column: 2;
-  font-size: var(--text-sm);
-  color: var(--color-ink-2);
-}
-
-.work-index__meta span {
-  color: var(--color-ink-3);
-}
-
-.work-index__meta span::before {
-  content: " · ";
-}
-
-.work-index__go {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid var(--color-line-strong);
-  border-radius: 50%;
-  transition:
-    background-color var(--duration) var(--ease),
-    color var(--duration) var(--ease),
-    border-color var(--duration) var(--ease);
-}
-
-.work-index__row:hover .work-index__go,
-.work-index__row:focus-visible .work-index__go {
-  background: var(--color-ink);
-  border-color: var(--color-ink);
-  color: var(--color-inverse-ink);
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .work-index__row:hover .work-index__thumb img {
-    transform: scale(1.06);
-  }
-}
-
-@media (min-width: 48rem) {
-  .work-index__row {
-    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 1fr) auto;
-    padding-block: var(--space-5);
-  }
-  .work-index__thumb {
-    grid-row: auto;
-    width: 5rem;
-    height: 4rem;
-  }
-  .work-index__meta {
-    grid-column: 3;
-  }
-  .work-index__go {
-    grid-column: 4;
-    grid-row: auto;
-  }
-  .work-index__meta span {
-    display: block;
-  }
-  .work-index__meta span::before {
-    content: none;
   }
 }
 
@@ -2682,8 +2031,7 @@ main {
 
 /* Media panels position their overlaid devices. */
 .stage,
-.work-row__media,
-.media-panel {
+.work-row__media {
   position: relative;
 }
 
@@ -2789,7 +2137,6 @@ main {
   transform: translateY(28px);
 }
 
-
 /*
  * Showcase (homepage): our projects on a laptop, a dark bezel round a 16:10 display
  * with the keyboard deck below, so you see the site the way a customer would.
@@ -2805,15 +2152,6 @@ main {
   margin-inline: auto;
   container-type: inline-size;
 }
-
-/*
- * The laptop: the lid (bezel and display) stands upright and the base hinges back from its
- * bottom edge, seen from just above. The camera's distance scales with the laptop's width,
- * so it looks the same at every size.
- *
- * The laptop is drawn flat, with the base given the perspective by its own transform:
- * iPhone Safari doesn't draw video inside a 3D scene.
- */
 /* Room for the base below the lid (it is drawn in 3D, outside the normal flow). */
 .laptop__view::after {
   content: "";
@@ -3492,20 +2830,6 @@ ol.steps li::after {
   color: var(--color-ink-2);
 }
 
-/* Lift on hover for price rows. */
-.price-rows > li {
-  transition:
-    padding var(--duration) var(--ease),
-    background-color var(--duration) var(--ease);
-}
-
-@media (hover: hover) {
-  .price-rows > li:hover {
-    padding-inline: var(--space-4);
-    background: var(--color-surface);
-  }
-}
-
 /* On touch screens there is no hover, so the project in focus scrolls itself. */
 @keyframes page-scroll {
   0%,
@@ -3520,8 +2844,7 @@ ol.steps li::after {
 
 @media (hover: none) and (prefers-reduced-motion: no-preference) {
   .carousel__item.is-current .scrollshot img,
-  .work-row.is-in .scrollshot img,
-  .service-split [data-reveal].is-in .scrollshot img {
+  .work-row.is-in .scrollshot img {
     animation: page-scroll calc(var(--scroll-dur, 6s) * 1.6) ease-in-out 800ms infinite alternate;
   }
 }
@@ -3539,12 +2862,6 @@ ol.steps li::after {
   margin-bottom: var(--space-2);
   font-size: var(--text-sm);
   font-weight: 550;
-}
-
-.chips__options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
 }
 
 .chip {
@@ -3719,110 +3036,6 @@ ol.steps li::after {
 
 .hero-note a {
   color: var(--color-ink);
-}
-
-/* Proof strip: checkable facts only. */
-.proof {
-  padding-top: var(--space-7);
-}
-
-.proof__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--color-line);
-}
-
-@media (min-width: 48rem) {
-  .proof__list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.proof__list li {
-  display: grid;
-  gap: var(--space-1);
-  padding: var(--space-5) var(--space-4) var(--space-5) 0;
-  border-bottom: 1px solid var(--color-line);
-}
-
-.proof__list strong {
-  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.proof__note {
-  max-width: 44rem;
-  margin: var(--space-7) 0 0;
-  padding-left: var(--space-5);
-  border-left: 2px solid var(--home-orange, var(--color-accent));
-}
-
-.proof__note p {
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
-  line-height: 1.35;
-  color: var(--color-ink);
-}
-
-.proof__note em {
-  color: var(--color-accent);
-}
-
-.proof__more {
-  margin-top: var(--space-5);
-}
-
-.proof__list span {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--color-ink-3);
-}
-
-/* Service sections. */
-.service-split {
-  align-items: center;
-}
-
-.benefits {
-  display: grid;
-  gap: var(--space-4) var(--space-6);
-  padding-block: var(--space-2);
-}
-
-@media (min-width: 40rem) {
-  .benefits {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.benefits li {
-  display: grid;
-  gap: var(--space-1);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-line-strong);
-}
-
-.inverse .benefits li {
-  border-color: var(--color-inverse-line);
-}
-
-.benefits strong {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.benefits span {
-  font-size: var(--text-sm);
-  color: var(--color-ink-2);
-}
-
-.inverse .benefits span {
-  color: var(--color-inverse-ink-2);
 }
 
 /* Pricing plans: a swipeable row of cards (see components/interactive/PlanSwiper). */
@@ -4062,31 +3275,6 @@ ol.steps li::after {
   margin-top: var(--space-8);
   padding-top: var(--space-7);
   border-top: 1px solid var(--color-line);
-}
-
-.ongoing__intro {
-  display: grid;
-  gap: var(--space-3);
-  max-width: 40rem;
-}
-
-/* FAQ layout. */
-.faq-layout {
-  display: grid;
-  gap: var(--space-6);
-}
-
-@media (min-width: 64rem) {
-  .faq-layout {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: var(--space-8);
-    align-items: start;
-  }
-  .faq-layout .section-head {
-    position: sticky;
-    top: calc(var(--header-h) + var(--space-6));
-    margin-bottom: 0;
-  }
 }
 
 /* Contact page. */
@@ -4608,7 +3796,6 @@ ol.steps li::after {
   color: #fff;
 }
 
-
 /* ==========================================================================
    Page transitions from the header menu (app/template.tsx)
    ========================================================================== */
@@ -5050,7 +4237,7 @@ main :is(.h1, .h2) .serif-em {
   color: var(--home-orange);
 }
 
-main :is(.steps h3, .ongoing .h3, .proof__list strong, .plan__name, .plan__price) {
+main :is(.steps h3, .ongoing .h3, .plan__name, .plan__price) {
   font-family: var(--font-playfair), var(--font-serif);
   font-weight: 500;
   letter-spacing: -0.015em;
@@ -5061,9 +4248,6 @@ main :is(.steps h3, .ongoing .h3) {
 }
 
 /* Sage: the quiet secondary, on the rules between benefits and through the process. */
-main .benefits li {
-  border-top-color: var(--home-sage);
-}
 
 main #process {
   background: var(--home-sage-wash);
@@ -5087,11 +4271,6 @@ main #process ol.steps li::after {
     background: #f4f5ef;
     border-color: var(--home-sage);
   }
-}
-
-/* The proof strip's figures sit on an orange rule, like the hero's switcher line. */
-main .proof__list {
-  border-top: 2px solid var(--home-orange);
 }
 
 /* ==========================================================================
@@ -5150,33 +4329,6 @@ main .proof__list {
   .sticky-cta {
     transform: translate(-50%, 0);
   }
-}
-
-/* Pricing: a prompt to the instant estimate, the quickest way to a real number. */
-.estimate-prompt {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-5);
-  margin-top: var(--space-6);
-  padding: var(--space-5) var(--space-6);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-sunken);
-}
-
-.estimate-prompt p {
-  max-width: 34rem;
-  color: var(--color-ink-2);
-}
-
-.estimate-prompt strong {
-  display: block;
-  margin-bottom: var(--space-1);
-  font-family: var(--font-playfair), var(--font-serif);
-  font-size: 1.375rem;
-  font-weight: 500;
-  color: var(--color-ink);
 }
 
 /* Reply-time promise under the closing call to action. */
@@ -6862,10 +6014,6 @@ main .proof__list {
   letter-spacing: -0.03em;
 }
 
-.tile__title--sm {
-  font-size: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
-}
-
 .tile__title .serif-em {
   font-family: inherit;
   font-weight: 400;
@@ -7605,12 +6753,6 @@ main .proof__list {
 }
 
 /* Two quiet links side by side, under the prices (Websites tile). */
-.tile__more--pair {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-2) var(--space-6);
-}
 
 .apps-tile__body {
   margin-top: clamp(3rem, 2rem + 4vw, 5rem);
@@ -7806,8 +6948,6 @@ main .proof__list {
   background: #e7e7e7;
   color: #333;
 }
-
-/* The change itself: rows lift away in order, the sheet fades, the phone rises, the cards land. */
 /* Once faded, the old cells are hidden outright (so they don't linger as invisible text). */
 .sta[data-state="app"] .sta__grid > span {
   opacity: 0;
