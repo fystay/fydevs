@@ -4,7 +4,7 @@ import { CtaBand, PageHero } from "@/components/Blocks";
 import { PhoneFrame } from "@/components/Devices";
 import { ScrollShot } from "@/components/interactive/ScrollShot";
 import { Tilt } from "@/components/interactive/Tilt";
-import { ArrowRight } from "@/components/Icons";
+import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { pageMetadata } from "@/lib/metadata";
 import { projects } from "@/lib/projects";
 
@@ -109,11 +109,12 @@ export default function WorkPage() {
         title={<>Your business <span className="serif-em">could be next.</span></>}
         body="Tell us what you need. We reply with honest advice, a clear price and a plan."
       >
-        <Link href="/contact?topic=website" className="btn btn--primary">
-          Start a Project
+        <Link href="/build" className="btn btn--primary">
+          <Stopwatch />
+          Get my price
         </Link>
-        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-          Build My App
+        <Link href="/contact" className="btn btn--secondary">
+          Talk to us
         </Link>
       </CtaBand>
     </>

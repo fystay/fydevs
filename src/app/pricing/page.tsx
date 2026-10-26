@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Blocks";
-import { ArrowRight } from "@/components/Icons";
+import { Stopwatch } from "@/components/Icons";
 import { PlanSwiper } from "@/components/interactive/PlanSwiper";
 import { pageMetadata } from "@/lib/metadata";
 import { appPlanCard, carePlanCards, packagePlanCards } from "@/lib/plans";
@@ -26,8 +26,8 @@ export default function PricingPage() {
       >
         <div className="btn-row">
           <Link href="/build" className="btn btn--primary">
-            Instant estimate
-            <ArrowRight />
+            <Stopwatch />
+            Get my price
           </Link>
           <Link href="#care" className="btn btn--secondary">
             Hosting &amp; care
@@ -82,10 +82,11 @@ export default function PricingPage() {
         body="Nine quick steps to an instant estimate you can send us."
       >
         <Link href="/build" className="btn btn--primary">
-          Instant estimate
+          <Stopwatch />
+          Get my price
         </Link>
         <Link href="/contact?topic=website" className="btn btn--secondary">
-          Start a Project
+          Talk to us
         </Link>
       </CtaBand>
     </>

@@ -524,7 +524,7 @@ This section records the technical decisions made for the first build. Items in 
 
 - **Next.js 16 (App Router) + React 19 + TypeScript.** Pages are statically prerendered; the only server code is the enquiry API route.
 - **Plain CSS** with design tokens in `src/app/globals.css`, plus CSS modules for the configurator and quick estimate. No UI framework.
-- **Fonts:** Inter (interface and body) and Newsreader (editorial headings), self-hosted at build time with `next/font`.
+- **Fonts:** Inter (interface and body), Playfair Display (headings and italic accents) and Geist Mono (labels), self-hosted at build time with `next/font`. Jost and Archivo are loaded only where the booking demos show them.
 - **Tests:** Vitest. **Lint:** ESLint with `eslint-config-next`.
 
 ### Where things live

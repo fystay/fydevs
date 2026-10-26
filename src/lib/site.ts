@@ -78,7 +78,7 @@ export const primaryNav: NavItem[] = [
     menu: {
       primary: [
         { href: "/websites", label: "Explore websites" },
-        { href: "/build", label: "Instant estimate" },
+        { href: "/build", label: "Get my price" },
         { href: "/pricing", label: "Packages & prices" },
         { href: "/pricing#care", label: "Hosting & care" },
       ],
@@ -94,8 +94,8 @@ export const primaryNav: NavItem[] = [
         {
           title: "Get started",
           links: [
-            { href: "/build", label: "Instant estimate" },
-            { href: "/contact?topic=website", label: "Start a Project" },
+            { href: "/build", label: "Get my price" },
+            { href: "/contact?topic=website", label: "Talk to us" },
           ],
         },
       ],
@@ -127,7 +127,7 @@ export const primaryNav: NavItem[] = [
     menu: {
       primary: [
         { href: "/app-development", label: "App development" },
-        { href: "/contact?topic=bespoke", label: "Build My App" },
+        { href: "/contact?topic=bespoke", label: "Plan my app" },
       ],
       groups: [
         {
@@ -152,7 +152,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     links: [
       { href: "/websites", label: "Web design" },
       { href: "/pricing", label: "Packages & prices" },
-      { href: "/build", label: "Instant estimate" },
+      { href: "/build", label: "Get my price" },
       { href: "/pricing#care", label: "Hosting & care" },
     ],
   },
@@ -169,7 +169,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     links: [
       { href: "/about", label: "About" },
       { href: "/faq", label: "FAQ" },
-      { href: "/contact", label: "Start a Project" },
+      { href: "/contact", label: "Talk to us" },
       { href: "/privacy", label: "Privacy" },
     ],
   },

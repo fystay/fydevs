@@ -55,8 +55,7 @@ export default function AppDevelopmentPage() {
         <div className="apps-hero__body">
           <div className="btn-row">
             <Link href="/contact?topic=bespoke" className="btn btn--primary">
-              Build My App
-              <ArrowRight />
+              Plan my app
             </Link>
             <Link href="#build" className="btn btn--secondary">
               Build yours here

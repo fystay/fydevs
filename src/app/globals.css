@@ -33,7 +33,7 @@
 
   /* Typography */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-serif: var(--font-newsreader), ui-serif, Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --text-xs: 0.8125rem; /* 13 */
@@ -3055,9 +3055,10 @@ ol.steps li::after {
   }
 }
 
-@media (min-width: 80rem) {
+/* Laptops and up: every plan in one row, sharing the width, so none hangs off the edge. */
+@media (min-width: 64rem) {
   .carousel--plans .carousel__track {
-    grid-auto-columns: 25rem;
+    grid-auto-columns: minmax(0, 1fr);
   }
 }
 
@@ -3160,6 +3161,16 @@ ol.steps li::after {
 .plan--inverse .btn--primary {
   background: var(--color-inverse-ink);
   color: var(--color-ink);
+}
+
+.plan--inverse .btn--secondary {
+  border-color: var(--color-inverse-line);
+  color: var(--color-inverse-ink);
+}
+
+.plan--inverse .btn--secondary:hover {
+  border-color: var(--color-inverse-ink);
+  background: transparent;
 }
 
 /* The selected plan (Professional until the visitor picks another). */
@@ -6095,7 +6106,7 @@ main #process ol.steps li::after {
   --a: #c9a56a;
   --on-a: #161618;
   --card: rgb(255 255 255 / 0.06);
-  --h-font: var(--font-newsreader), var(--font-serif);
+  --h-font: var(--font-serif);
   --h-weight: 600;
   --h-transform: uppercase;
   --h-spacing: 0.02em;

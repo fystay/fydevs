@@ -4,6 +4,7 @@ import { PhoneFrame } from "@/components/Devices";
 import { pageMetadata } from "@/lib/metadata";
 import { projects } from "@/lib/projects";
 import { site } from "@/lib/site";
+import { Stopwatch } from "@/components/Icons";
 
 export const metadata = pageMetadata(
   "/about",
@@ -95,11 +96,12 @@ export default function AboutPage() {
       </section>
 
       <CtaBand title={<>Let&apos;s build something <span className="serif-em">you&apos;re proud of.</span></>}>
-        <Link href="/contact?topic=website" className="btn btn--primary">
-          Start a Project
+        <Link href="/build" className="btn btn--primary">
+          <Stopwatch />
+          Get my price
         </Link>
-        <Link href="/contact?topic=bespoke" className="btn btn--secondary">
-          Build My App
+        <Link href="/contact" className="btn btn--secondary">
+          Talk to us
         </Link>
       </CtaBand>
     </>

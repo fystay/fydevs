@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CtaBand, PageHero, PricingNotice, SectionHead } from "@/components/Blocks";
 import { BrowserFrame } from "@/components/Devices";
-import { ArrowRight } from "@/components/Icons";
+import { Stopwatch } from "@/components/Icons";
 import { PlanSwiper } from "@/components/interactive/PlanSwiper";
 import { projects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/metadata";
@@ -45,8 +45,8 @@ export default function WebsitesPage() {
       >
         <div className="btn-row">
           <Link href="/build" className="btn btn--primary">
-            Configure your website
-            <ArrowRight />
+            <Stopwatch />
+            Get my price
           </Link>
           <Link href="#packages" className="btn btn--secondary">
             See packages
@@ -196,11 +196,12 @@ export default function WebsitesPage() {
         }
         body="Nine quick steps to an instant estimate you can send us."
       >
-        <Link href="/contact?topic=website" className="btn btn--primary">
-          Start a Project
+        <Link href="/build" className="btn btn--primary">
+          <Stopwatch />
+          Get my price
         </Link>
-        <Link href="/build" className="btn btn--secondary">
-          Instant estimate
+        <Link href="/contact?topic=website" className="btn btn--secondary">
+          Talk to us
         </Link>
       </CtaBand>
     </>

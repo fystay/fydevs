@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CtaBand, PageHero } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
 import { pageMetadata } from "@/lib/metadata";
+import { Stopwatch } from "@/components/Icons";
 
 export const metadata = pageMetadata(
   "/faq",
@@ -38,11 +39,12 @@ export default function FaqPage() {
         }
         body="Tell us what you need. Honest advice and a clear next step."
       >
-        <Link href="/contact?topic=website" className="btn btn--primary">
-          Start a Project
+        <Link href="/build" className="btn btn--primary">
+          <Stopwatch />
+          Get my price
         </Link>
-        <Link href="/build" className="btn btn--secondary">
-          Instant estimate
+        <Link href="/contact" className="btn btn--secondary">
+          Talk to us
         </Link>
       </CtaBand>
     </>
