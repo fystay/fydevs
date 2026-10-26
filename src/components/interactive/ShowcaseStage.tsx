@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Project } from "@/lib/projects";
-import { ZoomSettledContext } from "./LaptopZoom";
 import { LivePreview } from "./LivePreview";
 
 type Item = Pick<Project, "slug" | "name" | "sector" | "host" | "url" | "desktop" | "mobile" | "walkthrough" | "logo">;
@@ -69,7 +68,7 @@ const STILL_INTERVAL = 6000;
  * The homepage showcase: our real projects on a laptop. Once the laptop is in view, each
  * site's walkthrough clip plays in turn and moves on to the next site when it finishes.
  * The tabs jump to any site; tapping the screen or the button pauses and resumes. Clips
- * hold still while the hero zoom is carrying the laptop in, and when it is out of view.
+ * hold still while the laptop is out of view.
  * With reduced motion nothing plays until the visitor asks.
  */
 export function ShowcaseStage({ items }: { items: Item[] }) {
@@ -110,9 +109,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
     return () => io.disconnect();
   }, []);
 
-  // Holds still while the hero zoom is carrying it onto the screen, so the screen matches the photo.
-  const zoomSettled = useContext(ZoomSettledContext);
-  const running = zoomSettled && inView && !userPaused;
+  const running = inView && !userPaused;
 
   // Start the current site's clip after a short pause.
   useEffect(() => {
@@ -178,7 +175,7 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                     className={`showcase__img${i === index ? " is-active" : ""}`}
                   />
                 ))}
-                {clipOn && zoomSettled && (
+                {clipOn && (
                   <LivePreview
                     key={current.slug}
                     {...current.walkthrough}

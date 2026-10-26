@@ -6,7 +6,6 @@ import { ServiceSwitcher } from "@/components/ServiceSwitcher";
 import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { BookingDemo } from "@/components/interactive/BookingDemo";
 import { FamilyLine } from "@/components/interactive/FamilyLine";
-import { LaptopZoom, type ScreenQuad } from "@/components/interactive/LaptopZoom";
 import { SheetToApp } from "@/components/interactive/SheetToApp";
 import { ShowcaseStage } from "@/components/interactive/ShowcaseStage";
 import { SiteStyler } from "@/components/interactive/SiteStyler";
@@ -15,18 +14,9 @@ import { archivo, jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
 import { projectBySlug, projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
-import workspace from "../../public/hero/fydevs-workspace.webp";
 
 // Title, description and share image come from the root layout; only the canonical URL is added here.
 export const metadata: Metadata = siteUrl() ? { alternates: { canonical: "/" } } : {};
-
-// Where the laptop screen sits in the hero photo, in image pixels (it runs off the photo's right edge).
-const LAPTOP_SCREEN: ScreenQuad = [
-  [603, 548],
-  [1060, 510],
-  [1118, 1006],
-  [672, 1062],
-];
 
 const evexec = projectBySlug("ev-exec")!;
 
@@ -48,58 +38,42 @@ export default function HomePage() {
   return (
     <>
       {/*
-        Hero: the message on the left, the studio desk (with our real work on screen) on the right.
-        Scrolling zooms into the laptop, whose screen becomes the project showcase.
+        Hero: the message, then our real work straight beneath it, crisp and live: the
+        project showcase (laptop and phone, walkthroughs playing, tabs to switch site).
       */}
-      <LaptopZoom
-        screen={LAPTOP_SCREEN}
-        hero={
-          <section className="hero-ed" data-nav="/work" aria-labelledby="hero-title">
-            <div className="hero-ed__visual">
-              <Image
-                src={workspace}
-                alt="A FY Devs desk: a laptop showing the EV Exec website we built, beside a FY Devs mug, notebook and business cards."
-                sizes="(min-width: 64rem) 75vw, 100vw"
-                placeholder="blur"
-                preload
-                className="hero-ed__photo"
-              />
+      <section className="hero-ed hero-ed--work" data-nav="/work" aria-labelledby="hero-title" data-cta-hide>
+        <div className="container container--wide hero-ed__layout">
+          <div className="hero-ed__copy">
+            <ServiceSwitcher current="web" />
+            <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
+              Websites and apps <span className="serif-em">that grow your business.</span>
+            </h1>
+            <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
+              Bespoke, mobile-first, priced in the open.
+            </p>
+            <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
+              <Link href="/contact?topic=website" className="btn btn--primary">
+                Start a Project
+              </Link>
+              <Link href="/build" className="btn btn--secondary hero-estimate-btn">
+                <Stopwatch />
+                Instant estimate
+              </Link>
             </div>
-            <div className="container container--wide hero-ed__layout">
-              <div className="hero-ed__copy">
-                <ServiceSwitcher current="web" />
-                <h1 id="hero-title" className="hero-ed__title rise" style={{ "--i": 1 } as React.CSSProperties}>
-                  Websites and apps <span className="serif-em">that grow your business.</span>
-                </h1>
-                <p className="lede rise" style={{ "--i": 2 } as React.CSSProperties}>
-                  Bespoke, mobile-first, priced in the open.
-                </p>
-                <div className="btn-row rise" style={{ "--i": 3 } as React.CSSProperties}>
-                  <Link href="/contact?topic=website" className="btn btn--primary">
-                    Start a Project
-                  </Link>
-                  <Link href="/build" className="btn btn--secondary hero-estimate-btn">
-                    <Stopwatch />
-                    Instant estimate
-                  </Link>
-                </div>
-                <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
-                  Indicative price · about 2 minutes
-                </p>
-                {/* Phones: a slim link in place of the second button, so it stays clear of the laptop in the photo. */}
-                <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
-                  <Stopwatch size={14} />
-                  Instant estimate <span className="hero-estimate__time">· 2 min</span>
-                </Link>
-              </div>
-            </div>
-          </section>
-        }
-      >
-        <section aria-label="Recent work" data-nav="/work" className="container container--wide showcase-section">
+            <p className="hero-note rise" style={{ "--i": 4 } as React.CSSProperties}>
+              Indicative price · about 2 minutes
+            </p>
+            {/* Phones: a slim link in place of the second button, so the work below comes into view sooner. */}
+            <Link href="/build" className="hero-estimate rise" style={{ "--i": 4 } as React.CSSProperties}>
+              <Stopwatch size={14} />
+              Instant estimate <span className="hero-estimate__time">· 2 min</span>
+            </Link>
+          </div>
+        </div>
+        <div aria-label="Recent work" className="container container--wide showcase-section">
           <ShowcaseStage items={projects} />
-        </section>
-      </LaptopZoom>
+        </div>
+      </section>
 
       {/* One true line, full screen after the showcase, typed out as it arrives. */}
       <FamilyLine />

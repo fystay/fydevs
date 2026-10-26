@@ -1923,99 +1923,68 @@ main {
   }
 }
 
+/*
+ * The hero with our work as its picture: the message, then the project showcase (crisp
+ * laptop and phone, real sites playing). Phones stack them, the work starting right under
+ * the buttons; desktops set the message beside the work, both in the first screen.
+ */
+.hero-ed--work {
+  overflow: visible;
+  background: linear-gradient(to bottom, var(--hx-cream), var(--color-bg) 70%);
+}
+
+.hero-ed--work .hero-ed__copy {
+  padding-bottom: 0;
+}
+
+.hero-ed--work .showcase-section {
+  padding-top: var(--space-6);
+  padding-bottom: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+}
+
+@media (max-width: 39.99rem) {
+  .hero-ed--work {
+    min-height: 0;
+  }
+  .hero-ed--work .hero-ed__copy {
+    padding-bottom: 0;
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero-ed--work {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    min-height: max(38rem, calc(100svh - var(--header-h)));
+    padding-inline: max(var(--gutter), calc((100% - var(--width-wide, 80rem)) / 2));
+  }
+  .hero-ed--work > .container {
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+  .hero-ed--work .hero-ed__copy {
+    max-width: none;
+    padding-block: var(--space-6);
+  }
+  /* "that grow your business." is about 9.7 times the font size wide: kept inside its column. */
+  .hero-ed--work .hero-ed__title {
+    font-size: min(3.6vw, 4.5rem);
+  }
+  /* Beside the copy the bar is narrower: the tabs get their own row, so names show in full. */
+  .hero-ed--work .showcase__bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-ed--work .showcase-section {
+    padding-block: var(--space-6);
+  }
+}
+
 /* The project showcase follows the hero as its own section. */
 .showcase-section {
   padding-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
 }
-
-/*
- * Laptop zoom (components/interactive/LaptopZoom). Scrolling through a runway keeps the
- * hero pinned while the camera moves into the laptop and its screen becomes the showcase.
- * Everything here waits for the script's .is-zoom class, so without JavaScript or with
- * reduced motion the hero and showcase simply stack, as before.
- */
-.zoom.is-zoom {
-  --zoom-run: 115lvh; /* how far you scroll while the zoom plays */
-  height: calc(100lvh - var(--header-h) + var(--zoom-run));
-}
-
-.zoom.is-zoom .zoom__stage {
-  position: sticky;
-  top: var(--header-h);
-  height: calc(100lvh - var(--header-h));
-  overflow: hidden;
-  background: var(--color-bg);
-}
-
-.zoom.is-zoom .hero-ed {
-  transform-origin: 0 0;
-}
-
-/* Once the desk has faded, the hero is hidden, but its headline stays readable to screen
-   readers (unseen, as the hero itself is at zero opacity by then): it's the page's h1. */
-.zoom.is-zoom .hero-ed__title {
-  visibility: visible;
-}
-
-/* Desktop: the hero fills the pinned stage. Phones and tablets keep their own height. */
-@media (min-width: 64rem) {
-  .zoom.is-zoom .hero-ed {
-    height: 100%;
-    min-height: 0;
-  }
-}
-
-/*
- * The showcase, laid over the hero in perspective so that its laptop display sits exactly
- * on the laptop screen in the photo. At the end it is simply the showcase, in place.
- */
-.zoom.is-zoom .zoom__panel {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  transform-origin: 0 0;
-}
-
-/* Everything but the display (bezel, keyboard, project tabs) arrives as the photo fades away. */
-/*
- * The next section rises into the empty stage below the landed showcase while the laptop
- * holds still, so there's no gap when the pin releases (the script measures the space).
- */
-.zoom.is-zoom {
-  margin-bottom: calc(var(--zoom-slack, 0px) * -1);
-}
-
-.zoom.is-zoom + * {
-  position: relative;
-  z-index: 1;
-}
-
-.zoom.is-zoom .showcase__bar {
-  opacity: var(--zoom-tabs, 1);
-}
-
-/* At the end of the zoom this column is exactly the visible stage; the showcase sits centred in it. */
-.zoom.is-zoom .zoom__column {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 1%;
-}
-
-.zoom.is-zoom .showcase-section {
-  width: 100%;
-  padding-top: 0;
-}
-
-/* Sized so the whole showcase, tabs included, fits the screen (the laptop is about 0.72 as tall as wide). */
-.zoom.is-zoom .showcase {
-  max-width: calc((var(--zoom-h) - 8rem) / 0.72);
-  margin-inline: auto;
-}
-
 
 /*
  * Featured project: the real site presented as an object on the page, in a quiet
@@ -2847,15 +2816,9 @@ main {
  * bottom edge, seen from just above. The camera's distance scales with the laptop's width,
  * so it looks the same at every size.
  *
- * While the hero zoom turns it, the laptop is a true 3D object. At rest it is drawn flat,
- * with the base given the same perspective by its own transform: iPhone Safari doesn't
- * draw video inside a 3D scene, and the walkthrough clips play at rest.
+ * The laptop is drawn flat, with the base given the perspective by its own transform:
+ * iPhone Safari doesn't draw video inside a 3D scene.
  */
-.zoom[data-zoom="active"] .laptop__view {
-  perspective: 520cqw;
-  perspective-origin: 50% 35%;
-}
-
 /* Room for the base below the lid (it is drawn in 3D, outside the normal flow). */
 .laptop__view::after {
   content: "";
@@ -2865,10 +2828,6 @@ main {
 
 .laptop__body {
   position: relative;
-}
-
-.zoom[data-zoom="active"] .laptop__body {
-  transform-style: preserve-3d;
 }
 
 /* Phones: as big as the screen allows. */
@@ -2974,10 +2933,6 @@ main {
   }
 }
 
-.zoom.is-zoom .laptop__hint {
-  opacity: var(--zoom-tabs, 1);
-}
-
 /* The walkthrough clip, filling the display (LivePreview). */
 .live {
   position: absolute;
@@ -3045,12 +3000,6 @@ main {
   }
 }
 
-/* While the hero zoom carries the laptop in, the phone rises into place as it lands. */
-.zoom.is-zoom .phone {
-  opacity: var(--zoom-tabs, 1);
-  transform: translateY(calc((1 - var(--zoom-tabs, 1)) * 5cqw));
-}
-
 .laptop__base {
   position: absolute;
   top: 100%;
@@ -3064,10 +3013,6 @@ main {
    * laptop's height (32.35cqw above the hinge), so the projection is shifted to centre there.
    */
   transform: translateY(-32.35cqw) perspective(520cqw) translateY(32.35cqw) rotateX(82deg);
-}
-
-.zoom[data-zoom="active"] .laptop__base {
-  transform: rotateX(82deg);
 }
 
 .showcase__frames {
