@@ -7,7 +7,7 @@ const LAST = "Ours.";
 const FULL = LEAD + LAST;
 // The line is fully typed this far through the pinned scroll (a short swipe or two), so it
 // rarely sits half-typed; the rest is a hold on it.
-const DONE_AT = 0.45;
+const DONE_AT = 0.6;
 // On a fast scroll the letters catch up at this many per frame, so they arrive evenly.
 const MAX_STEP = 2;
 

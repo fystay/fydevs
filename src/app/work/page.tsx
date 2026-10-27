@@ -26,7 +26,7 @@ export default function WorkPage() {
       <section className="section--tight" style={{ paddingTop: 0 }}>
         <div className="container container--wide">
           <div className="work-list">
-            {projects.map((p) => (
+            {projects.map((p, i) => (
               <article
                 key={p.slug}
                 id={p.slug}
@@ -40,6 +40,7 @@ export default function WorkPage() {
                       src={p.page}
                       host={p.host}
                       alt={`The ${p.name} website, full page`}
+                      eager={i === 0}
                       sizes="(min-width: 80rem) 760px, (min-width: 64rem) 60vw, 100vw"
                     />
                     <PhoneFrame

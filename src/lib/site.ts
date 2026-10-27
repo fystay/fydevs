@@ -150,8 +150,8 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
   {
     title: "Websites",
     links: [
-      { href: "/websites", label: "Web design" },
-      { href: "/pricing", label: "Packages & prices" },
+      { href: "/websites", label: "Websites" },
+      { href: "/pricing", label: "Pricing" },
       { href: "/build", label: "Get my price" },
       { href: "/pricing#care", label: "Hosting & care" },
     ],
@@ -169,7 +169,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     links: [
       { href: "/about", label: "About" },
       { href: "/faq", label: "FAQ" },
-      { href: "/contact", label: "Talk to us" },
+      { href: "/contact", label: "Contact" },
       { href: "/privacy", label: "Privacy" },
     ],
   },

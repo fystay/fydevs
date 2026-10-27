@@ -710,7 +710,7 @@ main {
 .menu__title {
   margin-bottom: var(--space-3);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -1095,12 +1095,20 @@ main {
 
 .site-footer__grid {
   display: grid;
-  gap: var(--space-7);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-5);
+}
+
+.site-footer__brand {
+  grid-column: 1 / -1;
 }
 
 @media (min-width: 48rem) {
   .site-footer__grid {
     grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  }
+  .site-footer__brand {
+    grid-column: auto;
   }
 }
 
@@ -1125,10 +1133,13 @@ main {
 }
 
 .site-footer li + li {
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
+/* At least 24px tall, so each link is an easy tap. */
 .site-footer a {
+  display: inline-block;
+  padding-block: 0.25rem;
   color: var(--color-ink-2);
   text-decoration: none;
 }
@@ -1357,31 +1368,25 @@ main {
   font-weight: 450;
 }
 
-/* CTA band */
+/* CTA band: centred like the tiles above it, the buttons right under the words. */
 .cta-band {
   display: grid;
   gap: var(--space-6);
-  align-items: end;
+  justify-items: center;
+  text-align: center;
 }
 
-@media (min-width: 64rem) {
-  .cta-band {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
+.cta-band :is(.h1, .lede) {
+  margin-inline: auto;
 }
 
-/* Stacked (phones and tablets), the banner is centred like the tiles above it. */
-@media (max-width: 63.99rem) {
-  .cta-band {
-    justify-items: center;
-    text-align: center;
-  }
-  .cta-band :is(.h1, .lede) {
-    margin-inline: auto;
-  }
-  .cta-band .btn-row {
-    justify-content: center;
-  }
+/* Room under the brush stroke before the line that follows. */
+.cta-band .lede {
+  margin-top: var(--space-3);
+}
+
+.cta-band .btn-row {
+  justify-content: center;
 }
 
 /* ---------- Forms ---------- */
@@ -1721,7 +1726,7 @@ main {
 @media (min-width: 64rem) {
   .hero-ed--work {
     display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     align-items: center;
     min-height: max(38rem, calc(100svh - var(--header-h)));
     padding-inline: max(var(--gutter), calc((100% - var(--width-wide, 80rem)) / 2));
@@ -1737,7 +1742,7 @@ main {
   }
   /* "that grow your business." is about 9.7 times the font size wide: kept inside its column. */
   .hero-ed--work .hero-ed__title {
-    font-size: min(3.6vw, 4.5rem);
+    font-size: min(4vw, 3.6rem);
   }
   /* Beside the copy the bar is narrower: the tabs get their own row, so names show in full. */
   .hero-ed--work .showcase__bar {
@@ -1860,7 +1865,7 @@ main {
   border: 1px solid var(--color-line-strong);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-ink-2);
@@ -2005,7 +2010,7 @@ main {
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-4);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -2206,7 +2211,7 @@ main {
   box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.6);
   color: #fff;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -2594,7 +2599,7 @@ main {
 .carousel__sector {
   grid-column: 1;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -3015,7 +3020,7 @@ ol.steps li::after {
   border: 1px solid var(--color-inverse-line);
   border-radius: 2em;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-inverse-ink-2);
@@ -3044,7 +3049,7 @@ ol.steps li::after {
 .case dt {
   margin-bottom: var(--space-1);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -3403,7 +3408,7 @@ ol.steps li::after {
   background: var(--color-ink);
   color: var(--color-inverse-ink);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   opacity: 0;
@@ -3594,7 +3599,7 @@ ol.steps li::after {
   border: 1px solid currentColor;
   border-radius: 50%;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 400;
 }
 
@@ -3834,7 +3839,7 @@ ol.steps li::after {
 .examples__label {
   margin-right: var(--space-1);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: var(--color-ink-3);
 }
 
@@ -4239,7 +4244,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
 
 @media (max-width: 23.99rem) {
   .svc__link {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -4631,7 +4636,7 @@ main #process ol.steps li::after {
   background: none;
   color: inherit;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
@@ -5243,7 +5248,7 @@ main #process ol.steps li::after {
 
 .studio__label {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -5272,7 +5277,7 @@ main #process ol.steps li::after {
 .studio__legend {
   margin-bottom: var(--space-3);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -5477,7 +5482,7 @@ main #process ol.steps li::after {
 
 .studio__order-note {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -6010,7 +6015,7 @@ main #process ol.steps li::after {
 .booking-hero__caption {
   margin-top: var(--space-5);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -6030,14 +6035,14 @@ main #process ol.steps li::after {
 
 /*
  * The family line: a full screen of large type (FamilyLine). Pinned, the section is
- * two and a half screens tall and its stage sticks while the line types out with the scroll.
+ * about one and a half screens tall and its stage sticks while the line types out with the scroll.
  */
 .family-line {
   background: var(--color-bg);
 }
 
 .family-line[data-pinned] {
-  height: 200svh;
+  height: 160svh;
 }
 
 .family-line__stage {
@@ -6684,7 +6689,7 @@ main #process ol.steps li::after {
 
 .fan__caption span {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -6786,7 +6791,7 @@ main #process ol.steps li::after {
   max-width: none;
   margin-top: 0.15rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-ink-3);
@@ -7187,7 +7192,7 @@ main #process ol.steps li::after {
   background: none;
   color: var(--color-ink);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
@@ -7555,6 +7560,11 @@ main #process ol.steps li::after {
   background: #f7f1e4;
 }
 
+/* The scope is a sheet of paper: the quote. */
+.bs--web .bs__stage[data-stage="scope"] .bs__screen {
+  background: #fff;
+}
+
 .ws-url {
   display: flex;
   align-items: center;
@@ -7607,6 +7617,40 @@ main #process ol.steps li::after {
   font-family: var(--font-playfair), var(--font-serif);
   font-size: 1.3em;
   line-height: 1.1;
+}
+
+/* The scope: the quote itself, priced line by line. */
+.ws-quote__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid #1d1d1f;
+}
+
+.ws-quote__head b {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: 1.2em;
+}
+
+.ws-quote__head span {
+  color: #6b6760;
+  font-size: 0.75em;
+}
+
+.ws-quote__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  padding: 0.45em 0;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 0.8em;
+}
+
+.ws-quote__total {
+  border-bottom: 0;
+  font-weight: 700;
 }
 
 /* Your feedback, pinned to the page while it's being built. */

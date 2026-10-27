@@ -70,8 +70,9 @@ export function ClipShowcase({ items }: { items: ClipItem[] }) {
           controls={reduced}
           aria-label={`A walkthrough of ${current.name}`}
         >
-          <source src={current.walkthrough.mp4} type="video/mp4" />
+          {/* WebM first: about a third smaller, and the browsers that can't play it fall back to MP4. */}
           <source src={current.walkthrough.webm} type="video/webm" />
+          <source src={current.walkthrough.mp4} type="video/mp4" />
         </video>
       </figure>
       <p className="clips__caption" aria-live="polite">
