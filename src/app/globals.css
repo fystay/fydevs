@@ -4164,7 +4164,7 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
 .svc__link:not([aria-current])::before {
   content: "";
   position: absolute;
-  top: 0;
+  bottom: 0.2rem;
   left: 0;
   width: 100%;
   height: 2px;
@@ -4199,10 +4199,10 @@ html:active-view-transition-type(nav-menu)::view-transition-new(root) {
   --svc-hint: #2f5d62;
 }
 
-/* The line above the current service; it glides to the next one when you switch. */
+/* The current service is underlined; the underline glides to the next one when you switch. */
 .svc__line {
   position: absolute;
-  top: 0;
+  bottom: 0.2rem;
   left: 0;
   width: 100%;
   height: 2px;
