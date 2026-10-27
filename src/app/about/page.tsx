@@ -62,7 +62,7 @@ function StandardDemo({ kind }: { kind: (typeof standards)[number][2] }) {
     );
   return (
     <span className="std std--tokens">
-      {["#d45b32", "#56624a", "#2f5d62", "#f2ece2", "#1c1c1c"].map((c) => (
+      {["#d45b32", "#56624a", "#2f5d62", "#f2ece2", "#3a2d22"].map((c) => (
         <i key={c} style={{ background: c }} />
       ))}
     </span>
