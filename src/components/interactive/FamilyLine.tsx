@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-const LEAD = "Every site here runs a family business. ";
-const LAST = "Ours.";
+const LEAD = "Every site here is bespoke. ";
+const LAST = "Made by us.";
 const FULL = LEAD + LAST;
 // The line is fully typed this far through the pinned scroll (a short swipe or two), so it
 // rarely sits half-typed; the rest is a hold on it.
