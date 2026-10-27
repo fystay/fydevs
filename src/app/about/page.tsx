@@ -12,13 +12,14 @@ export const metadata = pageMetadata(
   "Why FY Devs exists: bespoke websites clients are proud of, honest pricing, and apps that solve real problems.",
 );
 
+// Each principle as the thing we avoid, then what we do instead.
 const beliefs = [
-  ["Bespoke over generic", "Your business isn't a template, so your website shouldn't be one either."],
-  ["Clarity over friction", "Services, prices and next steps should be easy to understand before you pick up the phone."],
-  ["Outcomes over output", "Credibility, enquiries, bookings and smoother operations matter more than page counts."],
-  ["Premium, but approachable", "High standards without a complicated sales process or jargon."],
-  ["Purposeful technology", "We build features that solve real problems, and say so when something isn't needed."],
-  ["Practical delivery", "Start focused, launch well, and expand when there's a reason to."],
+  ["Bespoke over generic", "A theme with your logo on it", "Designed around your business"],
+  ["Clarity over friction", "\u201CCall us for a price\u201D", "Prices on the page"],
+  ["Outcomes over output", "Forty pages nobody reads", "More enquiries and bookings"],
+  ["Premium, but approachable", "Jargon and long sales calls", "Plain English, quick answers"],
+  ["Purposeful technology", "Features for the sake of it", "Only what solves a problem"],
+  ["Practical delivery", "Everything at once, and late", "Launch focused, grow later"],
 ];
 
 const standards = [
@@ -107,15 +108,21 @@ export default function AboutPage() {
       <section className="section section--ruled">
         <div className="container container--wide">
           <SectionHead eyebrow="Principles" title={<>What <span className="serif-em">guides the work.</span></>} />
-          <ol role="list" className="ruled-list">
-            {beliefs.map(([title, body], i) => (
-              <li key={title}>
-                <span className="ruled-list__num">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="h3">{title}</h3>
-                <p className="muted">{body}</p>
+          <ul role="list" className="beliefs">
+            {beliefs.map(([title, not, instead]) => (
+              <li key={title} className="belief" data-reveal>
+                <h3 className="belief__title">{title}</h3>
+                <p className="belief__not">
+                  <span className="visually-hidden">Not: </span>
+                  {not}
+                </p>
+                <p className="belief__yes">
+                  <span className="visually-hidden">Instead: </span>
+                  {instead}
+                </p>
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
       </section>
 

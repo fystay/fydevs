@@ -56,7 +56,7 @@ export function StickyCta() {
   if (HIDDEN_ON.includes(pathname)) return null;
 
   return (
-    <div className="sticky-cta" data-show={show} inert={!show}>
+    <aside className="sticky-cta" aria-label="Get started" data-show={show} inert={!show}>
       <Link href="/build" className="btn btn--primary">
         <Stopwatch />
         Get my price
@@ -64,6 +64,6 @@ export function StickyCta() {
       <Link href="/contact?topic=website" className="btn btn--secondary">
         Talk to us
       </Link>
-    </div>
+    </aside>
   );
 }

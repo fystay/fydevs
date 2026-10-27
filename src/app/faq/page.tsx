@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { CtaBand, PageHero } from "@/components/Blocks";
+import { PageHero } from "@/components/Blocks";
 import { Faq } from "@/components/Faq";
 import { pageMetadata } from "@/lib/metadata";
-import { Stopwatch } from "@/components/Icons";
 
 export const metadata = pageMetadata(
   "/faq",
@@ -27,26 +26,10 @@ export default function FaqPage() {
         }
       />
       <section className="section--tight" style={{ paddingTop: 0 }}>
-        <div className="container container--wide" style={{ maxWidth: "52rem" }}>
+        <div className="container container--wide" style={{ maxWidth: "64rem" }}>
           <Faq />
         </div>
       </section>
-      <CtaBand
-        title={
-          <>
-            Ready to <span className="serif-em">start?</span>
-          </>
-        }
-        body="Tell us what you need. Honest advice and a clear next step."
-      >
-        <Link href="/build" className="btn btn--primary">
-          <Stopwatch />
-          Get my price
-        </Link>
-        <Link href="/contact" className="btn btn--secondary">
-          Talk to us
-        </Link>
-      </CtaBand>
     </>
   );
 }

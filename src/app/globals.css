@@ -1224,39 +1224,6 @@ main {
 }
 
 /* Numbered editorial list (principles, process) */
-.ruled-list {
-  border-top: 1px solid var(--color-line);
-}
-
-.ruled-list > li {
-  display: grid;
-  gap: var(--space-2) var(--space-6);
-  padding-block: var(--space-6);
-  border-bottom: 1px solid var(--color-line);
-}
-
-@media (min-width: 48rem) {
-  .ruled-list > li {
-    grid-template-columns: 4rem minmax(0, 5fr) minmax(0, 7fr);
-    align-items: baseline;
-  }
-}
-
-.ruled-list__num {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: var(--color-ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.inverse .ruled-list,
-.inverse .ruled-list > li {
-  border-color: var(--color-inverse-line);
-}
-
-.inverse .ruled-list__num {
-  color: var(--color-inverse-ink-2);
-}
 
 /* Feature columns */
 .feature {
@@ -2903,6 +2870,74 @@ ol.steps li::after {
   outline-offset: 2px;
 }
 
+/* About: each principle as the thing we avoid (struck through) and what we do instead. */
+.beliefs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.belief {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+}
+
+.belief__title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.belief__not,
+.belief__yes {
+  display: flex;
+  gap: 0.6em;
+  align-items: baseline;
+}
+
+.belief__not {
+  color: var(--color-ink-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--home-orange);
+  text-decoration-thickness: 2px;
+}
+
+.belief__not::before,
+.belief__yes::before {
+  flex: none;
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.belief__not::before {
+  content: "\2715";
+  color: var(--home-orange);
+}
+
+.belief__yes {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem);
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.belief__yes::before {
+  content: "\2713";
+  font-size: 1rem;
+  color: var(--home-sage-deep);
+}
+
 /* About: a small drawn picture above each engineering standard (on the dark band). */
 .feature__demo {
   display: flex;
@@ -3030,25 +3065,34 @@ ol.steps li::after {
   border-top: 0;
 }
 
-/* FAQ accordion. */
+/* FAQ: a card per question, its short answer large, the full answer a tap away. */
 .faq {
-  border-top: 1px solid var(--color-ink);
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 48rem) {
+  .faq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
 }
 
 .faq__item {
-  border-bottom: 1px solid var(--color-line);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  transition: border-color var(--duration) var(--ease);
+}
+
+.faq__item[open] {
+  border-color: var(--color-line-strong);
 }
 
 .faq__item summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-5);
-  min-height: 3.5rem;
-  padding: var(--space-4) 0;
-  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-5) var(--space-4);
   cursor: pointer;
   list-style: none;
 }
@@ -3057,20 +3101,44 @@ ol.steps li::after {
   display: none;
 }
 
-.faq__item summary:hover span:first-child {
+.faq__q {
+  font-size: var(--text-sm);
+  font-weight: 500;
   color: var(--color-ink-2);
+}
+
+.faq__short {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+.faq__more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.faq__item summary:hover .faq__more {
+  color: var(--color-ink);
 }
 
 .faq__icon {
   position: relative;
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border: 1px solid var(--color-line-strong);
   border-radius: 50%;
   transition:
-    transform var(--duration) var(--ease),
-    background-color var(--duration) var(--ease);
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
 }
 
 .faq__icon::before,
@@ -3079,7 +3147,7 @@ ol.steps li::after {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 10px;
+  width: 9px;
   height: 1.5px;
   background: var(--color-ink);
   transform: translate(-50%, -50%);
@@ -3105,8 +3173,7 @@ ol.steps li::after {
 }
 
 .faq__item p {
-  max-width: 44rem;
-  padding: 0 3rem var(--space-5) 0;
+  padding: 0 var(--space-5) var(--space-5);
   color: var(--color-ink-2);
 }
 
@@ -3114,6 +3181,34 @@ ol.steps li::after {
   .faq__item[open] p {
     animation: menu-item-in 320ms var(--ease) both;
   }
+}
+
+/* The last card: still a question? A person is one tap away. */
+.faq-ask {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding: clamp(1.75rem, 1rem + 3vw, 3rem);
+  border-radius: var(--radius-lg);
+  background: var(--color-inverse-bg);
+  color: var(--color-inverse-ink);
+}
+
+.faq-ask__title {
+  font-family: var(--font-playfair), var(--font-serif);
+  font-size: clamp(1.875rem, 1.4rem + 1.8vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.faq-ask__title .serif-em {
+  font-weight: 400;
+  color: var(--home-orange);
+}
+
+.faq-ask p {
+  color: var(--color-inverse-ink-2);
 }
 
 /* ==========================================================================
