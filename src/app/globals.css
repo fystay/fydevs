@@ -6079,21 +6079,20 @@ main #process ol.steps li::after {
   visibility: hidden;
 }
 
-/* Takes no space (drawn over the gap), so the letters never move as it travels. */
+/* Takes no space (drawn over the gap), so the letters never move as it travels. Inline, not
+   inline-block: a block-level box mid-word is a place the line may break, and the text reflows. */
 .family-line__caret {
   position: relative;
-  display: inline-block;
-  width: 0;
-  height: 0.85em;
-  vertical-align: -0.08em;
   animation: family-caret 1s steps(1) infinite;
 }
 
 .family-line__caret::after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0.02em;
+  bottom: 0.2em;
+  left: 0.02em;
   width: 0.06em;
+  height: 0.85em;
   background: var(--color-accent);
 }
 
@@ -7368,7 +7367,8 @@ main #process ol.steps li::after {
 }
 
 /* The five stages: one screen, from sticky notes to live. Phones swipe; wider screens show all five. */
-.bs {
+/* ol.bs: one step above the list reset, which would otherwise drop the side padding. */
+ol.bs {
   --a: #56624a;
   display: grid;
   grid-auto-flow: column;
@@ -7388,7 +7388,7 @@ main #process ol.steps li::after {
 }
 
 @media (min-width: 56rem) {
-  .bs {
+  ol.bs {
     grid-auto-flow: row;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     margin-inline: 0;

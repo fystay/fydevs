@@ -96,7 +96,7 @@ export default function HomePage() {
         Below the showcase, one product per screen: a name, a few words, one link and a
         big visual. Detail and full pricing live on the service pages.
       */}
-      <WebsitesTile id="web-design" navLink="/websites" />
+      <WebsitesTile id="web-design" navLink="/websites" ctas />
 
       {/* Booking software, shown working: a customer books, the office is pinged. */}
       <section
