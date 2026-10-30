@@ -7368,7 +7368,8 @@ main #process ol.steps li::after {
 }
 
 /* The five stages: one screen, from sticky notes to live. Phones swipe; wider screens show all five. */
-.bs {
+/* ol.bs: one step above the list reset, which would otherwise drop the side padding. */
+ol.bs {
   --a: #56624a;
   display: grid;
   grid-auto-flow: column;
@@ -7388,7 +7389,7 @@ main #process ol.steps li::after {
 }
 
 @media (min-width: 56rem) {
-  .bs {
+  ol.bs {
     grid-auto-flow: row;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     margin-inline: 0;
