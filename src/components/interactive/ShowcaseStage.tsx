@@ -170,8 +170,9 @@ export function ShowcaseStage({ items }: { items: Item[] }) {
                     src={p.desktop}
                     alt={i === index ? `The ${p.name} website on a laptop` : ""}
                     aria-hidden={i !== index}
-                    sizes="(min-width: 64rem) 900px, 100vw"
+                    sizes="(min-width: 64rem) 900px, 90vw"
                     preload={i === 0}
+                    fetchPriority={i === 0 ? "high" : undefined}
                     className={`showcase__img${i === index ? " is-active" : ""}`}
                   />
                 ))}
