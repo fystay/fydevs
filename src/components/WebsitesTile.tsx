@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "@/components/Icons";
+import { ArrowRight, Stopwatch } from "@/components/Icons";
 import { SiteStyler } from "@/components/interactive/SiteStyler";
 import { archivo, jost } from "@/lib/fonts";
 import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
@@ -8,7 +8,16 @@ import { CARE_PLANS, PACKAGES, formatGBP } from "@/lib/pricing";
  * Websites, sold by showing: the headline, both prices in one row, and the example site
  * that restyles for four businesses. Shared by the homepage and the Websites page.
  */
-export function WebsitesTile({ id, navLink }: { id?: string; navLink?: string }) {
+export function WebsitesTile({
+  id,
+  navLink,
+  ctas = false,
+}: {
+  id?: string;
+  navLink?: string;
+  /** Show the price button beside the prices link (the homepage; the Websites page has them in its hero). */
+  ctas?: boolean;
+}) {
   const titleId = `${id ?? "websites"}-title`;
   return (
     <section
@@ -37,11 +46,23 @@ export function WebsitesTile({ id, navLink }: { id?: string; navLink?: string })
             </dd>
           </div>
         </dl>
-        <p className="tile__more">
-          <Link href="/pricing" className="arrow-link">
-            See all prices <ArrowRight />
-          </Link>
-        </p>
+        {ctas ? (
+          <div className="tile__ctas">
+            <Link href="/build" className="btn btn--primary">
+              <Stopwatch />
+              Get my price
+            </Link>
+            <Link href="/pricing" className="btn btn--secondary">
+              See all prices
+            </Link>
+          </div>
+        ) : (
+          <p className="tile__more">
+            <Link href="/pricing" className="arrow-link">
+              See all prices <ArrowRight />
+            </Link>
+          </p>
+        )}
       </div>
       <div className="container container--wide tile__visual" data-reveal style={{ "--d": 1 } as React.CSSProperties}>
         <SiteStyler />

@@ -143,7 +143,7 @@ export const primaryNav: NavItem[] = [
   },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About", mobileOnly: true },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "Contact", mobileOnly: true },
 ];
 
 export const footerNav: { title: string; links: NavLink[] }[] = [
